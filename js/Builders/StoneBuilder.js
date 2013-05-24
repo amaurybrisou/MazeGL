@@ -9,13 +9,13 @@
               return false;
             } else if(typeof mmo.Builders == "undefined"){
                       console.log("Error : Namespace mmo not Loaded");
-                      return fase;
+                      return false;
             }
             return true;
         }
         
     if(!f){
-        return;
+        return null;
     }
     
     

@@ -1,4 +1,4 @@
 var mmo = (function(){
-    //define mmo statis properties;
+    //define mmo statics properties;
     return {};
 })();

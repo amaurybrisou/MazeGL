@@ -10,10 +10,7 @@
         };
     
         if (!f()){
-            return;
+            return null;
         }
-    }
-    
-    //Define Builder properties here
-    
+    }   
 })();

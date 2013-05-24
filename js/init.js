@@ -1,18 +1,7 @@
 window.onload = function() {
 
  //fd = mmo.Network.getSocket("wc://webgl_project_amaury.amaurybrisou.c9.io:15000");
-  
-<<<<<<< HEAD
-  fd = new WebSocket("wc://webgl_project_amaury.amaurybrisou.c9.io:15000");
-  console.log(fd);
-  fd.send(JSON.stringify("data"));
-=======
-  fd = new WebSocket("ws://localhost:8000");
-  if(fd != "undefined"){
-    console.log(fd);
-    fd.send("data\r\n");
-  }
->>>>>>> 159962a5993f6999c891cf698dafc36b2ed4ca0b
+
   var clock = new THREE.Clock();
 
   var screenSizeRatio = 100;
@@ -21,7 +10,7 @@ window.onload = function() {
   var nbStones = 1000;
   var stonesSizeRatio = 100;
   var camRotSpeed = 20000;
-  var lightSpeed = 20000;
+  var lightSpeed = 200000;
   var day_night_speed = lightSpeed;
   var originSize = 0.2;
   var camPosRatio = 50;
@@ -165,7 +154,7 @@ window.onload = function() {
 
   // SCENE ------------------------------------------------------------------
   var scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2( 0xffffff, 0.00001 );
+  //scene.fog = new THREE.FogExp2( 0xffffff, 0.000001 );
   scene.add(camera);
   scene.shadowMapEnabled = true;
 
