@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+        
+        <title>Stones</title>
+
+        <link rel="stylesheet" href="css/main.css" type="text/css" media="screen" />
+
+        <script type="text/javascript" src="js/libs/three.min.js"></script>
+        <script type="text/javascript" src="js/firstPersonnControls.js"></script>
+        <script type="text/javascript" src="js/THREEx.KeyboardState.js"></script>
+        
+        <script type="text/javascript" src="js/mmo.js"></script>
+        <script type="text/javascript" src="js/Builders/Builders.js"></script>
+        <script type="text/javascript" src="js/Network/Network.js"></script>
+
+        <script type="text/javascript" src="js/Network/FileDescriptor.js"></script>
+        <script type="text/javascript" src="js/world_objects/Stone.js"></script>
+        <script type="text/javascript" src="js/objects_attributes/Stone_Attributes.js"></script>
+
+        
+        <script type="text/javascript" src="js/Builders/AvatarBuilder.js"></script>
+        <script type="text/javascript" src="js/Builders/StoneBuilder.js"></script>
+
+        <script type="text/javascript" src="js/avatar/avatar_v1.js"></script>
+
+        <script src="http://mrdoob.github.com/three.js/examples/js/shaders/CopyShader.js"></script>
+        <script src="http://mrdoob.github.com/three.js/examples/js/shaders/HorizontalBlurShader.js"></script>
+        <script src="http://mrdoob.github.com/three.js/examples/js/shaders/VerticalBlurShader.js"></script>
+        <script src="http://mrdoob.github.com/three.js/examples/js/postprocessing/EffectComposer.js"></script>
+        <script src="http://mrdoob.github.com/three.js/examples/js/postprocessing/RenderPass.js"></script>
+        <script src="http://mrdoob.github.com/three.js/examples/js/postprocessing/MaskPass.js"></script>
+        <script src="http://mrdoob.github.com/three.js/examples/js/postprocessing/ShaderPass.js"></script>
+        <script src="http://mrdoob.github.io/three.js/examples/js/shaders/FXAAShader.js"></script> 
+        <script src="http://mrdoob.github.io/three.js/examples/js/shaders/ConvolutionShader.js"></script> 
+        <script src="http://mrdoob.github.io/three.js/examples/js/postprocessing/BloomPass.js"></script>
+        
+        <script type="text/javascript" src="js/init.js"></script>
+
+    </head>
+
+    <body>
+
+        <div id="canvasCont">
+        </div>
+
+        <div id="infos">
+            time :
+        </div>
+
+
+        <!-- STONE SHADER -->
+        <script id="stonevertexshader" type="x-shader/x-vertex">
+            uniform float amplitude;
+            attribute float displacement;
+            varying vec3 vNormal;
+
+            void main() {
+
+                // set the vNormal value with the attribute value passed in by Three.js
+                vNormal = normal;
+
+                vec3 newPosition = position + normal * vec3(displacement*amplitude);
+
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition,1.0);
+            }  
+
+        </script>
+
+        <script id="stonefragmentshader" type="x-shader/x-vertex">
+            uniform float lightPosX;
+            uniform float lightPosY;
+            uniform float lightPosZ;
+            uniform float lightColor;
+            uniform float darkness;
+            varying vec3 vNormal;
+
+            void main() {
+                // calc the dot product and clamp
+                // 0 -> 1 rather than -1 -> 1
+                vec3 light = vec3(lightPosX,lightPosY,lightPosZ);
+
+                // ensure it's normalized
+                light = normalize(light);
+              
+                // calculate the dot product of
+                // the light to the vertex normal
+                float dProd = max(darkness, dot(vNormal, light)*lightColor);
+              
+                // feed into our frag colour
+                gl_FragColor = vec4(dProd, dProd, dProd, 1.0);
+            }
+
+        </script>
+
+        
+    </body>
+
+</html>
