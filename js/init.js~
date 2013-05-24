@@ -2,17 +2,11 @@ window.onload = function() {
 
  //fd = mmo.Network.getSocket("wc://webgl_project_amaury.amaurybrisou.c9.io:15000");
   
-<<<<<<< HEAD
-  fd = new WebSocket("wc://webgl_project_amaury.amaurybrisou.c9.io:15000");
-  console.log(fd);
-  fd.send(JSON.stringify("data"));
-=======
   fd = new WebSocket("ws://localhost:8000");
   if(fd != "undefined"){
     console.log(fd);
-    fd.send("data\r\n");
+    fd.send("data");
   }
->>>>>>> 159962a5993f6999c891cf698dafc36b2ed4ca0b
   var clock = new THREE.Clock();
 
   var screenSizeRatio = 100;

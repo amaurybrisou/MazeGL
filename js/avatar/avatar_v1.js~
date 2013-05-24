@@ -1,18 +1,8 @@
-<<<<<<< HEAD
-<<<<<<< HEAD:js/avatar/avatar_v1.js
 var Avatar = {};
 
 
 Avatar.build = function(scene, myMeshMat, x, y, z){
-=======
-var myMesh = function(scene, myMeshMat, x, y, z){
->>>>>>> 12b618b8fb8cc9b4a679fa4e46361c85c7b1897e:js/myMesh.js
-=======
-var Avatar = {};
 
-Avatar.build = function(scene, myMeshMat, x, y, z){
-
->>>>>>> 159962a5993f6999c891cf698dafc36b2ed4ca0b
     var that = this;
 
     this.scale = 20;
@@ -145,8 +135,4 @@ Avatar.build = function(scene, myMeshMat, x, y, z){
     }
 
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 159962a5993f6999c891cf698dafc36b2ed4ca0b
