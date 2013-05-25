@@ -13,9 +13,9 @@
     if(!f){
         return;
     }
-    
-    
-    mmo.Builders.WorldBuilder=function(){
-            
-    }
 })();
+
+
+mmo.Builders.WorldBuilder=function(){
+        
+}

@@ -1,10 +1,10 @@
 (function(){
     //load Builders 
-    mmo.Object_Attributes = function(){
+    mmo.World_Objects = function(){
         var f = function(){
          if(typeof mmo == "undefined"){
-          console.log("Error : Namespace mmo not Loaded");
-          return false;
+            Logger.log("Error mmo not Loaded", this);
+            return false;
          }
          return true;
         };

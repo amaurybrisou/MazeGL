@@ -16,11 +16,11 @@
         
     if(!f){
         return null;
-    }
-    
-    
-    //Define StoneBuilder 
-    mmo.Builders.StoneBuilder = function(scene, nb_stones, uniforms, worldSize, stonesSizeRatio, planeMat, displacement ){
+    } 
+})();
+
+//Define StoneBuilder 
+mmo.Builders.StoneBuilder = function(scene, nb_stones, uniforms, worldSize, stonesSizeRatio, planeMat, displacement ){
       var x, y, z, width, height, depth;
       var stones = new Array();
       var stoneAttributes = new Array();
@@ -52,7 +52,7 @@
         y = height/2;
         z = Math.random()*worldSize - worldSize/2;
     
-        stones[i] = Stone.create(x, y, z, width, height, depth, planeMat);
+        stones[i] = mmo.World_Objects.Stone(x, y, z, width, height, depth, planeMat);
         scene.add(stones[i]);
         
     
@@ -67,5 +67,3 @@
     
     return scene;
   }
-    
-})();

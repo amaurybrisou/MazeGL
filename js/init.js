@@ -1,59 +1,13 @@
 window.onload = function() {
 
+    var span = document.getElementById('infos');
+    var text = document.createTextNode('');
+
  //fd = mmo.Network.getSocket("wc://webgl_project_amaury.amaurybrisou.c9.io:15000");
 
-  var clock = new THREE.Clock();
+  
 
-  var screenSizeRatio = 100;
-  var WIDTH = window.innerWidth - screenSizeRatio, HEIGHT = window.innerHeight - screenSizeRatio;
-  var worldSize = 216000/2;
-  var nbStones = 1000;
-  var stonesSizeRatio = 100;
-  var camRotSpeed = 20000;
-  var lightSpeed = 200000;
-  var day_night_speed = lightSpeed;
-  var originSize = 0.2;
-  var camPosRatio = 50;
-  var sunSize = worldSize/10;
-  var subLightPosRatio = 150;
-  var rangeTarget = 100;
-
-  var TRANS_VIEW_INCREMENT = 70;
-  var ROT_VIEW_INCREMENT = 0.1; 
-
-  var myMeshLookAt = new THREE.Vector3( 0, 0, 0 );
-
-  var span = document.getElementById('infos');
-  var text = document.createTextNode('');
-
-  var freeze = false;
-
-
-
-  //CAMERA VARS
-  var VIEW_ANGLE  =  62, 
-      ASPECT      =  WIDTH / HEIGHT,
-      NEAR        =  0.1,
-      FAR         =  worldSize*2;
-
-
-  //COLORS
-  var backgroundColor = new THREE.Color("rgb(246,246,246)");
-  var floorColor = new THREE.Color("rgb(249,249,249)");
-  var lightColor = new THREE.Color("rgb(249,249,249)");
-  var sunColor = new THREE.Color("rgb(66,66,66)");
-  var subLightColor = new THREE.Color("rgb(215,210,157)");
-  var originColor = new THREE.Color("rgb(66,66,66)");
-  var stonesColor = new THREE.Color("rgb(233,233,233)");
-  var emissiveColor = new THREE.Color("rgb(66,66,66)");
-  var avatarTargetColor = new THREE.Color("rgb(219,0,0)");
-
-  var BC, SC = 0;
-  var darkness = 0.2;
-
-
-  // KEYBOARD -----------------------------------------------------------
-  var keyboard = new THREEx.KeyboardState();
+  
 
   // EVENT LISTENER ------------------------------------------------------------------------
   this.domElement = document;
@@ -132,18 +86,10 @@ window.onload = function() {
   document.getElementById('canvasCont').appendChild(renderer.domElement);
 
 
-  // CAMERA -----------------------------------------------------------
-
-  var camera = new THREE.PerspectiveCamera(
-          VIEW_ANGLE,
-          ASPECT,
-          NEAR,
-          FAR   
-  );
-
   //camera.eulerOrder = "YXZ";
-  camera.position.set(50, camPosRatio, -10);
-
+  //CAMERA
+  camera.position.set(50, camPosRatio, -10);  
+    
   var camControls = new THREE.FirstPersonControls( camera, screenSizeRatio );
 
   camControls.movementSpeed = TRANS_VIEW_INCREMENT;
@@ -353,32 +299,22 @@ window.onload = function() {
 
   // CREATE STONES ------------------------------------------------------
 
-    //certainly things to improve with those args
-    scene = mmo.Builders.StoneBuilder(scene, nbStones, uniforms, worldSize, stonesSizeRatio, planeMat, StoneAttributes.displacement);
+  //certainly things to improve with those args
+  scene = mmo.Builders.StoneBuilder(scene, nbStones, uniforms, worldSize, stonesSizeRatio, planeMat,  mmo.Object_Attributes.Stone_Attributes);
 
 
-  // CREATE myMesh ------------------------------------------------------
-  
-  // myMeshAttributes = {
-  //       displacement: {
-  //           type: 'f', // a float
-  //           value: [] // an empty array
-  //       }
-  //   };
-
-  // myMeshMat = new THREE.ShaderMaterial({
-  //       uniforms:       uniforms,
-  //       attributes:     myMeshAttributes,
-  //       vertexShader:   document.getElementById('stonevertexshader').textContent,
-  //       fragmentShader: document.getElementById('stonefragmentshader').textContent
-  //   });
-  // myMeshValues = myMeshAttributes.displacement.value;
+  // CREATE AVATAR ------------------------------------------------------
+   avatarMat = new THREE.ShaderMaterial({
+         uniforms:       uniforms,
+         attributes:     mmo.Object_Attributes.Avatar_Attributes,
+         vertexShader:   document.getElementById('stonevertexshader').textContent,
+         fragmentShader: document.getElementById('stonefragmentshader').textContent
+     });
+   avatarMatValues = mmo.Object_Attributes.Avatar_Attributes.value;
 
 
   // var myMeshObject = new Avatar.build(scene, myMeshMat, -worldSize/2, 0, worldSize/2);
-  
-  
-  
+
   // update shader
   // for(var v = 0; v < myMeshObject.vertices.length; v++) {
   //       myMeshValues.push(Math.random() * myMeshObject.scale);
@@ -390,76 +326,24 @@ window.onload = function() {
   //       vertexShader:   document.getElementById('stonevertexshader').textContent,
   //       fragmentShader: document.getElementById('stonefragmentshader').textContent
   //   })
-  var loader = new THREE.MD2CharacterComplex();
-  console.log(loader);
-loader.localObject( './models/monster.dae', function colladaReady( collada ) {
-
-	dae = collada.scene;
-	skin = collada.skins[ 0 ];
-
-	dae.scale.x = dae.scale.y = dae.scale.z = 0.002;
-	dae.rotation.x = -Math.PI/2;
-	dae.updateMatrix();
-
-	init();
-	animate();
-
-} );
-  // loader.load('Models/daemon2.dae', scene);
-    // function PinaCollada(modelname, scale) {
-    //     var loader = new THREE.ColladaLoader();
-    //     var localObject;
-    //     //  loader.options.convertUpAxis = true;
-    //     loader.load( 'js/Models/'+modelname+'.dae', function colladaReady( collada ) {
-    //         localObject = collada.scene;
-    //         localObject.scale.x = localObject.scale.y = localObject.scale.z = scale;
-    //         localObject.updateMatrix();
-    //     } );
-    //     return localObject;
-    // }
-    // var myMeshObject = new PinaCollada('daemon', 1);
-    // if(typeof myMeshObject == "undefined"){
-    //     mmo.print("MyMeshObject is null", "init")
-    // }
-    scene.add(dae); 
-
-  // scene.addObject(THREE.    loadModel('Models/.dae'), 
-  // new THREE.ShaderMaterial({
-  //       uniforms:       uniforms,
-  //       attributes:     mmo.Objects_Attributes.Avatar_Attributes,
-  //       vertexShader:   document.getElementById('stonevertexshader').textContent,
-  //       fragmentShader: document.getElementById('stonefragmentshader').textContent
-  //   }));
-    // models = [loadModel('Models/daemon2.dae')];
+    
+    
+  var avatar_builder = new mmo.Builders.AvatarBuilder( mmo.Avatar.Avatar_v1, avatarMat, 0, 0, 0, null);
+  var avatar_obj = avatar_builder.avatar;
+  console.log(avatar_obj);
+  scene.add(avatar_obj.mesh);
   
-  // for(var i in models){
-  //       scene.add(i);
-
-  // }
-
-  var myMeshControls = new THREE.FirstPersonControls( myMeshObject.myMesh, screenSizeRatio );
-
-  myMeshControls.movementSpeed = TRANS_VIEW_INCREMENT;
-  myMeshControls.lookSpeed = ROT_VIEW_INCREMENT;
-  myMeshControls.noFly = true;
-  myMeshControls.lookVertical = true;
-
-  // camera.position.set(myMeshObject.myMesh.position.x, myMeshObject.myMesh.position.y, myMeshObject.myMesh.position.z);
-  // camera.lookAt(myMeshObject.myMesh.position);
-  // camera.position.x += 0;
-  // camera.position.y += myMeshObject.scale;
-  // camera.position.z += myMeshObject.scale * 4;
-
-  // myMeshObject.myMesh.add(camera);
   
-
+  avatar_obj.mesh.add(camera);
+ /* 
+  myMeshObject.myMesh.add(camera);
+*/
   var avatarTargetSphere = new THREE.Mesh(                               //MESH
     new THREE.SphereGeometry(1),         
     avatarTargetMat 
   );
   avatarTargetSphere.position.set(0,0,0);
   scene.add(avatarTargetSphere);
-
 
 
 
@@ -474,125 +358,89 @@ loader.localObject( './models/monster.dae', function colladaReady( collada ) {
       else{
         BC = darkness;
       }
-
+    
       if(Math.cos(t/day_night_speed)>=darkness)
         SC = Math.cos(t/day_night_speed);
       else
         SC = darkness;
-
-
-
+    
+    
+    
       // shader action
       if(keyboard.pressed("m"))
         uniforms.amplitude.value = Math.abs(Math.cos(t/600));
       else
         uniforms.amplitude.value = 0;
-
+    
       
       uniforms.lightPosX.value = Math.sin(t/day_night_speed)*worldSize/2;
       uniforms.lightPosY.value = Math.cos(t/day_night_speed)*worldSize/2;
       uniforms.lightPosZ.value = Math.abs(Math.cos(t/200));
       uniforms.lightColor.value = SC;
-
-
-
+    
+    
+    
       // main light and sun movements
       mainLight.position.y = Math.cos(t/day_night_speed)*FAR/2;
       sun.position.y = Math.cos(t/day_night_speed)*FAR/4;
-
+    
       mainLight.position.x = Math.sin(t/day_night_speed)*worldSize/2;
       sun.position.x = Math.sin(t/day_night_speed)*worldSize/1.8;
-
+    
       //mainLight.position.z = Math.sin(t/lightSpeed)*worldSize/2;
       //sun.position.z = Math.sin(t/lightSpeed)*worldSize/2;
-
+    
       mainLight.lookAt(scene.position);
       sun.lookAt(scene.position);
-
-
+    
+    
       // sub light movements
       subLight.position.x = Math.cos(t/600)*subLightPosRatio;
       subLight.position.y = subLightPosRatio;
       subLight.position.z = Math.sin(t/600)*subLightPosRatio;
-
+    
       subSun.position.x = Math.cos(t/600)*subLightPosRatio;
       subSun.position.y = subLightPosRatio;
       subSun.position.z = Math.sin(t/600)*subLightPosRatio;
-
+    
       subLight.lookAt(scene.position);
       subSun.lookAt(scene.position);
-
-
+    
+    
       
-
+    
       // background color
       backgroundColor.setRGB(SC, SC, SC);
       //scene.fog.color.setRGB(SC, SC, SC);
       renderer.setClearColor(backgroundColor, 1.0);
-
+    
       // floor color
-      plane.material.color.setRGB(SC, SC, SC);
-
-
+      plane.material.color.setRGB(SC-0.1, SC-0.1, SC-0.1);
+    
+    
       
-
+    
       // render
-
-      if( keyboard.pressed("o") ){
-        myMeshObject.myMesh.position.set(0,0,0);
-      }
-      if( keyboard.pressed("c") ){
-        
-        camera.position.x = myMeshObject.myMesh.position.x;
-        camera.position.y = myMeshObject.myMesh.position.y;
-        camera.position.z = myMeshObject.myMesh.position.z;
-
-      }
-      else{
-        camera.position.set(myMeshObject.myMesh.position.x, myMeshObject.myMesh.position.y, myMeshObject.myMesh.position.z);
-        camera.lookAt(myMeshObject.myMesh.position);
-        camera.position.x = myMeshObject.scale/2;
-        camera.position.y = myMeshObject.scale;
-        camera.position.z = myMeshObject.scale * 4;
-
-        //myMeshObject.myMesh.add(camera);
-      }
-
-
-
-      myMeshControls.update(clock.getDelta());
-      myMeshObject.myMesh.position.y = 0;
-
-      // avatar elements update
-      myMeshObject.update(myMeshObject.myMesh.position.x, 
-                          myMeshObject.myMesh.position.y, 
-                          myMeshObject.myMesh.position.z, 
-                          myMeshObject.vertices,
-                          myMeshObject.scale,
-                          t);
+      avatar_obj.meshControls.update(clock.getDelta());
+      avatar_obj.mesh.position.y = 0;
       
-      // target position update
-      avatarTargetSphere.position.set( myMeshObject.myMesh.position.x + rangeTarget * Math.sin( -myMeshControls.phi ) * Math.cos( -myMeshControls.theta ),
-                                       -myMeshControls.target.y, 
-                                       myMeshControls.target.z - Math.sin( -myMeshControls.phi ) * Math.sin( myMeshControls.theta ));
-        
       window.requestAnimationFrame(animate, renderer.domElement);
       renderer.clear();
       renderer.render(scene, camera);
       //composer.render();
-
+    
       if( keyboard.pressed("p") ){
         console.log(mouseX);
       }
       if( keyboard.pressed("t") ){
-
+    
       }
-
+    
       // HTML CONTENT
       span.innerHTML = ''; // clear existing
-      text = 'time : '+Math.round(mainLight.position.y/1000)+'</br>cam coords : '+camera.position.x+" "+camera.position.y+" "+camera.position.z+'</br>mesh coords : '+myMeshObject.myMesh.position.x+" "+myMeshObject.myMesh.position.y+" "+myMeshObject.myMesh.position.z;
+      text = 'time : '+Math.round(mainLight.position.y/1000)+'</br>cam coords : '+camera.position.x+" "+camera.position.y+" "+camera.position.z+'</br>mesh coords : '+avatar_obj.mesh.position.x+" "+avatar_obj.mesh.position.y+" "+avatar_obj.mesh.position.z;
       span.innerHTML = text;
-
+    
   };
 
 

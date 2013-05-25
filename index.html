@@ -10,21 +10,36 @@
 
         <link rel="stylesheet" href="css/main.css" type="text/css" media="screen" />
 
-        <script type="text/javascript" src="js/libs/three.min.js"></script>
-        <script type="text/javascript" src="js/libs/MD2CharacterComplex.js"></script>
+        <script type="text/javascript" src="js/libs/three.js"></script>
+        <script type="text/javascript" src="js/libs/ColladaLoader.js"></script>
 
         <script type="text/javascript" src="js/firstPersonnControls.js"></script>
         <script type="text/javascript" src="js/THREEx.KeyboardState.js"></script>
-        
+
+        <!-- Load First Level Namespaces -->
+
         <script type="text/javascript" src="js/mmo.js"></script>
         
         <script type="text/javascript" src="js/Logger/Logger.js"></script>
+        <script type="text/javascript" src="js/Logger/StdoutLogger.js"></script>
+        
+        <!-- Load Second Level Namespaces -->
+        <script type="text/javascript" src="js/Loader/Loader.js"></script>
+        <script type="text/javascript" src="js/Loader/ColladaLoader.js"></script>
         <script type="text/javascript" src="js/Builders/Builders.js"></script>
         <script type="text/javascript" src="js/Network/Network.js"></script>
+        <script type="text/javascript" src="js/Objects_Attributes/Object_Attributes.js"></script>
         <script type="text/javascript" src="js/World_Attributes/World_Attributes.js"></script>
+        <script type="text/javascript" src="js/World_Objects/World_Objects.js"></script>
 
 
+
+        <script type="text/javascript" src="js/World_Attributes/Camera.js"></script>
         
+        <script type="text/javascript" src="js/Global.js"></script>
+
+        <!-- Load Third Level Namespaces -->
+
         <script type="text/javascript" src="js/Objects_Attributes/Stone_Attributes.js"></script>
         <script type="text/javascript" src="js/Network/FileDescriptor.js"></script>
         <script type="text/javascript" src="js/World_Objects/Stone.js"></script>
@@ -32,7 +47,10 @@
         <script type="text/javascript" src="js/Builders/AvatarBuilder.js"></script>
         <script type="text/javascript" src="js/Builders/StoneBuilder.js"></script>
 
+        <script type="text/javascript" src="js/Objects_Attributes/Avatar_Attributes.js"></script>
+        <script type="text/javascript" src="js/Avatar/Avatar.js"></script>
         <script type="text/javascript" src="js/Avatar/Avatar_v1.js"></script>
+        <script type="text/javascript" src="js/Avatar/Avatar_daemon.js"></script>
 
         <script src="http://mrdoob.github.com/three.js/examples/js/shaders/CopyShader.js"></script>
         <script src="http://mrdoob.github.com/three.js/examples/js/shaders/HorizontalBlurShader.js"></script>

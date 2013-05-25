@@ -16,8 +16,10 @@
     }
     
     mmo.Object_Attributes.Avatar_Attributes = {
-        type: 'f', // a float
-        value: [] // an empty array
+        displacement: {
+             type: 'f', // a float
+             value: [] // an empty array
+        }
     }
 })();
 

@@ -3,8 +3,8 @@
     mmo.World_Attributes = function(){
         var f = function(){
          if(typeof mmo == "undefined"){
-          console.log("Error : Namespace mmo not Loaded");
-          return false;
+            Logger.log("Error mmo not Loaded", "World_Attributes");
+            return false;
          }
          return true;
         };

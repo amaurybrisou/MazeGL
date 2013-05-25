@@ -1,6 +1,26 @@
-var Avatar = {};
+(function(){
+    //load Builders 
+    var f = function(){
+        if(typeof mmo == "undefined"){
+            Logger.log("Namespace mmo not Loaded", this);
+            return false;
+        } else if(typeof mmo.Avatar == "undefined"){
+            console.log("Namespace mmo Altered", this);
+            return false;
+        }   
+        return true;
+    };
 
-Avatar.build = function(scene, myMeshMat, x, y, z){
+    if (!f()){
+        return;
+    }
+})();
+
+
+mmo.Avatar.Avatar_v1 = function(meshMat, x, y, z, model_path){
+    
+    model_path = null;
+    
     var that = this;
 
     this.scale = 20;
@@ -16,11 +36,10 @@ Avatar.build = function(scene, myMeshMat, x, y, z){
     this.faces = new Array();
     this.nodesBalls = new Array();
 
-    this.myMeshMat = myMeshMat;
+    this.meshMat = meshMat;
 
     this.baseGPoint = new THREE.Vector3(0,0,0);
     this.GPoint = new THREE.Vector3(0,0,0);
-
 
     var atomMat = new THREE.MeshBasicMaterial({
           color: 0xFF0000,
@@ -31,8 +50,6 @@ Avatar.build = function(scene, myMeshMat, x, y, z){
           new THREE.SphereGeometry(1),
           atomMat  
         );
-
-
 
     this.geom = new THREE.Geometry(); 
 
@@ -63,7 +80,6 @@ Avatar.build = function(scene, myMeshMat, x, y, z){
 
         this.nodesBalls[i] = ball;
         this.nodesBalls[i].position.set(this.vertices[i].x,this.vertices[i].y,this.vertices[i].z);
-        scene.add(this.nodesBalls[i]);
 
         this.geom.vertices.push(this.vertices[i]);
     };
@@ -74,10 +90,12 @@ Avatar.build = function(scene, myMeshMat, x, y, z){
     this.geom.faces.push( new THREE.Face3( 0, 3, 1 ) );
     this.geom.faces.push( new THREE.Face3( 0, 2, 3 ) );
     this.geom.faces.push( new THREE.Face3( 3, 2, 1 ) );
-    this.myMesh = new THREE.Mesh( 
+    
+    // CREATE AVATAR MESH
+    this.mesh = new THREE.Mesh( 
 
       this.geom, 
-      this.myMeshMat 
+      this.meshMat 
     );
 
     for(i=0; i<this.nodesBalls.length; i++){
@@ -85,9 +103,9 @@ Avatar.build = function(scene, myMeshMat, x, y, z){
         this.nodesBalls[i].position.y += this.y;
         this.nodesBalls[i].position.z += this.z;
       }
-    this.myMesh.position.set(this.x,this.y, this.z);
+    this.mesh.position.set(this.x,this.y, this.z);
 
-    this.myMesh.castShadow = true;
+    this.mesh.castShadow = true;
 
 
 
@@ -130,4 +148,20 @@ Avatar.build = function(scene, myMeshMat, x, y, z){
       }
 
     }
+    
+    
+    this.meshControls = new THREE.FirstPersonControls( this.mesh, 100 );
+
+    this.meshControls.movementSpeed = TRANS_VIEW_INCREMENT;
+    this.meshControls.lookSpeed = ROT_VIEW_INCREMENT;
+    this.meshControls.noFly = true;
+    this.meshControls.lookVertical = true;
+    
+    camera.position.set(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z);
+    camera.lookAt(this.mesh.position);
+
+    camera.position.x += 0;
+    camera.position.y += this.scale;
+    camera.position.z += this.scale * 4;
+
 }
