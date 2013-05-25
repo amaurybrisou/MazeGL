@@ -276,6 +276,7 @@ window.onload = function() {
       
   );
 
+
   scene.add(sun);
   scene.add(mainLight);
   scene.add(ambLight);
@@ -358,32 +359,83 @@ window.onload = function() {
 
   // CREATE myMesh ------------------------------------------------------
   
-  myMeshAttributes = {
-        displacement: {
-            type: 'f', // a float
-            value: [] // an empty array
-        }
-    };
+  // myMeshAttributes = {
+  //       displacement: {
+  //           type: 'f', // a float
+  //           value: [] // an empty array
+  //       }
+  //   };
 
-  myMeshMat = new THREE.ShaderMaterial({
-        uniforms:       uniforms,
-        attributes:     myMeshAttributes,
-        vertexShader:   document.getElementById('stonevertexshader').textContent,
-        fragmentShader: document.getElementById('stonefragmentshader').textContent
-    });
-  myMeshValues = myMeshAttributes.displacement.value;
-
-
-  var myMeshObject = new Avatar.build(scene, myMeshMat, -worldSize/2, 0, worldSize/2);
+  // myMeshMat = new THREE.ShaderMaterial({
+  //       uniforms:       uniforms,
+  //       attributes:     myMeshAttributes,
+  //       vertexShader:   document.getElementById('stonevertexshader').textContent,
+  //       fragmentShader: document.getElementById('stonefragmentshader').textContent
+  //   });
+  // myMeshValues = myMeshAttributes.displacement.value;
 
 
+  // var myMeshObject = new Avatar.build(scene, myMeshMat, -worldSize/2, 0, worldSize/2);
+  
+  
   
   // update shader
-  for(var v = 0; v < myMeshObject.vertices.length; v++) {
-        myMeshValues.push(Math.random() * myMeshObject.scale);
-  }
+  // for(var v = 0; v < myMeshObject.vertices.length; v++) {
+  //       myMeshValues.push(Math.random() * myMeshObject.scale);
+  // }
+  
+  // , new THREE.ShaderMaterial({
+  //       uniforms:       uniforms,
+  //       attributes:     mmo.Objects_Attributes.Avatar_Attributes,
+  //       vertexShader:   document.getElementById('stonevertexshader').textContent,
+  //       fragmentShader: document.getElementById('stonefragmentshader').textContent
+  //   })
+  var loader = new THREE.MD2CharacterComplex();
+  console.log(loader);
+loader.localObject( './models/monster.dae', function colladaReady( collada ) {
 
-  scene.add(myMeshObject.myMesh);
+	dae = collada.scene;
+	skin = collada.skins[ 0 ];
+
+	dae.scale.x = dae.scale.y = dae.scale.z = 0.002;
+	dae.rotation.x = -Math.PI/2;
+	dae.updateMatrix();
+
+	init();
+	animate();
+
+} );
+  // loader.load('Models/daemon2.dae', scene);
+    // function PinaCollada(modelname, scale) {
+    //     var loader = new THREE.ColladaLoader();
+    //     var localObject;
+    //     //  loader.options.convertUpAxis = true;
+    //     loader.load( 'js/Models/'+modelname+'.dae', function colladaReady( collada ) {
+    //         localObject = collada.scene;
+    //         localObject.scale.x = localObject.scale.y = localObject.scale.z = scale;
+    //         localObject.updateMatrix();
+    //     } );
+    //     return localObject;
+    // }
+    // var myMeshObject = new PinaCollada('daemon', 1);
+    // if(typeof myMeshObject == "undefined"){
+    //     mmo.print("MyMeshObject is null", "init")
+    // }
+    scene.add(dae); 
+
+  // scene.addObject(THREE.    loadModel('Models/.dae'), 
+  // new THREE.ShaderMaterial({
+  //       uniforms:       uniforms,
+  //       attributes:     mmo.Objects_Attributes.Avatar_Attributes,
+  //       vertexShader:   document.getElementById('stonevertexshader').textContent,
+  //       fragmentShader: document.getElementById('stonefragmentshader').textContent
+  //   }));
+    // models = [loadModel('Models/daemon2.dae')];
+  
+  // for(var i in models){
+  //       scene.add(i);
+
+  // }
 
   var myMeshControls = new THREE.FirstPersonControls( myMeshObject.myMesh, screenSizeRatio );
 
@@ -392,13 +444,13 @@ window.onload = function() {
   myMeshControls.noFly = true;
   myMeshControls.lookVertical = true;
 
-  camera.position.set(myMeshObject.myMesh.position.x, myMeshObject.myMesh.position.y, myMeshObject.myMesh.position.z);
-  camera.lookAt(myMeshObject.myMesh.position);
-  camera.position.x += 0;
-  camera.position.y += myMeshObject.scale;
-  camera.position.z += myMeshObject.scale * 4;
+  // camera.position.set(myMeshObject.myMesh.position.x, myMeshObject.myMesh.position.y, myMeshObject.myMesh.position.z);
+  // camera.lookAt(myMeshObject.myMesh.position);
+  // camera.position.x += 0;
+  // camera.position.y += myMeshObject.scale;
+  // camera.position.z += myMeshObject.scale * 4;
 
-  myMeshObject.myMesh.add(camera);
+  // myMeshObject.myMesh.add(camera);
   
 
   var avatarTargetSphere = new THREE.Mesh(                               //MESH

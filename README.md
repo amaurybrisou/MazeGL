@@ -12,3 +12,6 @@ _git commit ( enlever les dièses pour confirmer l'add)
 _git push ( si cloud9 attendre 10 mn avant la mise à jour sinon, git push origin master ) 
 
 Examples : view-source:http://stemkoski.github.io/Three.js/Selective-Glow.html
+
+
+![ScreenShot](http://webgl_project_amaury.amaurybrisou.c9.io/docs/Diagram.png)
