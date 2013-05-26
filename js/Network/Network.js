@@ -7,10 +7,11 @@
             }
             return true;
         }
-        
+
         if(!f()){
             return;
         }
+        Logger.log("Module Loaded", "Network");
     }
     //define specify Network properties
 

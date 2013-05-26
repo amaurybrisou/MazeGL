@@ -1,5 +1,5 @@
 (function(){
-    //load Builders 
+    //load Builders
     mmo.Builders = function(){
         var f = function(){
          if(typeof mmo == "undefined"){
@@ -8,9 +8,11 @@
          }
          return true;
         };
-    
+
         if (!f()){
             return null;
         }
-    }   
+        Logger.log("Module Loaded", "mmo.Builder");
+
+    }
 })();

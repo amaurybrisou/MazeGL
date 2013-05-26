@@ -1,5 +1,5 @@
 (function(){
-    //load Builders 
+    //load Builders
     var f = function(){
         if(typeof mmo == "undefined"){
             console.log("Error : StdoutLogger : Namespace mmo not Loaded");
@@ -7,7 +7,7 @@
         } else if(typeof mmo.Logger == "undefined"){
             console.log("Error : StdoutLogger : Namespace mmo Altered");
             return false;
-        }   
+        }
         return true;
     };
 
@@ -21,9 +21,9 @@
                 console.log(class_type+" : ");
                 console.log(obj);
             } else {
-                console.log("Error "+class_type+" : "+obj);
+                console.log("INFO : "+class_type+" : "+obj);
             }
         },
     }
-    
+
 })();

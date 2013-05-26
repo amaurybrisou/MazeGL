@@ -1,5 +1,5 @@
 (function(){
-    mmo.Loader = function(){
+    mmo.Lights = function(){
             f = function(){
             //typeof mmo == "undefined"
             if(null == mmo){

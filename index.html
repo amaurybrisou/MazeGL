@@ -5,7 +5,7 @@
     <head>
 
         <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-        
+
         <title>Stones</title>
 
         <link rel="stylesheet" href="css/main.css" type="text/css" media="screen" />
@@ -19,38 +19,70 @@
         <!-- Load First Level Namespaces -->
 
         <script type="text/javascript" src="js/mmo.js"></script>
-        
+
         <script type="text/javascript" src="js/Logger/Logger.js"></script>
         <script type="text/javascript" src="js/Logger/StdoutLogger.js"></script>
-        
+
         <!-- Load Second Level Namespaces -->
         <script type="text/javascript" src="js/Loader/Loader.js"></script>
+        <script type="text/javascript" src="js/Attributes/Attributes.js"></script>
         <script type="text/javascript" src="js/Loader/ColladaLoader.js"></script>
         <script type="text/javascript" src="js/Builders/Builders.js"></script>
         <script type="text/javascript" src="js/Network/Network.js"></script>
-        <script type="text/javascript" src="js/Objects_Attributes/Object_Attributes.js"></script>
-        <script type="text/javascript" src="js/World_Attributes/World_Attributes.js"></script>
+        <script type="text/javascript" src="js/Materials/Materials.js"></script>
+        <script type="text/javascript" src="js/Lights/Lights.js"></script>
+        <script type="text/javascript" src="js/Shaders/Shaders.js"></script>
         <script type="text/javascript" src="js/World_Objects/World_Objects.js"></script>
+        <script type="text/javascript" src="js/Events/Events.js"></script>
+        <script type="text/javascript" src="js/World/World.js"></script>
+        <script type="text/javascript" src="js/Avatar/Avatar.js"></script>
 
 
+        <script type="text/javascript" src="js/Events/MouseEvents.js"></script>
 
-        <script type="text/javascript" src="js/World_Attributes/Camera.js"></script>
-        
+        <script type="text/javascript" src="js/Attributes/Camera_attr.js"></script>
+
         <script type="text/javascript" src="js/Global.js"></script>
 
+        <script type="text/javascript" src="js/Materials/Sun_mat.js"></script>
+
+        <script type="text/javascript" src="js/Materials/Origin_mat.js"></script>
+        <script type="text/javascript" src="js/Materials/Stone_mat.js"></script>
+        <script type="text/javascript" src="js/Materials/Sub_Sun_mat.js"></script>
+        <script type="text/javascript" src="js/Materials/Planet_mat.js"></script>
+
+        <script type="text/javascript" src="js/Lights/Sub_Sun_Light.js"></script>
+        <script type="text/javascript" src="js/Lights/Sub_Light.js"></script>
+
+        <script type="text/javascript" src="js/Builders/WorldBuilder.js"></script>
+
+        <script type="text/javascript" src="js/Attributes/Origin_attr.js"></script>
+        <script type="text/javascript" src="js/World_Objects/Sun.js"></script>
+
+
+
+
         <!-- Load Third Level Namespaces -->
+        <script type="text/javascript" src="js/Materials/Avatar_mat.js"></script>
+        <script type="text/javascript" src="js/Attributes/Avatar_attr.js"></script>
 
-        <script type="text/javascript" src="js/Objects_Attributes/Stone_Attributes.js"></script>
-        <script type="text/javascript" src="js/Network/FileDescriptor.js"></script>
+    <script type="text/javascript" src="js/Avatar/FirstAvatar.js"></script>
+            <script type="text/javascript" src="js/Builders/AvatarBuilder.js"></script>
+
+<script type="text/javascript" src="js/Attributes/Stone_attr.js"></script>
         <script type="text/javascript" src="js/World_Objects/Stone.js"></script>
-
-        <script type="text/javascript" src="js/Builders/AvatarBuilder.js"></script>
         <script type="text/javascript" src="js/Builders/StoneBuilder.js"></script>
 
-        <script type="text/javascript" src="js/Objects_Attributes/Avatar_Attributes.js"></script>
-        <script type="text/javascript" src="js/Avatar/Avatar.js"></script>
-        <script type="text/javascript" src="js/Avatar/Avatar_v1.js"></script>
-        <script type="text/javascript" src="js/Avatar/Avatar_daemon.js"></script>
+    <script type="text/javascript" src="js/World/FirstWorld.js"></script>
+
+
+
+        <script type="text/javascript" src="js/Network/FileDescriptor.js"></script>
+
+
+
+        <script type="text/javascript" src="js/Avatar/Avatar_debug.js"></script>
+
 
         <script src="http://mrdoob.github.com/three.js/examples/js/shaders/CopyShader.js"></script>
         <script src="http://mrdoob.github.com/three.js/examples/js/shaders/HorizontalBlurShader.js"></script>
@@ -59,10 +91,11 @@
         <script src="http://mrdoob.github.com/three.js/examples/js/postprocessing/RenderPass.js"></script>
         <script src="http://mrdoob.github.com/three.js/examples/js/postprocessing/MaskPass.js"></script>
         <script src="http://mrdoob.github.com/three.js/examples/js/postprocessing/ShaderPass.js"></script>
-        <script src="http://mrdoob.github.io/three.js/examples/js/shaders/FXAAShader.js"></script> 
-        <script src="http://mrdoob.github.io/three.js/examples/js/shaders/ConvolutionShader.js"></script> 
+        <script src="http://mrdoob.github.io/three.js/examples/js/shaders/FXAAShader.js"></script>
+        <script src="http://mrdoob.github.io/three.js/examples/js/shaders/ConvolutionShader.js"></script>
         <script src="http://mrdoob.github.io/three.js/examples/js/postprocessing/BloomPass.js"></script>
-        
+
+
         <script type="text/javascript" src="js/init.js"></script>
 
     </head>
@@ -91,7 +124,7 @@
                 vec3 newPosition = position + normal * vec3(displacement*amplitude);
 
                 gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition,1.0);
-            }  
+            }
 
         </script>
 
@@ -110,18 +143,18 @@
 
                 // ensure it's normalized
                 light = normalize(light);
-              
+
                 // calculate the dot product of
                 // the light to the vertex normal
                 float dProd = max(darkness, dot(vNormal, light)*lightColor);
-              
+
                 // feed into our frag colour
                 gl_FragColor = vec4(dProd, dProd, dProd, 1.0);
             }
 
         </script>
 
-        
+
     </body>
 
 </html>

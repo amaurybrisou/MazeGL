@@ -1,5 +1,5 @@
 (function(){
-    //load Builders 
+    //load Builders
     mmo.Logger = function(){
         var f = function(){
          if(typeof mmo == "undefined"){
@@ -8,11 +8,12 @@
          }
          return true;
         };
-    
+
         if (!f()){
             return null;
         }
+        console.log("Module Loaded : Logger");
     };
     //Define Logger properties here
-    
+
 })();

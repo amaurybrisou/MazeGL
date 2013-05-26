@@ -9,13 +9,12 @@
             }
             return true;
         }
-        
+
     if(!f){
         return;
     }
 })();
 
-mmo.Builders.AvatarBuilder = function( avatar_type, mat, x, y, z,  model_path){
-    this.avatar = new avatar_type( mat, x, y, z, model_path);
-    
+mmo.Builders.AvatarBuilder = function( avatar_type, mat, x, y, z, view_params, camera,  model_path){
+    return new avatar_type( mat, x, y, z, view_params, camera, model_path);
 }

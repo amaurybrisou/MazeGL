@@ -1,5 +1,5 @@
 (function(){
-    //load Builders 
+    //load Builders
     mmo.World_Objects = function(){
         var f = function(){
          if(typeof mmo == "undefined"){
@@ -8,12 +8,13 @@
          }
          return true;
         };
-    
+
         if (!f()){
             return;
         }
+        Logger.log("Module Loaded", "World_Objects");
     }
-    
+
     //Define Builder properties here
-    
+
 })();

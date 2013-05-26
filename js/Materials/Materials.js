@@ -1,18 +1,18 @@
 (function(){
     //load Builders
-    mmo.Events = function(){
+    mmo.Materials = function(){
         var f = function(){
          if(typeof mmo == "undefined"){
-          console.log("Error : Namespace mmo not Loaded");
-          return false;
+            Logger.log("Error mmo not Loaded", "World_Attributes");
+            return false;
          }
          return true;
         };
 
         if (!f()){
-            return;
+            return null;
         }
-        Logger.log("Module Loaded", "Events");
+        Logger.log("Module Loaded", "Materials");
     }
 
     //Define Builder properties here

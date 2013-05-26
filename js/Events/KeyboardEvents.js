@@ -9,19 +9,22 @@
             }
             return true;
         }
-        
+
     if(!f){
         return;
     }
  })();
- 
- 
- mmo.Events.Avatar_Events = function(){
+
+
+ mmo.Events.Avatar_Events = function(obj){
+     while(keyboard.pressed("z")){
+        obj.position.x += 4;
+     }
      if( keyboard.pressed("o") ){
         myMeshObject.myMesh.position.set(0,0,0);
       }
       if( keyboard.pressed("c") ){
-        
+
         camera.position.x = myMeshObject.myMesh.position.x;
         camera.position.y = myMeshObject.myMesh.position.y;
         camera.position.z = myMeshObject.myMesh.position.z;
@@ -43,15 +46,15 @@
       myMeshObject.myMesh.position.y = 0;
 
       // avatar elements update
-      myMeshObject.update(myMeshObject.myMesh.position.x, 
-                          myMeshObject.myMesh.position.y, 
-                          myMeshObject.myMesh.position.z, 
+      myMeshObject.update(myMeshObject.myMesh.position.x,
+                          myMeshObject.myMesh.position.y,
+                          myMeshObject.myMesh.position.z,
                           myMeshObject.vertices,
                           myMeshObject.scale,
                           t);
-      
+
       // target position update
       avatarTargetSphere.position.set( myMeshObject.myMesh.position.x + rangeTarget * Math.sin( -myMeshControls.phi ) * Math.cos( -myMeshControls.theta ),
-                                       -myMeshControls.target.y, 
+                                       -myMeshControls.target.y,
                                        myMeshControls.target.z - Math.sin( -myMeshControls.phi ) * Math.sin( myMeshControls.theta ));
 }
