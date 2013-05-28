@@ -16,6 +16,12 @@
         }
 })();
 
-mmo.Renderer = function(){
+window.mmo.Renderer = function(){
+    var renderer = new window.THREE.WebGLRenderer({antialias: true, alpha: true});
+    renderer.setSize(window.mmo.WIDTH, window.mmo.HEIGHT);
 
+    renderer.shadowMapCullFace = window.THREE.CullFaceBack;
+    renderer.shadowMapEnabled = true;
+
+    return renderer;
 }

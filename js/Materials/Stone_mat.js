@@ -1,12 +1,12 @@
 (function(){
     //load Builders
-    mmo.Materials.Origin = function(){
+    window.mmo.Materials.Origin = function(){
         var f = function(){
-            if(typeof mmo == "undefined"){
-                Logger.log("Namespace mmo not Loaded", "Camera");
+            if(typeof window.mmo == "undefined"){
+                window.Logger.log("Namespace mmo not Loaded", "Camera");
                 return false;
-            } else if(typeof mmo.Materials == "undefined"){
-                Logger.log("Namespace mmo.Materials Altered", "Camera");
+            } else if(typeof window.mmo.Materials == "undefined"){
+                window.Logger.log("Namespace mmo.Materials Altered", "Camera");
                 return false;
             }
             return true;
@@ -18,20 +18,20 @@
     }
 })();
 
-mmo.Materials.Stone_Materials = function(stone_color){
-    return new THREE.MeshBasicMaterial({
-        color: stone_color
+window.mmo.Materials.Stone_Materials = function(){
+    return new window.THREE.MeshBasicMaterial({
+        color: window.mmo.STONES_COLOR
     });
 }
 
-mmo.Materials.fillStoneMat = function(stoneFaces_color){
-    return new THREE.MeshBasicMaterial({
-        color: stoneFaces_color
+window.mmo.Materials.fillStoneMat = function(){
+    return new window.THREE.MeshBasicMaterial({
+        color: window.mmo.STONES_FACES_COLOR
     });
 }
 
-mmo.Materials.strokeStoneMat = function(stoneEdges_color, edgesWidth){
-    return new THREE.MeshBasicMaterial({
+window.mmo.Materials.strokeStoneMat = function(stoneEdges_color, edgesWidth){
+    return new window.THREE.MeshBasicMaterial({
         color: stoneEdges_color,
         wireframe: true,
         wireframeLinewidth: edgesWidth

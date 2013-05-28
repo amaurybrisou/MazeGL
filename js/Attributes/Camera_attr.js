@@ -2,11 +2,11 @@
     //load Builders
 
     var f = function(){
-        if(typeof mmo == "undefined"){
-            Logger.log("Namespace mmo not Loaded", "Camera");
+        if(typeof window.mmo == "undefined"){
+            window.Logger.log("Namespace mmo not Loaded", "Camera");
             return false;
-        } else if(typeof mmo.Attributes == "undefined"){
-            Logger.log("Namespace mmo.Attributes Altered", "Camera");
+        } else if(typeof window.mmo.Attributes == "undefined"){
+            window.Logger.log("Namespace mmo.Attributes Altered", "Camera");
             return false;
         }
         return true;
@@ -19,12 +19,12 @@
     //Define Builder properties here
     // CAMERA -----------------------------------------------------------
 
-  mmo.Attributes.Camera = function(VIEW_ANGLE, ASPECT, NEAR, FAR){
-       return  new THREE.PerspectiveCamera(
-              VIEW_ANGLE,
-              ASPECT,
-              NEAR,
-              FAR
+  window.mmo.Attributes.Camera = function(){
+       return new window.THREE.PerspectiveCamera(
+               window.mmo.VIEW_ANGLE,
+               window.mmo.ASPECT,
+               window.mmo.NEAR,
+               window.mmo.FAR
       );
 
   }

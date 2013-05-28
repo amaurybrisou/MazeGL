@@ -2,11 +2,11 @@
     //load Builders
 
     var f = function(){
-        if(typeof mmo == "undefined"){
-            Logger.log("Namespace mmo not Loaded", "Camera");
+        if(typeof window.mmo == "undefined"){
+            window.Logger.log("Namespace mmo not Loaded", "Camera");
             return false;
-        } else if(typeof mmo.World_Objects == "undefined"){
-            Logger.log("Namespace mmo.World_Attributes Altered", "Camera");
+        } else if(typeof window.mmo.World_Objects == "undefined"){
+            window.Logger.log("Namespace mmo.World_Attributes Altered", "Camera");
             return false;
         }
         return true;
@@ -20,7 +20,7 @@
 
 })();
 
-mmo.World_Objects.Stone = function(x, y, z, width, height, depth, mat1, mat2){
+window.mmo.World_Objects.Stone = function(x, y, z, width, height, depth, mat1, mat2){
 
     this.y = y;
   	this.x = x;
@@ -29,18 +29,22 @@ mmo.World_Objects.Stone = function(x, y, z, width, height, depth, mat1, mat2){
   	this.height = height;
   	this.depth = depth;
 
-  	var mergedGeo = new THREE.Geometry();
-    var mesh1 = new THREE.Mesh(new THREE.CubeGeometry( this.width, this.height, this.depth ), mat1);
-    var mesh2 = new THREE.Mesh(new THREE.CubeGeometry( this.width, this.height, this.depth ), mat2);
+  	var mergedGeo = new window.THREE.Geometry();
+    var mesh1 = new window.THREE.Mesh(
+        new window.THREE.CubeGeometry( this.width, this.height, this.depth ),
+        mat1);
+    var mesh2 = new window.THREE.Mesh(
+        new window.THREE.CubeGeometry( this.width, this.height, this.depth ),
+        mat2);
 
-    THREE.GeometryUtils.setMaterialIndex( mesh1.geometry, 0 );
-    THREE.GeometryUtils.setMaterialIndex( mesh2.geometry, 1 );
-    THREE.GeometryUtils.merge(mergedGeo, mesh1);
-    THREE.GeometryUtils.merge(mergedGeo, mesh2);
+    window.THREE.GeometryUtils.setMaterialIndex( mesh1.geometry, 0 );
+    window.THREE.GeometryUtils.setMaterialIndex( mesh2.geometry, 1 );
+    window.THREE.GeometryUtils.merge(mergedGeo, mesh1);
+    window.THREE.GeometryUtils.merge(mergedGeo, mesh2);
 
-    var stone = new THREE.Mesh(
-                      mergedGeo, 
-                      new THREE.MeshFaceMaterial([mesh1.material, mesh2.material])
+    var stone = new window.THREE.Mesh(
+                      mergedGeo,
+                      new window.THREE.MeshFaceMaterial([mesh1.material, mesh2.material])
                     );
 
   	stone.position.x = this.x;

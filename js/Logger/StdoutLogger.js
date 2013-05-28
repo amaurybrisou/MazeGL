@@ -1,10 +1,10 @@
 (function(){
     //load Builders
     var f = function(){
-        if(typeof mmo == "undefined"){
+        if(typeof window.mmo == "undefined"){
             console.log("Error : StdoutLogger : Namespace mmo not Loaded");
             return false;
-        } else if(typeof mmo.Logger == "undefined"){
+        } else if(typeof window.mmo.Logger == "undefined"){
             console.log("Error : StdoutLogger : Namespace mmo Altered");
             return false;
         }
@@ -15,7 +15,7 @@
         return;
     }
     //Define Builder properties here
-    mmo.Logger.StdoutLogger = {
+    window.mmo.Logger.StdoutLogger = {
         log : function(obj, class_type){
             if(typeof obj == "object"){
                 console.log(class_type+" : ");

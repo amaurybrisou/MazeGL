@@ -1,20 +1,21 @@
 //Define here some Usefull Aliases onto the libary
 
-var Logger = mmo.Logger.StdoutLogger;
-// KEYBOARD -----------------------------------------------------------
-var keyboard = new THREEx.KeyboardState();
+window.Logger = window.mmo.Logger.StdoutLogger;
 
-var clock = new THREE.Clock();
+window.clock = new window.THREE.Clock();
 
-var heriter = function(destination, source) {
-    for (var element in source.prototype) {
-        destination.prototype[element] = source[element];
+window.config = {};
+
+window.bind = function( scope, fn ) {
+            console.log("B");
+            return function () {
+                fn.apply( scope, arguments );
+            };
+};
+
+function obcat(o1, o2){
+    for (var key in o2) {
+        o1[key] = o2[key];
     }
+    return o1;
 }
-
-var config = {};
-
-
-
-
-

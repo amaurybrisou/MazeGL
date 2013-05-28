@@ -1,7 +1,7 @@
 (function(){
-    mmo.Shaders = function(){
-        f = function(){
-            if(typeof mmo == "undefined"){
+    window.mmo.Shaders = function(){
+        var f = function(){
+            if(typeof window.mmo == "undefined"){
                 console.log("mmo is not defined");
                 return false;
             }
@@ -11,13 +11,13 @@
         if(!f()){
             return;
         }
-        Logger.log("Module Loaded", "Network");
+        window.Logger.log("Module Loaded", "Network");
     }
     //define specify Network properties
 
 })();
 
-mmo.Shaders.Uniforms = function(darkness){
+window.mmo.Shaders.Uniforms = function(){
     return {
             amplitude: {
               type: 'f', // a float
@@ -46,7 +46,7 @@ mmo.Shaders.Uniforms = function(darkness){
 
             darkness: {
               type: 'f',
-              value: darkness + 0.02
+              value: window.mmo.DARKNESS + 0.02
             }
     }
 }

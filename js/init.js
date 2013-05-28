@@ -3,46 +3,42 @@
     var span = document.getElementById('infos');
     var text = document.createTextNode('');
 
-    var builders = mmo.Builders;
-    var mo_eve = mmo.Events.MouseEvents;
-    var wo = mmo.World;
+    var builders = window.mmo.Builders;
+    //var avatar_mo = mmo.Events.MouseEvents.Avatar_mo;
+    var kb_eve = window.mmo.Events;
+    var wo = window.mmo.World;
 
     //fd = mmo.Network.getSocket("wc://webgl_project_amaury.amaurybrisou.c9.io:15000");
 
     //Config of World_v1
-    config = mmo.World.FirstWorld.config();
+    window.mmo.World.FirstWorld();
 
+    
+    
     // EVENT LISTENER ------------------------------------------------------------------------
     /*this.domElement = document;
 
     this.mouseX = 0;
     this.mouseY = 0;
     this.mouseDown = false;  */
+    window.mmo.avatar_mo = new window.mmo.Events.MouseEvents.Avatar_mo(window.mmo.SCREEN_SIZE_RATIO);
 
     document.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
-    document.addEventListener( 'mousemove', mo_eve.bind( this, mo_eve.onMouseMove ), false );
-    document.addEventListener( 'mousedown', mo_eve.bind( this, mo_eve.onMouseDown ), false );
-
+    document.addEventListener( 'mousedown', window.bind( this, window.mmo.avatar_mo.onMouseDown ), false );
+    //document.addEventListener( 'mousemove', window.bind( this, this.avatar_mo.onMouseMove ), false );
     // RENDERER ---------------------------------------------------------
-    var renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
-    renderer.setSize(config.WIDTH, config.HEIGHT);
+    document.getElementById('canvasCont').appendChild(window.mmo.RENDERER.domElement);
 
-    renderer.shadowMapCullFace = THREE.CullFaceBack;
-    renderer.shadowMapEnabled = true;
+// window.mmo ------------------------------------------------------------------
+    window.mmo.scene = new window.THREE.Scene();
+    
+    var scene = new builders.WorldBuilder(wo.FirstWorld);//THREE.window.mmo();
+    //window.mmo.fog = new THREE.FogExp2( 0xffffff, 0.000001 );
 
-    document.getElementById('canvasCont').appendChild(renderer.domElement);
+    window.mmo.shadowMapEnabled = true;
 
-    config.setRenderer(renderer);
-
-// SCENE ------------------------------------------------------------------
-    var scene = new builders.WorldBuilder(wo.FirstWorld, config);//THREE.Scene();
-    //scene.fog = new THREE.FogExp2( 0xffffff, 0.000001 );
-
-
-    scene.shadowMapEnabled = true;
-
-    renderer.setClearColor(config.BG_COLOR, 1.0);
-    renderer.clear();
+    window.mmo.RENDERER.setClearColor(window.mmo.BG_COLOR, 1.0);
+    window.mmo.RENDERER.clear();
 
 
     //debug cube
@@ -50,15 +46,13 @@
     cube.position.y = 0;
     cube.position.x =0;
     cube.positionz = 0;
-    scene.add(cube);*/
+    window.mmo.add(cube);*/
 
-
-
-    config.camera.lookAt(scene.position);
+    window.mmo.camera.lookAt(window.mmo.position);
 
     // COMPOSER ---------------------------------------------------------------
     /*composer = new THREE.EffectComposer( renderer );
-    composer.addPass( new THREE.RenderPass( scene, camera ) );
+    composer.addPass( new THREE.RenderPass( window.mmo, camera ) );
 
     hblur = new THREE.ShaderPass( THREE.HorizontalBlurShader );
     composer.addPass( hblur );
@@ -67,102 +61,90 @@
     // set this shader pass to render to screen so we can see the effects
     vblur.renderToScreen = true;
     composer.addPass( vblur );*/
-
-    mmo.Events.MouseEvents.init(scene.SCREEN_SIZE_RATIO);
-
     // DRAW! --------------------------------------------------------------
     //Recursive Method  (loop)
+    console.log(window.mmo.scene);
     function animate(t) {
-
+        
         // color ratios
-        if(Math.cos(t/scene.DAY_NIGHT_SPEED)>=scene.DARKNESS){
-            scene.BC = Math.cos(t/scene.DAY_NIGHT_SPEED);
+        if(Math.cos(t/window.mmo.DAY_NIGHT_SPEED)>=window.mmo.DARKNESS){
+            window.mmo.BC = Math.cos(t/window.mmo.DAY_NIGHT_SPEED);
         } else {
-            scene.BC = scene.DARKNESS;
+            window.mmo.BC = window.mmo.DARKNESS;
         }
 
-        if(Math.cos(t/scene.DAY_NIGHT_SPEED)>=scene.DARKNESS){
-            scene.SC = Math.cos(t/scene.DAY_NIGHT_SPEED);
+        if(Math.cos(t/window.mmo.DAY_NIGHT_SPEED)>=window.mmo.DARKNESS){
+            window.mmo.SC = Math.cos(t/window.mmo.DAY_NIGHT_SPEED);
         } else {
-            scene.SC = scene.DARKNESS;
+            window.mmo.SC = window.mmo.DARKNESS;
         }
 
 
-        // shader action
-        if(keyboard.pressed("m")){
-            scene.UNIFORMS.amplitude.value = Math.abs(Math.cos(t/600));
-        } else {
-            scene.UNIFORMS.amplitude.value = 0;
-        }
+         //shader action
+        // if(keyboard.pressed("m")){
+        //      window.mmo.UNIFORMS.amplitude.value = Math.abs(Math.cos(t/600));
+        //  } else {
+        //      window.mmo.UNIFORMS.amplitude.value = 0;
+        //  }
 
-        scene.UNIFORMS.lightPosX.value = Math.sin(t/scene.DAY_NIGHT_SPEED)*scene.WORLDSIZE/2;
-        scene.UNIFORMS.lightPosY.value = Math.cos(t/scene.DAY_NIGHT_SPEED)*scene.WORLDSIZE/2;
-        scene.UNIFORMS.lightPosZ.value = Math.abs(Math.cos(t/200));
-        scene.UNIFORMS.lightColor.value = scene.SC;
+        window.mmo.UNIFORMS.lightPosX.value = Math.sin(t/window.mmo.DAY_NIGHT_SPEED)*window.mmo.WORLDSIZE/2;
+        window.mmo.UNIFORMS.lightPosY.value = Math.cos(t/window.mmo.DAY_NIGHT_SPEED)*window.mmo.WORLDSIZE/2;
+        window.mmo.UNIFORMS.lightPosZ.value = Math.abs(Math.cos(t/200));
+        window.mmo.UNIFORMS.lightColor.value = window.mmo.SC;
 
         // main light and sun movements
-        scene.MAIN_LIGHT.position.y = Math.cos(t/scene.DAY_NIGHT_SPEED) * scene.FAR/2;
-    /*    scene.sun.position.y = Math.cos(t/day_night_speed)*FAR/4;
+        window.mmo.MAIN_LIGHT.position.y = Math.cos(t/window.mmo.DAY_NIGHT_SPEED) * window.mmo.FAR/2;
+    /*    window.mmo.sun.position.y = Math.cos(t/day_night_speed)*FAR/4;
     */
-        scene.MAIN_LIGHT.position.x = Math.sin(t/scene.DAY_NIGHT_SPEED) * scene.WORLDSIZE/2;
-    /*    scene.sun.position.x = Math.sin(t/day_night_speed)*WORLDSIZE/1.8;
+        window.mmo.MAIN_LIGHT.position.x = Math.sin(t/window.mmo.DAY_NIGHT_SPEED) * window.mmo.WORLDSIZE/2;
+    /*    window.mmo.sun.position.x = Math.sin(t/day_night_speed)*WORLDSIZE/1.8;
     */
         //mainLight.position.z = Math.sin(t/lightSpeed)*WORLDSIZE/2;
         //sun.position.z = Math.sin(t/lightSpeed)*WORLDSIZE/2;
 
-        scene.MAIN_LIGHT.lookAt(scene.position);
+        window.mmo.MAIN_LIGHT.lookAt(window.mmo.position);
 
 
-    /* scene.sun.lookAt(scene.position);
+    /* window.mmo.sun.lookAt(window.mmo.position);
     */
-        // sub light movements
-        scene.SUBLIGHT.position.x = Math.cos(t/600)*scene.SUBLIGHT_POS_RATIO;
-        scene.SUBLIGHT.position.y = scene.SUBLIGHT_POS_RATIO;
-        scene.SUBLIGHT.position.z = Math.sin(t/600)*scene.SUBLIGHT_POS_RATIO;
+          window.mmo.BG_COLOR.setRGB(window.mmo.BC, window.mmo.BC, window.mmo.BC);
+        //window.mmo.animate(t, window.mmo.position);
 
-        scene.SUB_SUN.position.x = Math.cos(t/600)*scene.SUBLIGHT_POS_RATIO;
-        scene.SUB_SUN.position.y = scene.SUBLIGHT_POS_RATIO;
-        scene.SUB_SUN.position.z = Math.sin(t/600)*scene.SUBLIGHT_POS_RATIO;
-
-        scene.SUBLIGHT.lookAt(scene.position);
-        scene.SUB_SUN.lookAt(scene.position);
-
-
-        //scene.animate(t, scene.position);
-
-        // background color
-        scene.BG_COLOR.setRGB(scene.SC, scene.SC, scene.SC);
-        //scene.fog.color.setRGB(SC, SC, SC);
-        scene.RENDERER.setClearColor(scene.BG_COLOR, 1.0);
+        // background color/        window.mmo.BG_COLOR.setRGB(window.mmo.SC, window.mmo.SC, window.mmo.SC);
+        //window.mmo.fog.color.setRGB(SC, SC, SC);
+        window.mmo.RENDERER.setClearColor(window.mmo.BG_COLOR, 1.0);
 
         // floor color
 
-        scene.PLANE.material.color.setRGB(scene.SC-0.1, scene.SC-0.1, scene.SC-0.1);
+        window.mmo.PLANE.material.color.setRGB(window.mmo.SC-0.1, window.mmo.SC-0.1, window.mmo.SC-0.1);
 
         // render
-        /*scene.avatar_obj.meshControls.update(clock.getDelta());
-        scene.avatar_obj.position.y = 0;*/
-
-        window.requestAnimationFrame(animate, renderer.domElement);
-        scene.RENDERER.clear();
-        scene.RENDERER.render(scene, scene.camera);
+        /*window.mmo.avatar_obj.meshControls.update(clock.getDelta());
+        window.mmo.avatar_obj.position.y = 0;*/
+        
+        window.requestAnimationFrame(animate, window.mmo.RENDERER.domElement);
+        window.mmo.RENDERER.clear();
+        window.mmo.RENDERER.render(scene, window.mmo.camera);
         //composer.render();
 
-        if( keyboard.pressed("p") ){
+        //kb_eve.Avatar_Events(window.mmo.avatar_obj);
+        window.mmo.avatar_obj.animate(t, window.mmo.camera.position);
+
+        /*if( keyboard.pressed("p") ){
             console.log(mouseX);
         }
         if( keyboard.pressed("t") ){
         }
-
+*/
         // HTML CONTENT
         span.innerHTML = ''; // clear existing
-        text = 'time : '+Math.round(scene.MAIN_LIGHT.position.y/1000)+
-            '</br>cam coords : '+scene.camera.position.x+" "+
-            scene.camera.position.y+" "+
-            scene.camera.position.z+'</br>mesh coords : '+
-            scene.avatar_obj.position.x+" "+
-            scene.avatar_obj.position.y+" "+
-            scene.avatar_obj.position.z;
+        text = 'time : '+Math.round(window.mmo.MAIN_LIGHT.position.y/1000)+
+            '</br>cam coords : '+window.mmo.camera.position.x+" "+
+            window.mmo.camera.position.y+" "+
+            window.mmo.camera.position.z+'</br>mesh coords : '+
+            window.mmo.avatar_obj.position.x+" "+
+            window.mmo.avatar_obj.position.y+" "+
+            window.mmo.avatar_obj.position.z;
 
         span.innerHTML = text;
 

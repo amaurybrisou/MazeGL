@@ -1,8 +1,8 @@
 (function(){
     //load Builders
-    mmo.Logger = function(){
+    window.mmo.Logger = function(){
         var f = function(){
-         if(typeof mmo == "undefined"){
+         if(typeof window.mmo == "undefined"){
           console.log("Error : Logger : Namespace mmo not Loaded");
           return false;
          }

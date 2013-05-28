@@ -1,12 +1,12 @@
 (function(){
     //load Builders
-    mmo.Materials.Origin = function(){
+    window.mmo.Materials.Origin = function(){
         var f = function(){
-            if(typeof mmo == "undefined"){
-                Logger.log("Namespace mmo not Loaded", "Camera");
+            if(typeof window.mmo == "undefined"){
+                window.Logger.log("Namespace mmo not Loaded", "Camera");
                 return false;
-            } else if(typeof mmo.Materials == "undefined"){
-                Logger.log("Namespace mmo.Materials Altered", "Camera");
+            } else if(typeof window.mmo.Materials == "undefined"){
+                window.Logger.log("Namespace mmo.Materials Altered", "Camera");
                 return false;
             }
             return true;
@@ -18,25 +18,25 @@
     }
 })();
 
-mmo.Materials.Origin_MaterialsX = function(originColor, r, g, b){
-    OriginMaterialX = new THREE.MeshBasicMaterial({         //MATERIAL
-        color: originColor
+window.mmo.Materials.Origin_MaterialsX = function(r, g, b){
+    var OriginMaterialX = new window.THREE.MeshBasicMaterial({         //MATERIAL
+        color: window.mmo.ORIGIN_COLOR
     });
     OriginMaterialX.color.setRGB(r, g, b);
     return OriginMaterialX;
 }
 
-mmo.Materials.Origin_MaterialsY = function(originColor, r, g, b){
-    OriginMaterialY = new THREE.MeshBasicMaterial({         //MATERIAL
-        color: originColor
+window.mmo.Materials.Origin_MaterialsY = function( r, g, b){
+    var OriginMaterialY = new window.THREE.MeshBasicMaterial({         //MATERIAL
+        color:  window.mmo.ORIGIN_COLOR
     });
     OriginMaterialY.color.setRGB(r, g, b);
     return OriginMaterialY;
 }
 
-mmo.Materials.Origin_MaterialsZ = function(originColor, r, g, b){
-    OriginMaterialZ = new THREE.MeshBasicMaterial({         //MATERIAL
-        color: originColor
+window.mmo.Materials.Origin_MaterialsZ = function( r, g, b){
+    var OriginMaterialZ = new window.THREE.MeshBasicMaterial({         //MATERIAL
+        color:  window.mmo.ORIGIN_COLOR
     });
     OriginMaterialZ.color.setRGB(r, g, b);
     return OriginMaterialZ;

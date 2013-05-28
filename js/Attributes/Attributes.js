@@ -1,9 +1,9 @@
 (function(){
     //load Builders
-    mmo.Attributes = function(){
+    window.mmo.Attributes = function(){
         var f = function(){
-         if(typeof mmo == "undefined"){
-          Logger.log("Error : Namespace mmo not Loaded", this.toString);
+         if(typeof window.mmo == "undefined"){
+          window.Logger.log("Error : Namespace mmo not Loaded", "Attributes");
           return false;
          }
          return true;
@@ -12,7 +12,7 @@
         if (!f()){
             return;
         }
-        Logger.log("Module Loaded", "Attributes");
+        window.Logger.log("Module Loaded", "Attributes");
     }
 
     //Define Builder properties here

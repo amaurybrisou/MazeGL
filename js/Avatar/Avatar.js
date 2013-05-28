@@ -1,12 +1,12 @@
 (function(){
     //load Builders
-    mmo.Avatar = function(){
+    window.mmo.Avatar = function(){
         var f = function(){
-         if(typeof mmo == "undefined"){
-          Logger.log("mmo is not Defined", this);
+         if(typeof window.mmo == "undefined"){
+          window.Logger.log("mmo is not Defined", this);
           return false;
-         } else if (typeof mmo.Attributes.Avatar == "undefined"){
-            Logger.log("mmo is not Altered, check mmo.Attributes", this);
+         } else if (typeof window.mmo.Attributes.Avatar == "undefined"){
+            window.Logger.log("mmo is not Altered, check mmo.Attributes", "Avatar");
             return false;
          }
          return true;
@@ -15,9 +15,9 @@
         if (!f()){
             return null;
         }
-        Logger.log("Module Loaded", "Avatar");
+        window.Logger.log("Module Loaded", "Avatar");
 
-        this.attrs = mmo.Attributes.Avatar;
+        this.attrs = window.mmo.Attributes.Avatar;
     }
 
 

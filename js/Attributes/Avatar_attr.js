@@ -1,10 +1,10 @@
   //load StoneBuilder
  (function(){
     var f = function(){
-        if(typeof mmo == "undefined"){
+        if(typeof window.mmo == "undefined"){
               console.log("Error : Namespace mmo not Loaded");
               return false;
-            } else if(typeof mmo.Attributes == "undefined"){
+            } else if(typeof window.mmo.Attributes == "undefined"){
                       console.log("Error : Namespace mmo not Loaded");
                       return false;
             }
@@ -15,7 +15,7 @@
             return null;
         }
 
-        mmo.Attributes.Avatar =
+        window.mmo.Attributes.Avatar =
         {
             displacement : {
                 type : 'f', // a float

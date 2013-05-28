@@ -1,12 +1,12 @@
 (function(){
     //load Builders
-    mmo.Materials.Sun_Materials = function(){
+    window.mmo.Materials.Sun_Materials = function(){
         var f = function(){
-            if(typeof mmo == "undefined"){
-                Logger.log("Namespace mmo not Loaded", "Camera");
+            if(typeof window.mmo == "undefined"){
+                window.Logger.log("Namespace mmo not Loaded", "Camera");
                 return false;
-            } else if(typeof mmo.Materials == "undefined"){
-                Logger.log("Namespace mmo.Materials Altered", "Camera");
+            } else if(typeof window.mmo.Materials == "undefined"){
+                window.Logger.log("Namespace mmo.Materials Altered", "Camera");
                 return false;
             }
             return true;
@@ -18,9 +18,9 @@
     }
 })();
 
-mmo.Materials.Sub_Sun_Materials = function(sub_light_color){
-    subsunMat = new THREE.MeshLambertMaterial({         //MATERIAL
-        color: sub_light_color
+window.mmo.Materials.Sub_Sun_Materials = function(){
+    var subsunMat = new window.THREE.MeshLambertMaterial({         //MATERIAL
+        color: window.mmo.SUB_SUN_LIGHT_COLOR
     });
     return subsunMat;
 }

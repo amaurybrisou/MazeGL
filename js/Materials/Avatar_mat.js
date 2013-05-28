@@ -2,11 +2,11 @@
     //load Builders
 
     var f = function(){
-        if(typeof mmo == "undefined"){
-            Logger.log("Namespace mmo not Loaded", this.toString);
+        if(typeof window.mmo == "undefined"){
+            window.Logger.log("Namespace mmo not Loaded", "Avatar_mat");
             return false;
-        } else if(typeof mmo.Materials == "undefined"){
-            Logger.log("Namespace mmo.Materials Altered", this.toString);
+        } else if(typeof window.mmo.Materials == "undefined"){
+            window.Logger.log("Namespace mmo.Materials Altered", "Avatar_mat");
             return false;
         }
         return true;
@@ -19,8 +19,8 @@
 })();
 
 
-mmo.Materials.Avatar_mat = function(uniforms, attr){
-    return new THREE.MeshBasicMaterial({
+window.mmo.Materials.Avatar_mat = function(uniforms, attr){
+    return new window.THREE.MeshBasicMaterial({
         color: 0x00AA00
     });
 };

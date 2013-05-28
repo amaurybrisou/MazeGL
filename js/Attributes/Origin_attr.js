@@ -1,12 +1,12 @@
 (function(){
     //load Builders
-    mmo.Attributes.Origin = function(){
+    window.mmo.Attributes.Origin = function(){
         var f = function(){
-            if(typeof mmo == "undefined"){
-                Logger.log("Namespace mmo not Loaded", "Camera");
+            if(typeof window.mmo == "undefined"){
+                window.Logger.log("Namespace mmo not Loaded", "Camera");
                 return false;
-            } else if(typeof mmo.Attributes == "undefined"){
-                Logger.log("Namespace mmo.Attributes Altered", "Camera");
+            } else if(typeof window.mmo.Attributes == "undefined"){
+                window.Logger.log("Namespace mmo.Attributes Altered", "Camera");
                 return false;
             }
             return true;
@@ -18,41 +18,47 @@
     }
 })();
 
-mmo.Attributes.Origin = function(worldSize, originSize, color){
-    mat = mmo.Materials;
+window.mmo.Attributes.Origin = function(){
+    var mat = window.mmo.Materials;
 
-    OriginMaterialX = mat.Origin_MaterialsX(color, 0.5,0.,0.);
-    OriginMaterialY = mat.Origin_MaterialsY(color, 0.,0.5,0.);
-    OriginMaterialZ = mat.Origin_MaterialsZ(color, 0.,0.,0.5);
+    var OriginMaterialX = mat.Origin_MaterialsX( window.mmo.ORIGIN_COLOR, 0.5,0.,0.);
+    var OriginMaterialY = mat.Origin_MaterialsY( window.mmo.ORIGIN_COLOR, 0.,0.5,0.);
+    var OriginMaterialZ = mat.Origin_MaterialsZ( window.mmo.ORIGIN_COLOR, 0.,0.,0.5);
 
-    xOrigin = new THREE.Mesh(                               //MESH
-    new THREE.CubeGeometry(worldSize, originSize, originSize),
-    OriginMaterialX
+    var xOrigin = new window.THREE.Mesh(                               //MESH
+    new window.THREE.CubeGeometry(
+        window.mmo.WORLDSIZE,
+        window.mmo.ORIGIN_SIZE,
+        window.mmo.ORIGIN_SIZE),
+        OriginMaterialX
     );
 
     xOrigin.position.x = 0;
-    xOrigin.position.y = originSize/2;
+    xOrigin.position.y =  window.mmo.ORIGIN_SIZE/2;
     xOrigin.position.z = 0;
 
     // Y
 
-    yOrigin = new THREE.Mesh(                               //MESH
-    new THREE.CubeGeometry(originSize, worldSize, originSize),
-    OriginMaterialY
+    var yOrigin = new window.THREE.Mesh(                               //MESH
+    new window.THREE.CubeGeometry(
+        window.mmo.ORIGIN_SIZE,
+        window.mmo.WORLDSIZE,
+        window.mmo.ORIGIN_SIZE),
+        OriginMaterialY
     );
 
     yOrigin.position.x = 0;
-    yOrigin.position.y = originSize/2;
+    yOrigin.position.y =  window.mmo.ORIGIN_SIZE;
     yOrigin.position.z = 0;
 
     //Z
-    zOrigin = new THREE.Mesh(                               //MESH
-        new THREE.CubeGeometry(originSize, originSize, worldSize),
+    var zOrigin = new window.THREE.Mesh(                               //MESH
+        new window.THREE.CubeGeometry( window.mmo.ORIGIN_SIZE,  window.mmo.ORIGIN_SIZE,  window.mmo.WORLDSIZE),
         OriginMaterialZ
     );
 
     zOrigin.position.x = 0;
-    zOrigin.position.y = originSize/2;
+    zOrigin.position.y =  window.mmo.ORIGIN_SIZE/2;
     zOrigin.position.z = 0;
 
     return new Array(xOrigin, yOrigin, zOrigin);

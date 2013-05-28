@@ -1,8 +1,8 @@
 (function(){
     //load Builders
-    mmo.Builders = function(){
+    window.mmo.Builders = function(){
         var f = function(){
-         if(typeof mmo == "undefined"){
+         if(typeof window.mmo == "undefined"){
           console.log("Error : Namespace mmo not Loaded");
           return false;
          }
@@ -12,7 +12,7 @@
         if (!f()){
             return null;
         }
-        Logger.log("Module Loaded", "mmo.Builder");
+        window.Logger.log("Module Loaded", "mmo.Builder");
 
     }
 })();
