@@ -26,47 +26,49 @@ window.mmo.Events.MouseEvents.Avatar_mo = function(SCREEN_SIZE_RATIO){
     this.mouseY = 0;
     this.mouseDown = false;
 
+    var that = this;
+    
     console.log("A");
 
-    if ( this.domElement === document ) {
-        this.viewHalfX = (window.innerWidth - window.mmo.SCREEN_SIZE_RATIO)/ 2;
-        this.viewHalfY = (window.innerHeight - window.mmo.SCREEN_SIZE_RATIO)/ 2;
+    if ( that.domElement === document ) {
+        that.viewHalfX = (window.innerWidth - window.mmo.SCREEN_SIZE_RATIO)/ 2;
+        that.viewHalfY = (window.innerHeight - window.mmo.SCREEN_SIZE_RATIO)/ 2;
     } else {
-        this.viewHalfX = this.domElement.offsetWidth / 2;
-        this.viewHalfY = this.domElement.offsetHeight / 2;
-        this.domElement.setAttribute( 'tabindex', -1 );
+        that.viewHalfX = that.domElement.offsetWidth / 2;
+        that.viewHalfY = that.domElement.offsetHeight / 2;
+        that.domElement.setAttribute( 'tabindex', -1 );
     }
 
     this.onMouseMove = function ( event ) {
         console.log("D");
-        console.log(this.domElement);
-        if ( this.domElement === document ) {
-          this.mouseX = event.pageX - this.viewHalfX;
-          this.mouseY = event.pageY - this.viewHalfY;
+        console.log(that.domElement);
+        if ( that.domElement === document ) {
+          that.mouseX = event.pageX - that.viewHalfX;
+          that.mouseY = event.pageY - that.viewHalfY;
         } else {
-          this.mouseX = event.pageX - this.domElement.offsetLeft - this.viewHalfX;
-          this.mouseY = event.pageY - this.domElement.offsetTop - this.viewHalfY;
+          that.mouseX = event.pageX - that.domElement.offsetLeft - that.viewHalfX;
+          that.mouseY = event.pageY - that.domElement.offsetTop - that.viewHalfY;
         }
     };
 
     this.onMouseDown = function ( event ) {
         console.log("C");
 
-        if ( this.domElement !== document ) {
-          this.domElement.focus();
+        if ( that.domElement !== document ) {
+          that.domElement.focus();
         }
 
         event.preventDefault();
         event.stopPropagation();
 
-        if ( this.activeLook ) {
+        if ( that.activeLook ) {
           switch ( event.button ) {
 
-            case 0: this.moveForward = true; break;
-            case 2: this.moveBackward = true; break;
+            case 0: that.moveForward = true; break;
+            case 2: that.moveBackward = true; break;
           }
         }
 
-        this.mouseDragOn = true;
+        that.mouseDragOn = true;
     };
 };
