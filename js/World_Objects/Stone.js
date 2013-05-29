@@ -3,10 +3,10 @@
 
     var f = function(){
         if(typeof window.mmo == "undefined"){
-            window.Logger.log("Namespace mmo not Loaded", "Camera");
+            window.Logger.log(window.Level.CRITICAL, "Namespace mmo not Loaded", "Stone");
             return false;
         } else if(typeof window.mmo.World_Objects == "undefined"){
-            window.Logger.log("Namespace mmo.World_Attributes Altered", "Camera");
+            window.Logger.log(window.Level.CRITICAL, "Namespace mmo.World_Attributes Altered", "Stone");
             return false;
         }
         return true;

@@ -2,10 +2,10 @@
     //load Builders
     var f = function(){
         if(typeof window.mmo == "undefined"){
-            window.Logger.log("Namespace mmo not Loaded", "Avatar_Daemon");
+            window.Logger.log(window.Level.CRITICAL, "Namespace mmo not Loaded", "Avatar_Daemon");
             return false;
         } else if(typeof window.mmo.Avatar == "undefined"){
-            console.log("Namespace mmo Altered", "Avatar_Daemon");
+            window.Logger.log(window.Level.CRITICAL, "Namespace mmo not Loaded", "Avatar_Daemon");
             return false;
         }
         return true;

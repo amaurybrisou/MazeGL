@@ -3,10 +3,10 @@
     window.mmo.Materials.Origin = function(){
         var f = function(){
             if(typeof window.mmo == "undefined"){
-                window.Logger.log("Namespace mmo not Loaded", "Camera");
+                window.Logger.log(window.Level.CRITICAL, "Namespace mmo not Loaded", "Stone Mat");
                 return false;
             } else if(typeof window.mmo.Materials == "undefined"){
-                window.Logger.log("Namespace mmo.Materials Altered", "Camera");
+                window.Logger.log(window.Level.CRITICAL, "Namespace mmo.Materials Altered", "Stone Mat");
                 return false;
             }
             return true;
@@ -24,7 +24,7 @@ window.mmo.Materials.Stone_Materials = function(){
     });
 }
 
-window.mmo.Materials.fillStoneMat = function(){
+window.mmo.Materials.fillStoneMat = function(stoneFaces_color){
     return new window.THREE.MeshBasicMaterial({
         color: window.mmo.STONES_FACES_COLOR
     });
@@ -32,8 +32,8 @@ window.mmo.Materials.fillStoneMat = function(){
 
 window.mmo.Materials.strokeStoneMat = function(stoneEdges_color, edgesWidth){
     return new window.THREE.MeshBasicMaterial({
-        color: stoneEdges_color,
+        color: window.mmo.STONES_EDGES_COLOR,
         wireframe: true,
-        wireframeLinewidth: edgesWidth
+        wireframeLinewidth: window.mmo.STONES_EDGES_LINEWIDTH
     });
 }

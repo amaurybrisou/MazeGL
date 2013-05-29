@@ -2,7 +2,7 @@
     window.mmo.Shaders = function(){
         var f = function(){
             if(typeof window.mmo == "undefined"){
-                console.log("mmo is not defined");
+                window.Logger.log(window.Level.CRITICAL, "mmo is not defined", "Shaders");
                 return false;
             }
             return true;
@@ -11,7 +11,7 @@
         if(!f()){
             return;
         }
-        window.Logger.log("Module Loaded", "Network");
+        window.Logger.log(window.Level.FINE, "Module Loaded", "Network");
     }
     //define specify Network properties
 

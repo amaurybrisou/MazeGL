@@ -1,9 +1,9 @@
 (function(){
     //load Builders
-    mmo.Events = function(){
+    window.mmo.Events = function(){
         var f = function(){
-         if(typeof mmo == "undefined"){
-          console.log("Error : Namespace mmo not Loaded");
+         if(typeof window.mmo == "undefined"){
+          window.Logger.log(window.Level.CRITICAL, "mmo is not defined", "Events");
           return false;
          }
          return true;
@@ -12,7 +12,7 @@
         if (!f()){
             return;
         }
-        Logger.log("Module Loaded", "Events");
+        window.log(window.Level.FINE, "Module Loaded", "Events");
     }
 
     //Define Builder properties here

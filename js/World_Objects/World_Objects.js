@@ -3,7 +3,7 @@
     window.mmo.World_Objects = function(){
         var f = function(){
          if(typeof window.mmo == "undefined"){
-            window.Logger.log("Error mmo not Loaded", this);
+            window.Logger.log(window.Level.CRITICAL, "Error mmo not Loaded", this);
             return false;
          }
          return true;
@@ -12,7 +12,7 @@
         if (!f()){
             return;
         }
-        window.Logger.log("Module Loaded", "World_Objects");
+        window.Logger.log(window.Level.FINE, "Module Loaded", "World_Objects");
     }
 
     //Define Builder properties here

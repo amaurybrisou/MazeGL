@@ -3,10 +3,10 @@
 
         var f = function(){
             if(typeof window.mmo == "undefined"){
-                  console.log("Error : Namespace mmo not Loaded");
+                  window.Logger.log(window.Level.PIZZA, "Error : Namespace mmo not Loaded", "Avatar_kb.js");
                   return false;
                 } else if(typeof window.mmo.Events == "undefined"){
-                          console.log("Error Events : Namespace mmo not Loaded");
+                          window.Logger.log(window.Level.PIZZA,"Error Events : Namespace mmo not Loaded", "Avatar_kb.js");
                           return false;
                 }
                 return true;
@@ -34,29 +34,6 @@ window.mmo.Events.KeyboardEvents.Avatar_kb = function(){
         if(that.pressed("d")){ avatar_obj.position.x += x; }
         if(that.pressed("s")){ avatar_obj.position.z += z; }
         if(that.pressed("z")){ avatar_obj.position.z -= z; }
-        // if(this.document.On.pressed("z")){
-        //     obj.position.x += 4;
-        //  }
-        //  if( keyboard.pressed("o") ){
-        //     myMeshObject.myMesh.position.set(0,0,0);
-        //   }
-        //   if( keyboard.pressed("c") ){
-
-        //     camera.position.x = myMeshObject.myMesh.position.x;
-        //     camera.position.y = myMeshObject.myMesh.position.y;
-        //     camera.position.z = myMeshObject.myMesh.position.z;
-
-        //   }
-        //   else{
-        //     camera.position.set(myMeshObject.myMesh.position.x, myMeshObject.myMesh.position.y, myMeshObject.myMesh.position.z);
-        //     camera.lookAt(myMeshObject.myMesh.position);
-        //     camera.position.x = myMeshObject.scale/2;
-        //     camera.position.y = myMeshObject.scale;
-        //     camera.position.z = myMeshObject.scale * 4;
-
-        //     //myMeshObject.myMesh.add(camera);
-        //   }
-
 
 
         //   myMeshControls.update(clock.getDelta());

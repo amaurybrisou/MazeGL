@@ -1,11 +1,11 @@
 (function(){
     //load Builders 
     var f = function(){
-        if(typeof mmo == "undefined"){
-            Logger.log("Namespace mmo not Loaded", this);
+        if(typeof window.mmo == "undefined"){
+            window.Logger.log(window.Level.CRITICAL, "Namespace mmo not Loaded", "Avatar_v1.js");
             return false;
-        } else if(typeof mmo.Avatar == "undefined"){
-            console.log("Namespace mmo Altered", this);
+        } else if(typeof window.mmo.Avatar == "undefined"){
+            window.Logger.log(window.Level.CRITICAL, "Namespace mmo Altered", "Avatar_v1.js");
             return false;
         }   
         return true;
@@ -17,7 +17,7 @@
 })();
 
 
-mmo.Avatar.Avatar_v1 = function(meshMat, x, y, z, model_path){
+window.mmo.Avatar.Avatar_v1 = function(meshMat, x, y, z, model_path){
     
     model_path = null;
     

@@ -3,10 +3,10 @@
     window.mmo.Attributes.Origin = function(){
         var f = function(){
             if(typeof window.mmo == "undefined"){
-                window.Logger.log("Namespace mmo not Loaded", "Camera");
+                window.Logger.log(window.Level.CRITICAL, "Namespace mmo not Loaded", "Origin Attr");
                 return false;
             } else if(typeof window.mmo.Attributes == "undefined"){
-                window.Logger.log("Namespace mmo.Attributes Altered", "Camera");
+                window.Logger.log(window.Level.CRITICAL, "Namespace mmo.Attributes Altered", "Origin Attr");
                 return false;
             }
             return true;

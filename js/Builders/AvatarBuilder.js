@@ -1,10 +1,10 @@
 (function(){
     var f = function(){
         if(typeof window.mmo == "undefined"){
-              window.log("Error : Namespace mmo not Loaded");
+              window.Logger.log(window.Level.PIZZA,"Error : Namespace mmo not Loaded", "AvatarBuilder.js");
               return false;
             } else if(typeof mmo.Builders == "undefined"){
-              window.log("Error : Namespace mmo.Builders not Loaded");
+              window.Logger.log(window.Level.CRITICAL,"Error : Namespace mmo.Builders not Loaded", "AvatarBuilder.js");
               return false;
             }
             return true;

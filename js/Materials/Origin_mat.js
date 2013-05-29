@@ -3,10 +3,10 @@
     window.mmo.Materials.Origin = function(){
         var f = function(){
             if(typeof window.mmo == "undefined"){
-                window.Logger.log("Namespace mmo not Loaded", "Camera");
+                window.Logger.log(window.Level.CRITICAL, "Namespace mmo not Loaded", "Origin Mat");
                 return false;
             } else if(typeof window.mmo.Materials == "undefined"){
-                window.Logger.log("Namespace mmo.Materials Altered", "Camera");
+                window.Logger.log(window.Level.CRITICAL, "Namespace mmo.Materials Altered", "Origin Mat");
                 return false;
             }
             return true;

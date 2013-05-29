@@ -80,3 +80,41 @@ mmo.Avatar.FirstAvatar = function(material, x, y, z, config, model_path){
 }
 
 mmo.Avatar.FirstAvatar.prototype = Object.create(THREE.Mesh.prototype);
+
+
+
+
+
+
+
+
+        // SHADER
+        
+        
+        window.mmo.Attributes.Stone = {
+            displacement : {
+                type : 'f', // a float
+                value : [] // an empty array
+            }
+        }
+        
+        
+        stoneAttributes[i] = {
+            displacement: window.mmo.Attributes.Stone.displacement
+        };
+        stoneValues[i] = stoneAttributes[i].displacement.value;
+
+        stoneShaderMaterial[i] = new window.THREE.ShaderMaterial({
+            uniforms:       window.mmo.UNIFORMS,
+            attributes:     stoneAttributes[i],
+            vertexShader:   document.getElementById('stonevertexshader').textContent,
+            fragmentShader: document.getElementById('stonefragmentshader').textContent
+        });
+        
+        
+        // UPDATE
+        var vertices = stones[i].geometry.vertices;
+        for(var v = 0; v < vertices.length; v++) {
+              stoneValues[i] = Math.random() * 300;
+        }
+        vertices.clear;

@@ -15,15 +15,30 @@
         return;
     }
     //Define Builder properties here
-    window.mmo.Logger.StdoutLogger = {
-        log : function(obj, class_type){
+    window.mmo.Logger.StdoutLogger ={ 
+        log : function(level, obj, class_type){
+            if(arguments.length  < 3){
+                throw "Missing Arguments while calling Logger";
+            }
+            
+            if(level === window.Level.CRITICAL ||
+                level === window.Level.FUCK ||
+                level === window.Level.NOOB ||
+                level === window.Level.PIZZA ||
+                level === window.Level.COFFE){
+                    throw level+" : "+obj+" : "+class_type;
+            }
+            
             if(typeof obj == "object"){
-                console.log(class_type+" : ");
+                console.log(level+" : "+class_type+" : ");
                 console.log(obj);
             } else {
-                console.log("INFO : "+class_type+" : "+obj);
+                console.log(level+" : "+class_type+" : "+obj);
             }
         },
     }
 
 })();
+
+
+

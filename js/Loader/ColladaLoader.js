@@ -3,10 +3,10 @@
     var f = function(){
         //typeof mmo == "undefined"
         if(null == window.mmo){
-            window.Logger.log("Namespace mmo not Loaded", "ColladaLoader");
+            window.Logger.log(window.Level.CRITICAL, "Namespace mmo not Loaded", "ColladaLoader");
             return false;
         } else if(typeof window.mmo.Loader == "undefined"){
-            window.Logger.log("Namespace mmo.Loader Altered", "ColladaLoader");
+            window.Logger.log(window.Level.CRITICAL, "Namespace mmo.Loader Altered", "ColladaLoader");
             return false;
         }
         return true;

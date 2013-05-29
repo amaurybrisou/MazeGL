@@ -1,8 +1,8 @@
 (function(){
-    mmo.Network = function(){
-        f = function(){
-            if(typeof mmo == "undefined"){
-                console.log("mmo is not defined");
+    window.mmo.Network = function(){
+        var f = function(){
+            if(typeof window.mmo == "undefined"){
+                window.Logger.log(window.Level.CRITICAL, "mmo is not defined", "Network");
                 return false;
             }
             return true;
@@ -11,7 +11,7 @@
         if(!f()){
             return;
         }
-        Logger.log("Module Loaded", "Network");
+        window.Logger.log(window.Level.FINE, "Module Loaded", "Network");
     }
     //define specify Network properties
 

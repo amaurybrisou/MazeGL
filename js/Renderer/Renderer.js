@@ -2,11 +2,11 @@
 
     var f = function(){
         if(typeof mmo == "undefined"){
-              console.log("Error : Namespace mmo not Loaded");
-              return false;
+                window.Logger.log(window.Level.NOOB,"Error : Namespace mmo not Loaded", "Renderer.js");
+                return false;
             } else if(typeof mmo.Builders == "undefined"){
-                      console.log("Error : Namespace mmo not Loaded");
-                      return fase;
+                window.Logger.log(window.Level.PIZZA,"Error : Namespace mmo not Loaded", "Renderer.js");
+                return false;
             }
             return true;
         }

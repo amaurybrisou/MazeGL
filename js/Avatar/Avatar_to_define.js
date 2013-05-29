@@ -3,10 +3,10 @@
     window.mmo.Avatar.Avatar_v1 = function(){
         var f = function(){
             if(typeof window.mmo == "undefined"){
-                window.Logger.log(window.Level.CRITICAL, "Namespace mmo not Loaded", this);
+                window.Logger.log(window.Level.PIZZA,"Namespace mmo not Loaded", this);
                 return false;
             } else if(typeof window.mmo.Avatar == "undefined"){
-                window.Logger.log(window.Level.CRITICAL, "Namespace mmo not Loaded", this);
+                window.Logger.log(window.Level.COFFE,"Namespace mmo Altered", this);
                 return false;
             }
             return true;
@@ -19,7 +19,7 @@
 })();
 
 
-window.mmo.Avatar.Avatar_debug = function(material, x, y, z, config, model_path){
+window.mmo.Avatar.Avatar_to_define = function(material, x, y, z, config, model_path){
     window.mmo.Avatar.call(this);
 
     model_path = null;
@@ -36,4 +36,4 @@ window.mmo.Avatar.Avatar_debug = function(material, x, y, z, config, model_path)
 
 }
 
-window.mmo.Avatar.Avatar_v1.prototype = Object.create(window.mmo.Avatar.prototype);
+window.mmo.Avatar.Avatar_to_define.prototype = Object.create(window.mmo.Avatar.prototype);

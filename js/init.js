@@ -63,7 +63,7 @@
     composer.addPass( vblur );*/
     // DRAW! --------------------------------------------------------------
     //Recursive Method  (loop)
-    console.log(window.mmo.scene);
+    
     function animate(t) {
         
         // color ratios
@@ -86,12 +86,12 @@
         //  } else {
         //      window.mmo.UNIFORMS.amplitude.value = 0;
         //  }
-
+        /*
         window.mmo.UNIFORMS.lightPosX.value = Math.sin(t/window.mmo.DAY_NIGHT_SPEED)*window.mmo.WORLDSIZE/2;
         window.mmo.UNIFORMS.lightPosY.value = Math.cos(t/window.mmo.DAY_NIGHT_SPEED)*window.mmo.WORLDSIZE/2;
         window.mmo.UNIFORMS.lightPosZ.value = Math.abs(Math.cos(t/200));
         window.mmo.UNIFORMS.lightColor.value = window.mmo.SC;
-
+        */
         // main light and sun movements
         window.mmo.MAIN_LIGHT.position.y = Math.cos(t/window.mmo.DAY_NIGHT_SPEED) * window.mmo.FAR/2;
     /*    window.mmo.sun.position.y = Math.cos(t/day_night_speed)*FAR/4;
@@ -103,20 +103,10 @@
         //sun.position.z = Math.sin(t/lightSpeed)*WORLDSIZE/2;
 
         window.mmo.MAIN_LIGHT.lookAt(window.mmo.position);
+        //window.mmo.SUN.lookAt(window.mmo.position);
+        
 
-
-    /* window.mmo.sun.lookAt(window.mmo.position);
-    */
-          window.mmo.BG_COLOR.setRGB(window.mmo.BC, window.mmo.BC, window.mmo.BC);
-        //window.mmo.animate(t, window.mmo.position);
-
-        // background color/        window.mmo.BG_COLOR.setRGB(window.mmo.SC, window.mmo.SC, window.mmo.SC);
-        //window.mmo.fog.color.setRGB(SC, SC, SC);
-        window.mmo.RENDERER.setClearColor(window.mmo.BG_COLOR, 1.0);
-
-        // floor color
-
-        window.mmo.PLANE.material.color.setRGB(window.mmo.SC-0.1, window.mmo.SC-0.1, window.mmo.SC-0.1);
+        
 
         // render
         /*window.mmo.avatar_obj.meshControls.update(clock.getDelta());
@@ -138,6 +128,7 @@
 */
         // HTML CONTENT
         span.innerHTML = ''; // clear existing
+
         text = 'time : '+Math.round(window.mmo.MAIN_LIGHT.position.y/1000)+
             '</br>cam coords : '+window.mmo.camera.position.x+" "+
             window.mmo.camera.position.y+" "+
@@ -148,7 +139,7 @@
 
         span.innerHTML = text;
 
-        };
+        }
 
         animate(new Date().getTime());
-    }
+};

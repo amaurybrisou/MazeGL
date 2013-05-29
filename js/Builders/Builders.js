@@ -3,7 +3,7 @@
     window.mmo.Builders = function(){
         var f = function(){
          if(typeof window.mmo == "undefined"){
-          console.log("Error : Namespace mmo not Loaded");
+          window.Logger.log(window.Level.CRITICAL, "mmo is not defined", "Builders");
           return false;
          }
          return true;
@@ -12,7 +12,7 @@
         if (!f()){
             return null;
         }
-        window.Logger.log("Module Loaded", "mmo.Builder");
+        window.Logger.log(window.Level.FINE, "Module Loaded", "mmo.Builder");
 
     }
 })();

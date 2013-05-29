@@ -2,11 +2,11 @@
 (function(){
     var f = function(){
         if(typeof window.mmo == "undefined"){
-              console.log("Error : Namespace mmo not Loaded");
-              return false;
+                window.Logger.log(window.Level.PIZZA,"Error : Namespace mmo not Loaded", "Stone_attr.js");
+                return false;
             } else if(typeof window.mmo.Attributes == "undefined"){
-                      console.log("Error : Namespace mmo.Attributes not Loaded");
-                      return false;
+                window.Logger.log(window.Level.COFFE,"Error : Namespace mmo.Attributes not Loaded", "Stone_attr.js");
+                return false;
             }
             return true;
         }
@@ -15,12 +15,12 @@
         return null;
     }
 
-    window.mmo.Attributes.Stone = {
+    /*window.mmo.Attributes.Stone = {
         displacement : {
             type : 'f', // a float
             value : [] // an empty array
         }
-    }
+    }*/
 
 })();
 

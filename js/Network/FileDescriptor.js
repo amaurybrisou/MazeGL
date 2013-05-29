@@ -1,11 +1,11 @@
 (function(){
     //load Builders 
     var f = function(){
-        if(typeof mmo == "undefined"){
-            console.log("Error : Namespace mmo not Loaded");
+        if(typeof window.mmo == "undefined"){
+            window.Logger.log(window.Level.CRITICAL,"Error : Namespace mmo not Loaded", "FileDescriptor.js");
             return false;
-        }else if( typeof mmo.Network == "undefined"){
-            console.log("Error : Namespace mmo is altered");
+        }else if( typeof window.mmo.Network == "undefined"){
+            window.Logger.log(window.Level.NOOB,"Error : Namespace mmo is altered", "FileDescriptor.js");
             return false;
         }
         return true;
@@ -16,7 +16,7 @@
     }
     
     //Define Builder properties here
-    mmo.Network.getSocket = function(url){
+    window.mmo.Network.getSocket = function(url){
         if(window.WebSocket) {
             return new WebSocket("ws://webgl_project_amaury.amaurybrisou.c9.io:15000");
         } else {
