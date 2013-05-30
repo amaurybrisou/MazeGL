@@ -1,10 +1,10 @@
 (function(){
 
     var f = function(){
-        if(typeof mmo == "undefined"){
+        if(typeof window.mmo == "undefined"){
                 window.Logger.log(window.Level.NOOB,"Error : Namespace mmo not Loaded", "Renderer.js");
                 return false;
-            } else if(typeof mmo.Builders == "undefined"){
+            } else if(typeof window.mmo.Builders == "undefined"){
                 window.Logger.log(window.Level.PIZZA,"Error : Namespace mmo not Loaded", "Renderer.js");
                 return false;
             }
@@ -25,3 +25,12 @@ window.mmo.Renderer = function(){
 
     return renderer;
 }
+
+window.mmo.Renderer.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();

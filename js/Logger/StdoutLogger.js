@@ -29,7 +29,7 @@
                     throw level+" : "+obj+" : "+class_type;
             }
             
-            if(typeof obj == "object"){
+            if(typeof obj === "object"){
                 console.log(level+" : "+class_type+" : ");
                 console.log(obj);
             } else {

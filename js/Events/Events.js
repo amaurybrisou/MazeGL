@@ -18,3 +18,13 @@
     //Define Builder properties here
 
 })();
+
+
+window.mmo.Events.getAvatarControls = (function(){
+    return function(object){
+        var avatar_controls = new window.THREE.FirstPersonControls(object, window.mmo.SCREEN_SIZE_RATIO, window.document);
+        avatar_controls.movementSpeed = window.mmo.AVATAR_TRANS_VIEW_INCREMENT;
+        avatar_controls.lookSpeed = window.mmo.AVATAR_ROT_VIEW_INCREMENT;
+        return avatar_controls;
+    };
+})();

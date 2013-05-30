@@ -96,7 +96,7 @@ window.mmo.World.FirstWorld = function() {
     window.mmo.CAM_POS_X        = 50
     window.mmo.CAM_POS_Y        = 10;
     window.mmo.CAM_POS_Z        = -10;
-    window.mmo.CAM_POS_RATIO    = 10;
+    window.mmo.CAM_POS_RATIO    = 3;
     window.mmo.LOOK_VERTICAL    = false;
     window.mmo.FREEZE           = false;
     
@@ -117,12 +117,12 @@ window.mmo.World.FirstWorld = function() {
     
     //AVATAR
     window.mmo.AVATAR_TYPE                      = window.mmo.Avatar.FirstAvatar;
-    window.mmo.AVATAR_SCALE                    = 50;
+    window.mmo.AVATAR_SCALE                    = 5;
     window.mmo.AVATAR_SIDE                     = function(){return window.mmo.AVATAR_SCALE/2 + Math.random()*window.mmo.AVATAR_SCALE/2;};
     window.mmo.AVATAR_RANGE_TARGET             = 100;
     window.mmo.AVATAR_NO_FLY                   = true;
-    window.mmo.AVATAR_TRANS_VIEW_INCREMENT     = 70;
-    window.mmo.AVATAR_ROT_VIEW_INCREMENT       = 0.1;    
+    window.mmo.AVATAR_TRANS_VIEW_INCREMENT     = 40;
+    window.mmo.AVATAR_ROT_VIEW_INCREMENT       = 0.05;    
     
     
     this.animate = function(t, position){

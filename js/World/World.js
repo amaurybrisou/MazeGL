@@ -23,8 +23,8 @@ window.mmo.World = function() {
     window.THREE.Scene.call(this);
 
     this.getCamera = function(){
-        window.mmo.camera = window.mmo.Attributes.Camera();
-
+        window.mmo.camera = new window.mmo.World_Objects.Camera();
+        
         window.mmo.camera.position.set(
             window.mmo.CAM_POS_X,
             window.mmo.CAM_POS_Y,

@@ -1,5 +1,5 @@
     window.onload =  function() {
-
+    
     var span = document.getElementById('infos');
     var text = document.createTextNode('');
 
@@ -12,7 +12,7 @@
 
     //Config of World_v1
     window.mmo.World.FirstWorld();
-
+    
     
     
     // EVENT LISTENER ------------------------------------------------------------------------
@@ -30,42 +30,25 @@
     document.getElementById('canvasCont').appendChild(window.mmo.RENDERER.domElement);
 
 // window.mmo ------------------------------------------------------------------
-    window.mmo.scene = new window.THREE.Scene();
     
-    var scene = new builders.WorldBuilder(wo.FirstWorld);//THREE.window.mmo();
+    var scene = new builders.WorldBuilder();//THREE.window.mmo();
     //window.mmo.fog = new THREE.FogExp2( 0xffffff, 0.000001 );
-
+    
     window.mmo.shadowMapEnabled = true;
 
     window.mmo.RENDERER.setClearColor(window.mmo.BG_COLOR, 1.0);
     window.mmo.RENDERER.clear();
 
 
-    //debug cube
-    /*var cube = new THREE.Mesh( new THREE.CubeGeometry( 20, 20, 20 ), new THREE.MeshNormalMaterial() );
-    cube.position.y = 0;
-    cube.position.x =0;
-    cube.positionz = 0;
-    window.mmo.add(cube);*/
-
     window.mmo.camera.lookAt(window.mmo.position);
 
-    // COMPOSER ---------------------------------------------------------------
-    /*composer = new THREE.EffectComposer( renderer );
-    composer.addPass( new THREE.RenderPass( window.mmo, camera ) );
-
-    hblur = new THREE.ShaderPass( THREE.HorizontalBlurShader );
-    composer.addPass( hblur );
-
-    vblur = new THREE.ShaderPass( THREE.VerticalBlurShader );
-    // set this shader pass to render to screen so we can see the effects
-    vblur.renderToScreen = true;
-    composer.addPass( vblur );*/
+    
+    window.Logger.log(window.Level.INFO, window.mmo.avatar_obj, "init.js");
     // DRAW! --------------------------------------------------------------
     //Recursive Method  (loop)
-    
-    function animate(t) {
-        
+    console.log(window.mmo.camera);
+    (function animate(){
+        var t = new Date().getTime();
         // color ratios
         if(Math.cos(t/window.mmo.DAY_NIGHT_SPEED)>=window.mmo.DARKNESS){
             window.mmo.BC = Math.cos(t/window.mmo.DAY_NIGHT_SPEED);
@@ -78,20 +61,31 @@
         } else {
             window.mmo.SC = window.mmo.DARKNESS;
         }
+        
+        if(-Math.cos(t/window.mmo.DAY_NIGHT_SPEED)>=window.mmo.DARKNESS){
+            window.mmo.SEC = -Math.cos(t/window.mmo.DAY_NIGHT_SPEED);
+        } else {
+            window.mmo.SEC = window.mmo.DARKNESS;
+        }
+        
+        // background color
+        window.mmo.BG_COLOR.setRGB(window.mmo.BC, window.mmo.BC, window.mmo.BC);
+          
+        window.mmo.RENDERER.setClearColor(window.mmo.BG_COLOR, 1.0);
+    
+        // floor color
+        window.mmo.PLANET_MAT.color.setRGB(window.mmo.SC, window.mmo.SC, window.mmo.SC);
+    
+        // stones color
+        window.mmo.STONES_FACES_MAT.color.setRGB(window.mmo.SC, window.mmo.SC, window.mmo.SC);
+    
+        // stones edges color
+        window.mmo.STONES_EDGES_MAT.color.setRGB(window.mmo.SEC, window.mmo.SEC, window.mmo.SEC);
+        //scene.fog.color.setRGB(window.mmo.SEC, window.mmo.SEC, window.mmo.SEC);
 
 
-         //shader action
-        // if(keyboard.pressed("m")){
-        //      window.mmo.UNIFORMS.amplitude.value = Math.abs(Math.cos(t/600));
-        //  } else {
-        //      window.mmo.UNIFORMS.amplitude.value = 0;
-        //  }
-        /*
-        window.mmo.UNIFORMS.lightPosX.value = Math.sin(t/window.mmo.DAY_NIGHT_SPEED)*window.mmo.WORLDSIZE/2;
-        window.mmo.UNIFORMS.lightPosY.value = Math.cos(t/window.mmo.DAY_NIGHT_SPEED)*window.mmo.WORLDSIZE/2;
-        window.mmo.UNIFORMS.lightPosZ.value = Math.abs(Math.cos(t/200));
-        window.mmo.UNIFORMS.lightColor.value = window.mmo.SC;
-        */
+
+
         // main light and sun movements
         window.mmo.MAIN_LIGHT.position.y = Math.cos(t/window.mmo.DAY_NIGHT_SPEED) * window.mmo.FAR/2;
     /*    window.mmo.sun.position.y = Math.cos(t/day_night_speed)*FAR/4;
@@ -99,33 +93,24 @@
         window.mmo.MAIN_LIGHT.position.x = Math.sin(t/window.mmo.DAY_NIGHT_SPEED) * window.mmo.WORLDSIZE/2;
     /*    window.mmo.sun.position.x = Math.sin(t/day_night_speed)*WORLDSIZE/1.8;
     */
-        //mainLight.position.z = Math.sin(t/lightSpeed)*WORLDSIZE/2;
-        //sun.position.z = Math.sin(t/lightSpeed)*WORLDSIZE/2;
 
         window.mmo.MAIN_LIGHT.lookAt(window.mmo.position);
         //window.mmo.SUN.lookAt(window.mmo.position);
         
 
         
+        
 
         // render
-        /*window.mmo.avatar_obj.meshControls.update(clock.getDelta());
-        window.mmo.avatar_obj.position.y = 0;*/
-        
-        window.requestAnimationFrame(animate, window.mmo.RENDERER.domElement);
+        window.mmo.Renderer.requestAnimFrame.call(window,animate);
         window.mmo.RENDERER.clear();
         window.mmo.RENDERER.render(scene, window.mmo.camera);
-        //composer.render();
-
-        //kb_eve.Avatar_Events(window.mmo.avatar_obj);
+        
+        // animate
         window.mmo.avatar_obj.animate(t, window.mmo.camera.position);
+        //window.mmo.camera.animate();
+        //window.mmo.avatar_obj.add(window.mmo.camera);
 
-        /*if( keyboard.pressed("p") ){
-            console.log(mouseX);
-        }
-        if( keyboard.pressed("t") ){
-        }
-*/
         // HTML CONTENT
         span.innerHTML = ''; // clear existing
 
@@ -139,7 +124,5 @@
 
         span.innerHTML = text;
 
-        }
-
-        animate(new Date().getTime());
+        })();
 };
