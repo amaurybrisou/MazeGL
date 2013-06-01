@@ -19,12 +19,12 @@
 })();
 
 
-window.mmo.Avatar.FirstAvatar = function (material, x, y, z, model_path) {
+window.mmo.Avatar.FirstAvatar = function (x, y, z) {
     window.THREE.Mesh.call(this);
 
-    this.position.x = 0;
-    this.position.y = 0;
-    this.position.z = 0;
+    this.position.x = x;
+    this.position.y = y;
+    this.position.z = z;
 
     var geom = new window.THREE.Geometry();
 
@@ -55,19 +55,18 @@ window.mmo.Avatar.FirstAvatar = function (material, x, y, z, model_path) {
 
     // define controls
     this.avatar_controls = window.mmo.Events.getAvatarControls(this, window.mmo.SCREEN_SIZE_RATIO);
+    //this.fd = window.mmo.FileDescriptor;
 
     var that = this;
 
-    this.animate = function (t, position) {
+    this.animate = function () {
         that.avatar_controls.update(window.clock.getDelta());
-        window.mmo.avatar_obj.position.y = 0;
-        //that.avatar_mo.move(that);
     };
 
     this.update = function (x, y, z, vertices, scale, t) {
 
     };
-    console.log(this);
+
 };
 
 window.mmo.Avatar.FirstAvatar.prototype = Object.create(window.THREE.Mesh.prototype);

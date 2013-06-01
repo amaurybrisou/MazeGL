@@ -19,6 +19,7 @@
 })();
 
 window.mmo.World_Objects.Sun_obj = function(x, y, z, material, size){
+    
     window.THREE.Mesh.call(this);
     
     this.setGeometry( new window.THREE.SphereGeometry(size,50,50) );
@@ -27,11 +28,14 @@ window.mmo.World_Objects.Sun_obj = function(x, y, z, material, size){
     this.position.y = y;
     this.position.z = z;
     
-    this.animate = function(t, position){
+    this.animate = function(t){
         this.position.x = Math.sin(t/window.mmo.DAY_NIGHT_SPEED)*window.mmo.WORLDSIZE/1.8;
         this.position.y = Math.cos(t/window.mmo.DAY_NIGHT_SPEED)*window.mmo.FAR/4;
-        this.lookAt(position);
+        this.lookAt(window.mmo.position);
     }
+    
+    console.log(this)
+    
 }
 
 window.mmo.World_Objects.Sun_obj.prototype = Object.create(window.THREE.Mesh.prototype);

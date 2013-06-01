@@ -19,3 +19,19 @@ function obcat(o1, o2){
     }
     return o1;
 }
+
+
+// if(typeof Object.prototype.later !== 'function') {
+//     Object.prototype.later = function (msec, method){
+// 		var that =this,
+// 		args = Array.prototype.slice.aply(arguments, [2]);
+
+// 		if(typeof method === 'string'){
+// 			method = that[method];
+// 		}
+// 		setTimeout(function(){
+// 			method.apply(that, args) }
+//             ,msec );
+// 		return that;	
+// 	};
+// }

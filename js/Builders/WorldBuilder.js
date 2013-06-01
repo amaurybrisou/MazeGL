@@ -34,23 +34,23 @@ window.mmo.Builders.WorldBuilder = function () {
     this.WORLD_TEXTURE = window.mmo.WORLD_TEXTURE;
     window.Logger.log(window.Level.FINE, "World_Texture Loaded ", "WorldBuilder");
 
-    //très long à charger
-    // window.mmo.SUN = this.getSun();
-    // this.add(window.mmo.SUN);
-    // window.Logger.log(window.Level.FINE, "Sun Loaded ", "WorldBuilder");
-
-    window.mmo.MAIN_LIGHT = this.getMainLight();
-    this.add(window.mmo.MAIN_LIGHT);
-    window.Logger.log(window.Level.FINE, "Main Light Loaded ", "WorldBuilder");
-
+    // build floor
     window.mmo.PLANE = this.getPlane();
     this.add(window.mmo.PLANE);
     window.Logger.log(window.Level.FINE, "Plane Loaded ", "WorldBuilder");
+
+    // build sun
+    this.add(window.mmo.SUN);
+    
+    window.mmo.MAIN_LIGHT = this.getMainLight();
+    this.add(window.mmo.MAIN_LIGHT);
+    window.Logger.log(window.Level.FINE, "Main Light Loaded ", "WorldBuilder");
 
     window.mmo.AMBIENT_LIGHT = new window.THREE.AmbientLight(window.mmo.AMBIENT_LIGHT);
     this.add(window.mmo.AMBIENT_LIGHT);
     window.Logger.log(window.Level.FINE, "Ambient Light Loaded ", "WorldBuilder");
 
+    // build origin
     window.mmo.ORIGIN_COLOR = new window.THREE.Color("rgb(66,66,66)");
     this.wo_origin = window.mmo.Attributes.Origin();
     for (var i = 0; i < this.wo_origin.length; i++) {
@@ -62,13 +62,19 @@ window.mmo.Builders.WorldBuilder = function () {
     window.mmo.Builders.StoneBuilder(this);
     window.Logger.log(window.Level.FINE, "Stones Loaded ", "WorldBuilder");
 
-
     // build avatar
     window.mmo.avatar_obj = this.getAvatar();
     window.mmo.camera.reset();
 
     this.add(window.mmo.avatar_obj);
     window.Logger.log(window.Level.FINE, "Avatar Loaded ", "WorldBuilder");
+    
+    
+    // build fog
+    this.fog = window.mmo.FOG;
+    
+    
+    
     //this.camera = config.camera;
 
     // if(typeof world_scheme.update != "undefined"){

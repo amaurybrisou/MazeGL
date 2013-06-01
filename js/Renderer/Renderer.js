@@ -31,6 +31,6 @@ window.mmo.Renderer.requestAnimFrame = (function(){
           window.webkitRequestAnimationFrame ||
           window.mozRequestAnimationFrame    ||
           function( callback ){
-            window.setTimeout(callback, 1000 / 60);
+            window.setTimeout(callback,window.mmo.__FRAMERATE__);
           };
 })();

@@ -20,16 +20,12 @@
 window.mmo.Events.MouseEvents.Avatar_mo = function(SCREEN_SIZE_RATIO){
     this.domElement = document;
 
-    console.log(this.domElement);
-
     this.mouseX = 0;
     this.mouseY = 0;
     this.mouseDown = false;
 
     var that = this;
     
-    console.log("A");
-
     if ( that.domElement === document ) {
         that.viewHalfX = (window.innerWidth - window.mmo.SCREEN_SIZE_RATIO)/ 2;
         that.viewHalfY = (window.innerHeight - window.mmo.SCREEN_SIZE_RATIO)/ 2;
@@ -40,8 +36,6 @@ window.mmo.Events.MouseEvents.Avatar_mo = function(SCREEN_SIZE_RATIO){
     }
 
     this.onMouseMove = function ( event ) {
-        console.log("D");
-        console.log(that.domElement);
         if ( that.domElement === document ) {
           that.mouseX = event.pageX - that.viewHalfX;
           that.mouseY = event.pageY - that.viewHalfY;
@@ -52,7 +46,6 @@ window.mmo.Events.MouseEvents.Avatar_mo = function(SCREEN_SIZE_RATIO){
     };
 
     this.onMouseDown = function ( event ) {
-        console.log("C");
 
         if ( that.domElement !== document ) {
           that.domElement.focus();

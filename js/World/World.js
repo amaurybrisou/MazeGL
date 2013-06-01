@@ -67,8 +67,7 @@ window.mmo.World = function() {
             window.mmo.Attributes.Avatar);
 
         var avatar_obj = new window.mmo.AVATAR_TYPE(
-            avatarMat, 0, 0, 0,
-            null);
+            0, 0, 0);
         return avatar_obj;
     };
 
@@ -103,10 +102,6 @@ window.mmo.World = function() {
                 FAR : window.mmo.FAR
             });
     };
-    
-    this.getFog = function(){
-        return new window.mmo.World_Objects.Fog_obj();
-    }
 
     this.animate = function(t, position){
         window.mmo.sun.animate(t, window.mmo.position, window.mmo.WORLDSIZE);

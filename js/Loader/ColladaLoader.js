@@ -2,7 +2,7 @@
     //load Builders
     var f = function(){
         //typeof mmo == "undefined"
-        if(null == window.mmo){
+        if(null === window.mmo){
             window.Logger.log(window.Level.CRITICAL, "Namespace mmo not Loaded", "ColladaLoader");
             return false;
         } else if(typeof window.mmo.Loader == "undefined"){
@@ -21,14 +21,14 @@
 
 //define CLass properties/functions
 
-window.mmo.Loader.ColladaLoader = function(scene, model_path, scale){
+window.mmo.Loader.ColladaLoader = function(){
     var loader = new window.THREE.ColladaLoader();
-    //  loader.options.convertUpAxis = true;
-    loader.load( model_path, function ( collada ) {
+    return loader.load( window.mmo.AVATAR_MODEL_PATH, function ( collada ) {
         var localObject = collada.scene;
-        localObject.scale.x = localObject.scale.y = localObject.scale.z = scale;
+        localObject.scale.x = localObject.scale.y = localObject.scale.z = window.mmo.AVATAR_SCALE;
         localObject.updateMatrix();
-        scene.add(localObject);
+        console.log(localObject);
+        return localObject;
     });
-    return scene;
-}
+};
+
