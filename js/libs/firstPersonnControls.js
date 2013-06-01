@@ -268,8 +268,10 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
     };
 
     this.update = function (delta) {
-        if ((that.moveBackward || that.moveRight || that.moveLeft || that.moveForward) && window.mmo.FileDescriptor) {
+         // if (that.moveBackward || that.moveRight || that.moveDown || that.moveUp ||
+         //         that.moveLeft || that.moveForward || that.mouseDragOn) {
             var data = JSON.stringify({
+                'rotation': that.rotation,
                 'moveBackward': that.moveBackward,
                 'position':  that.object.position,
                 'moveLeft': that.moveLeft,
@@ -277,99 +279,19 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
                 'moveForward': that.moveForward,
                 'mouseX': that.mouseX,
                 'mouseY': that.mouseY,
-                'mouseDragon': that.mouseDragon,
-                'delta': that.delta,
+                'mouseDragOn': that.mouseDragOn,
+                'moveDown': that.moveDown,
+                'moveUp': that.moveUp,
+                'delta': delta,
             });
             window.mmo.FileDescriptor.send(data);
-        }
+       // }
 
-        var actualMoveSpeed = 0;
-
-        if (!that.freeze) {
-
-            if (that.heightSpeed) {
-
-                var y = window.THREE.Math.clamp(that.object.position.y, that.heightMin, that.heightMax);
-                var heightDelta = y - that.heightMin;
-
-                that.autoSpeedFactor = delta * (heightDelta * that.heightCoef);
-
-            }
-            else {
-
-                that.autoSpeedFactor = 0.0;
-
-            }
-
-            if (that.jump) {
-                that.jumper();
-            }
-            actualMoveSpeed = delta * that.movementSpeed;
-
-            if (that.moveForward || (that.autoForward && !that.moveBackward)) that.object.translateZ(-(actualMoveSpeed + that.autoSpeedFactor));
-            if (that.moveBackward) that.object.translateZ(actualMoveSpeed);
-
-            if (that.moveLeft) that.object.translateX(-actualMoveSpeed);
-            if (that.moveRight) that.object.translateX(actualMoveSpeed);
-
-            if (that.moveUp) that.object.translateY(actualMoveSpeed);
-            if (that.moveDown) that.object.translateY(-actualMoveSpeed);
-
-            var actualLookSpeed = delta * that.lookSpeed;
-
-            if (!that.activeLook) {
-
-                actualLookSpeed = 0;
-
-            }
-
-            that.lon += that.mouseX * actualLookSpeed;
-            if (that.lookVertical) that.lat += that.mouseY * actualLookSpeed;
-
-            that.lat = Math.max(-85, Math.min(85, that.lat));
-            that.phi = (90 - that.lat) * Math.PI / 180;
-            that.theta = that.lon * Math.PI / 180;
-
-            var targetPosition = that.target,
-                position = that.object.position;
-
-            targetPosition.x = position.x + 100 * Math.sin(that.phi) * Math.cos(that.theta);
-            targetPosition.y = position.y + 100 * Math.cos(that.phi);
-            targetPosition.z = position.z + 100 * Math.sin(that.phi) * Math.sin(that.theta);
-
-        }
-
-
-        var verticalLookRatio = 1;
-
-        if (that.constrainVertical) {
-
-            verticalLookRatio = Math.PI / (that.verticalMax - that.verticalMin);
-
-        }
-        that.lon += that.mouseX * actualLookSpeed;
-        if (that.lookVertical) that.lat += that.mouseY * actualLookSpeed * verticalLookRatio;
-
-        that.lat = Math.max(-85, Math.min(85, that.lat));
-        that.phi = (90 - that.lat) * Math.PI / 180;
-
-        that.theta = that.lon * Math.PI / 180;
-
-        if (that.constrainVertical) {
-
-            that.phi = window.THREE.Math.mapLinear(that.phi, 0, Math.PI, that.verticalMin, that.verticalMax);
-
-        }
-
-        var targetPosition = that.target,
-            position = that.object.position;
-
-        targetPosition.x = position.x + 100 * Math.sin(that.phi) * Math.cos(that.theta);
-        targetPosition.y = position.y + 100 * Math.cos(that.phi);
-        targetPosition.z = position.z + 100 * Math.sin(that.phi) * Math.sin(that.theta);
-
+    };
+    
+    this.move = function(targetPosition){
+        console.log(targetPosition);
         that.object.lookAt(targetPosition);
-
     };
 
     function bind(scope, fn) {

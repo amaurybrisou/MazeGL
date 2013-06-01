@@ -38,8 +38,10 @@ window.mmo.Network.FileDescriptor = function () {
 
             var data = JSON.parse(received_msg);
             console.log(data);
-
-
+            
+            window.mmo.avatar_obj.position.set(data.AvatarPosition.x, data.AvatarPosition.y, data.AvatarPosition.z);
+            //window.mmo.avatar_obj.lookAt(data.camPosition);
+            window.mmo.camera.lookAt(data.camPosition);
         };
         ws.onclose = function (e) {
             if (!e.wasClean) {
