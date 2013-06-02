@@ -33,15 +33,22 @@ window.mmo.Network.FileDescriptor = function () {
         ws.onopen = function () {
 
         };
-        ws.onmessage = function (evt) {
-            var received_msg = evt.data;
 
-            var data = JSON.parse(received_msg);
-            console.log(data);
+        var obj, data, received_msg;
+        ws.onmessage = function (evt) {
+            received_msg = evt.data;
+
+            data = JSON.parse(received_msg);
             
-            window.mmo.avatar_obj.position.set(data.AvatarPosition.x, data.AvatarPosition.y, data.AvatarPosition.z);
-            //window.mmo.avatar_obj.lookAt(data.camPosition);
-            window.mmo.camera.lookAt(data.camPosition);
+            while(data.length > 0){
+                obj = data.shift();
+                
+                // window.mmo.avatar_obj.position.x = obj.AvatarPosition.x;
+                // window.mmo.avatar_obj.position.y = obj.AvatarPosition.y;
+                // window.mmo.avatar_obj.position.z = obj.AvatarPosition.z;
+                window.mmo.avatar_obj.lookAt(obj.camPosition);
+                
+            }
         };
         ws.onclose = function (e) {
             if (!e.wasClean) {

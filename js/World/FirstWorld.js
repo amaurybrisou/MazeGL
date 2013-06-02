@@ -94,7 +94,7 @@ window.mmo.World.FirstWorld = function() {
 
 
     //CAMERA
-    window.mmo.VIEW_ANGLE       = 10;
+    window.mmo.VIEW_ANGLE       = 60;
     window.mmo.ASPECT           = window.mmo.WIDTH / window.mmo.HEIGHT;
     window.mmo.NEAR             = 0.1;
     window.mmo.FAR              = window.mmo.WORLDSIZE;
@@ -126,7 +126,7 @@ window.mmo.World.FirstWorld = function() {
     //window.mmo.SERVER_PORT =  15265;
 
     //SERVER AMAURY
-    window.mmo.SERVER_ADDR = 'ws://78.249.168.136';
+    window.mmo.SERVER_ADDR = 'ws://192.168.1.33';
     window.mmo.SERVER_PORT =  9999;
 
     window.mmo.FileDescriptor = window.mmo.Network.FileDescriptor();

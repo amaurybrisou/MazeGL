@@ -1,0 +1,331 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"re",
+				"return_data"
+			],
+			[
+				"pa",
+				"packer_number"
+			],
+			[
+				"new",
+				"new_client"
+			],
+			[
+				"tr",
+				"translateX"
+			],
+			[
+				"c",
+				"connection"
+			],
+			[
+				"ac",
+				"actualMoveSpeed"
+			],
+			[
+				"act",
+				"actualMoveSpeed"
+			],
+			[
+				"ta",
+				"targetPosition"
+			],
+			[
+				"utf8",
+				"utf8Data"
+			],
+			[
+				"w",
+				"webkitURL"
+			],
+			[
+				"R",
+				"RTCPeerConnection"
+			],
+			[
+				"RTC",
+				"RTCDataChannel"
+			],
+			[
+				"web",
+				"webSocketsServerPort"
+			],
+			[
+				"websocketS",
+				"webSocketServerIP"
+			],
+			[
+				"get",
+				"getElementById"
+			],
+			[
+				"bo",
+				"boxes"
+			],
+			[
+				"pro",
+				"prototype"
+			],
+			[
+				"B",
+				"Benoit"
+			],
+			[
+				"Antoine",
+				"AntoineG"
+			],
+			[
+				"addNod",
+				"addNodes"
+			],
+			[
+				"add",
+				"addNode"
+			],
+			[
+				"k",
+				"keyword"
+			],
+			[
+				"h",
+				"html	html"
+			],
+			[
+				"Vi",
+				"View"
+			],
+			[
+				"g",
+				"graphics"
+			],
+			[
+				"fu",
+				"function"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "Packages/Python/Python.sublime-build",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"#",
+				"Snippet: #!/usr/bin/env"
+			],
+			[
+				"#!",
+				"Snippet: #!/usr/bin/env"
+			],
+			[
+				"Snippet: ",
+				"Snippet: Function"
+			]
+		],
+		"width": 392.0
+	},
+	"console":
+	{
+		"height": 139.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/erol/WebGL_Server/moy_mod.cpp",
+		"/home/erol/WebGL_Server/test.js",
+		"/home/erol/.config/sublime-text-2/Packages/User/Default (Linux).sublime-keymap",
+		"/home/erol/WebGL_Server/index.html",
+		"/var/www/WebGL_project/index.html",
+		"/home/erol/test/mmo.js",
+		"/home/erol/test/FirstWorld.js",
+		"/home/erol/test/invocator.js",
+		"/home/erol/WebGL_Server/init.js",
+		"/home/erol/test/network.js",
+		"/home/erol/test/index.html",
+		"/var/www/WebGL_project/js/init.js",
+		"/home/erol/.floobits/share/msgs.floobits.log",
+		"/home/erol/.floobits/share/amaury/Amoroom/WebGL_3js/.floo",
+		"/home/erol/WebGL_Graph/graph_sp.html",
+		"/home/erol/VivaGraphJS/demos/other/constantLayout.html",
+		"/home/erol/.floobits/share/amaury/Amoroom/WebGL_3js/js/init.js",
+		"/home/erol/.floobits/share/amaury/Amoroom/WebGL_3js/js/myMesh.js",
+		"/home/erol/VivaGraphJS/demos/tutorial_svg/06 - Composite Nodes.html",
+		"/home/erol/VivaGraphJS/docs/graph_intro.md",
+		"/home/erol/VivaGraphJS/README.md",
+		"/home/erol/VivaGraphJS/demos/tutorial_svg/02 - Create Custom Node.html",
+		"/home/erol/WebGL_Graph/dynamic.html",
+		"/home/erol/.floobits/share/amaury/Amoroom/WebGL_3js/README.md",
+		"/home/erol/.floobits/share/amaury/Amoroom/WebGL_3js/css/main.css",
+		"/home/erol/.floobits/share/amaury/Amoroom/WebGL_3js/index.html",
+		"/home/erol/.floobits/share/amaury/Amoroom/WebGL_3js/js/flyControls.js",
+		"/home/erol/.floobits/share/amaury/Amoroom/.sublime-project.gz",
+		"/home/erol/.floobits/share/amaury/Amoroom/js/init.js",
+		"/home/erol/.floobits/share/amaury/Amoroom/index.html",
+		"/home/erol/.floobits/share/amaury/Amoroom/js/firstPersonnControls.js",
+		"/home/erol/.floobits/share/amaury/Amoroom/README.md",
+		"/home/erol/.floobits/share/amaury/Amoroom/js/stone.js",
+		"/home/erol/.floobits/share/amaury/Amoroom/css/main.css",
+		"/home/erol/.floobits/share/amaury/Amoroom/js/myMesh.js",
+		"/home/erol/.floobits/share/amaury/Amoroom/.sublime-project",
+		"/home/erol/.floobits/share/amaury/Amoroom/.floo",
+		"/home/erol/.config/sublime-text-2/Packages/User/Floobits.sublime-settings",
+		"/home/erol/.floobits/share/amaury/Amoroom/FLOOBITS_README.md",
+		"/home/erol/python/log_computing/Logarithm.py",
+		"/home/erol/.config/sublime-text-2/Packages/Default/Default (Linux).sublime-keymap",
+		"/home/erol/.config/sublime-text-2/Packages/User/Python.sublime-settings",
+		"/home/erol/.config/sublime-text-2/Packages/User/Distraction Free.sublime-settings",
+		"/home/erol/sharing_api_tests/plugin_vi.vim",
+		"/home/erol/.config/sublime-text-2/Packages/Floobits/Floobits.sublime-settings"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"targetPosition",
+			"delta",
+			"proto",
+			"move\n\nmove",
+			"_this =",
+			"this =",
+			"scene",
+			"myMesh",
+			"that",
+			"function",
+			"myMeshObject",
+			"style",
+			"div",
+			"y",
+			"x",
+			"replace",
+			"complete",
+			"Complete",
+			"autoCompl"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"that.delta",
+			"prototype",
+			"l"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		},
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.940334128878,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 279.0
+	},
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 208.0,
+	"status_bar_visible": true
+}

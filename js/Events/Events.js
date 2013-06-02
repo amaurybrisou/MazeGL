@@ -22,12 +22,10 @@
 
 window.mmo.Events.getAvatarControls = (function () {
     return function (object) {
-        var avatar_controls = new window.THREE.FirstPersonControls(object, window.mmo.SCREEN_SIZE_RATIO, window.document);
+        var avatar_controls = new window.THREE.FirstPersonControls(object, window.mmo.SCREEN_SIZE_RATIO,
+         window.document);
         avatar_controls.movementSpeed = window.mmo.AVATAR_TRANS_VIEW_INCREMENT;
         avatar_controls.lookSpeed = window.mmo.AVATAR_ROT_VIEW_INCREMENT;
-
-
-        //window.mmo.avatar_mo = new window.mmo.Events.MouseEvents.Avatar_mo(window.mmo.SCREEN_SIZE_RATIO);
         
         
         window.document.addEventListener('contextmenu', function (event) {
@@ -39,7 +37,7 @@ window.mmo.Events.getAvatarControls = (function () {
         window.document.addEventListener('mouseup', window.bind(object, avatar_controls.onMouseUp), false);
         window.document.addEventListener('keydown', window.bind(object, avatar_controls.onKeyDown), false);
         window.document.addEventListener('keyup', window.bind(object, avatar_controls.onKeyUp), false);
-        window.document.addEventListener('mousewheel', window.bind(object, avatar_controls.onMouseWheel), false);
+        //window.document.addEventListener('mousewheel', window.bind(object, avatar_controls.onMouseWheel), false);
 
 
         return avatar_controls;

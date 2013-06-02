@@ -51,14 +51,14 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
 
     if (that.domElement === document) {
 
-        that.viewHalfX = (window.innerWidth - screenSizeRatio) / 2;
-        that.viewHalfY = (window.innerHeight - screenSizeRatio) / 2;
+        this.viewHalfX = (window.innerWidth - screenSizeRatio) / 2;
+        this.viewHalfY = (window.innerHeight - screenSizeRatio) / 2;
 
     }
     else {
 
-        that.viewHalfX = that.domElement.offsetWidth / 2;
-        that.viewHalfY = that.domElement.offsetHeight / 2;
+        this.viewHalfX = that.domElement.offsetWidth / 2;
+        this.viewHalfY = that.domElement.offsetHeight / 2;
         that.domElement.setAttribute('tabindex', - 1);
 
     }
@@ -267,11 +267,12 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
 
     };
 
+    var DataBuffer = [];
+    var OldData = "";
     this.update = function (delta) {
-         // if (that.moveBackward || that.moveRight || that.moveDown || that.moveUp ||
-         //         that.moveLeft || that.moveForward || that.mouseDragOn) {
-            var data = JSON.stringify({
-                'rotation': that.rotation,
+          
+            var data = {
+                'rotation': that.object.rotation,
                 'moveBackward': that.moveBackward,
                 'position':  that.object.position,
                 'moveLeft': that.moveLeft,
@@ -282,11 +283,22 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
                 'mouseDragOn': that.mouseDragOn,
                 'moveDown': that.moveDown,
                 'moveUp': that.moveUp,
-                'delta': delta,
-            });
-            window.mmo.FileDescriptor.send(data);
-       // }
-
+                'delta': delta
+            };
+           
+            DataBuffer.push(data);
+            if(DataBuffer.length === 25){
+                setInterval(
+                    function() {
+                        if (window.mmo.FileDescriptor.bufferedAmount == 0){
+                            window.mmo.FileDescriptor.send(JSON.stringify(DataBuffer));
+                        }
+                    },
+                    50);
+                DataBuffer = [];
+            }
+        
+            
     };
     
     this.move = function(targetPosition){
