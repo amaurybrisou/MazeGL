@@ -46,7 +46,6 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
     this.moveRight = false;
     this.freeze = false;
     this.mouseDragOn = false;
-
     
 
     if (that.domElement === document) {
@@ -270,22 +269,26 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
     var DataBuffer = [];
     var OldData = "";
     this.update = function (delta) {
-          
+        if(that.onMouseMove || that.moveBackward ||
+            that.moveLeft || that.moveRight ||
+            that.moveForward || that.moveDown ||
+            that.mouveUp || that.moveLeft ){
             var data = {
                 'rotation': that.object.rotation,
                 'moveBackward': that.moveBackward,
                 'position':  that.object.position,
                 'moveLeft': that.moveLeft,
+                'onMouseMove': that.onMouseMove,
                 'moveRight': that.moveRight,
                 'moveForward': that.moveForward,
                 'mouseX': that.mouseX,
                 'mouseY': that.mouseY,
-                'mouseDragOn': that.mouseDragOn,
                 'moveDown': that.moveDown,
                 'moveUp': that.moveUp,
                 'delta': delta
             };
-           
+
+
             DataBuffer.push(data);
             if(DataBuffer.length === 25){
                 setInterval(
@@ -298,12 +301,14 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
                 DataBuffer = [];
             }
         
-            
+       }     
     };
     
-    this.move = function(targetPosition){
-        console.log(targetPosition);
-        that.object.lookAt(targetPosition);
+    this.move = function(positions){
+        that.object.lookAt(positions.TargetPosition);
+        that.object.position.x = positions.AvatarPosition.x;
+        that.object.position.y = positions.AvatarPosition.y;
+        that.object.position.z = positions.AvatarPosition.z;
     };
 
     function bind(scope, fn) {

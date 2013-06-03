@@ -5,7 +5,19 @@
 		[
 			[
 				"re",
-				"return_data"
+				"received_msg"
+			],
+			[
+				"D",
+				"DataBuffer"
+			],
+			[
+				"mouse",
+				"mouseDragOn"
+			],
+			[
+				"mou",
+				"mouseDragOn"
 			],
 			[
 				"pa",
@@ -111,6 +123,46 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "js/Events/Events.js",
+			"settings":
+			{
+				"buffer_size": 1721,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/Network/FileDescriptor.js",
+			"settings":
+			{
+				"buffer_size": 1784,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/libs/firstPersonnControls.js",
+			"settings":
+			{
+				"buffer_size": 7033,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/var/www/WebGL_3js/js/firstPersonnControls.js",
+			"settings":
+			{
+				"buffer_size": 6603,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/World/FirstWorld.js",
+			"settings":
+			{
+				"buffer_size": 6448,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "Packages/Python/Python.sublime-build",
 	"command_palette":
@@ -148,6 +200,8 @@
 	},
 	"file_history":
 	[
+		"/home/erol/WebGL_project/js/Avatar/FirstAvatar.js",
+		"/home/erol/WebGL_project/js/Events/KeyboardEvents/Avatar_kb.js",
 		"/home/erol/WebGL_Server/moy_mod.cpp",
 		"/home/erol/WebGL_Server/test.js",
 		"/home/erol/.config/sublime-text-2/Packages/User/Default (Linux).sublime-keymap",
@@ -249,8 +303,148 @@
 	"groups":
 	[
 		{
+			"selected": 2,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "js/Events/Events.js",
+					"settings":
+					{
+						"buffer_size": 1721,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1091,
+								1091
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 255.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "js/Network/FileDescriptor.js",
+					"settings":
+					{
+						"buffer_size": 1784,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1388,
+								1388
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 216.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "js/libs/firstPersonnControls.js",
+					"settings":
+					{
+						"buffer_size": 7033,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6392,
+								6392
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 4675.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/var/www/WebGL_3js/js/firstPersonnControls.js",
+					"settings":
+					{
+						"buffer_size": 6603,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4449,
+								4449
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1726.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "js/World/FirstWorld.js",
+					"settings":
+					{
+						"buffer_size": 6448,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5019,
+								5019
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2106.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
 			]
 		},
 		{

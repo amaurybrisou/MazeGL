@@ -42,12 +42,12 @@ window.mmo.Network.FileDescriptor = function () {
             
             while(data.length > 0){
                 obj = data.shift();
-                
-                // window.mmo.avatar_obj.position.x = obj.AvatarPosition.x;
-                // window.mmo.avatar_obj.position.y = obj.AvatarPosition.y;
-                // window.mmo.avatar_obj.position.z = obj.AvatarPosition.z;
-                window.mmo.avatar_obj.lookAt(obj.camPosition);
-                
+                if(typeof obj.TargetPosition !== "undefined"
+                 && typeof obj.AvatarPosition !== "undefined"){
+                    window.mmo.avatar_controls.move(obj);
+                }
+
+                 
             }
         };
         ws.onclose = function (e) {
