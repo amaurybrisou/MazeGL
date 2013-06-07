@@ -9,7 +9,6 @@ var HTTPServer = (function(){
 
 	return function(address, port, dirname){
 		var httpServer = http.createServer(function(request, response) {
-
 			var uri = url.parse(request.url).pathname;
 			var filename = path.join(process.cwd()+dirname, uri);
 
