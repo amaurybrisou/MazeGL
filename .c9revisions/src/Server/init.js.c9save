@@ -1,0 +1,16 @@
+{"ts":1370614815357,"silentsave":true,"restoring":false,"patch":[[{"diffs":[[1,"#!/usr/bin/env node\n\nWSServer = require(\"./Server/WSServer.js\");\nHTTPServer = require(\"./Server/HTTPServer.js\");\n// WebSocket server\n\nws_server =  WSServer('0.0.0.0', 9999);\nhttp_server = HTTPServer('0.0.0.0', 80, '../../Client/');\n\n"]],"start1":0,"start2":0,"length1":0,"length2":233}]],"length":233}
+{"contributors":[],"silentsave":true,"ts":1370614978867,"patch":[[{"diffs":[[0,"v node\n\n"],[1,"var HTTP_PORT = process.argv[2];\n\n"],[0,"WSServer"]],"start1":13,"start2":13,"length1":16,"length2":50},{"diffs":[[0,"0', "],[-1,"80, '../.."],[1,"HTTP_PORT, '/src"],[0,"/Cli"]],"start1":240,"start2":240,"length1":18,"length2":24}]],"length":273,"saved":false}
+{"ts":1370614981090,"patch":[[{"diffs":[[0,"gv[2];\n\n"],[1,"var "],[0,"WSServer"]],"start1":47,"start2":47,"length1":16,"length2":20},{"diffs":[[0,"r.js\");\n"],[1,"var"],[0,"HTTPServ"]],"start1":95,"start2":95,"length1":16,"length2":19}]],"length":280,"saved":false}
+{"ts":1370614982192,"patch":[[{"diffs":[[0,"s\");\nvar"],[1," "],[0,"HTTPServ"]],"start1":98,"start2":98,"length1":16,"length2":17}]],"length":281,"saved":false}
+{"ts":1370614984297,"patch":[[{"diffs":[[0,"server\n\n"],[1,"var "],[0,"ws_serve"]],"start1":168,"start2":168,"length1":16,"length2":20},{"diffs":[[0," 9999);\n"],[1,"va"],[0,"http_ser"]],"start1":212,"start2":212,"length1":16,"length2":18}]],"length":287,"saved":false}
+{"ts":1370614985574,"patch":[[{"diffs":[[0,"999);\nva"],[1,"r "],[0,"http_ser"]],"start1":214,"start2":214,"length1":16,"length2":18}]],"length":289,"saved":false}
+{"ts":1370615001737,"patch":[[{"diffs":[[0,"ient/');"],[-1,"\n\n"]],"start1":279,"start2":279,"length1":10,"length2":8}]],"length":287,"saved":false}
+{"ts":1370615030296,"patch":[[{"diffs":[[0,"PServer("],[-1,"'0.0.0.0'"],[1,"$process"],[0,", HTTP_P"]],"start1":241,"start2":241,"length1":25,"length2":24}]],"length":286,"saved":false}
+{"ts":1370615032293,"patch":[[{"diffs":[[0,"$process"],[1,".env."],[0,", HTTP_P"]],"start1":249,"start2":249,"length1":16,"length2":21}]],"length":291,"saved":false}
+{"ts":1370615032902,"patch":[[{"diffs":[[0,"ess.env."],[1,"IP"],[0,", HTTP_P"]],"start1":254,"start2":254,"length1":16,"length2":18}]],"length":293,"saved":false}
+{"ts":1370615036810,"patch":[[{"diffs":[[0,"ver("],[-1,"$"],[0,"proc"]],"start1":245,"start2":245,"length1":9,"length2":8}]],"length":292,"saved":false}
+{"ts":1370615042401,"patch":[[{"diffs":[[0,"ver("],[-1,"'0.0.0.0'"],[1,"p"],[0,", 99"]],"start1":198,"start2":198,"length1":17,"length2":9}]],"length":284,"saved":false}
+{"ts":1370615045010,"patch":[[{"diffs":[[0,"Server(p"],[1,"rocess.en."],[0,", 9999);"]],"start1":195,"start2":195,"length1":16,"length2":26}]],"length":294,"saved":false}
+{"ts":1370615045642,"patch":[[{"diffs":[[0,"ocess.en"],[-1,"."],[0,", 9999);"]],"start1":204,"start2":204,"length1":17,"length2":16}]],"length":293,"saved":false}
+{"ts":1370615047573,"patch":[[{"diffs":[[0,"ocess.en"],[1,"v.IP"],[0,", 9999);"]],"start1":204,"start2":204,"length1":16,"length2":20}]],"length":297,"saved":false}
+{"ts":1370615056194,"patch":[[{"diffs":[[0,"env.IP, "],[-1,"HTTP_"],[1,"process.env."],[0,"PORT, '/"]],"start1":262,"start2":262,"length1":21,"length2":28}]],"length":304,"saved":false}

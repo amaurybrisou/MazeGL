@@ -122,12 +122,12 @@ window.mmo.World.FirstWorld = function() {
 
 
     //NETWORK   SERVER CLOUD9
-    //window.mmo.SERVER_ADDR = 'ws://127.6.24.1';
-    //window.mmo.SERVER_PORT =  15265;
+    window.mmo.SERVER_ADDR =  '127.6.24.1';
+    window.mmo.SERVER_PORT =  9999;
 
     //SERVER AMAURY
-    window.mmo.SERVER_ADDR = 'ws://192.168.1.7';
-    window.mmo.SERVER_PORT =  9999;
+    //window.mmo.SERVER_ADDR = 'ws://192.168.1.7';
+    //window.mmo.SERVER_PORT =  9999;
 
     window.mmo.FileDescriptor = window.mmo.Network.FileDescriptor();
     

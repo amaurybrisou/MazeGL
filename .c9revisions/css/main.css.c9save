@@ -1,0 +1,2 @@
+{"ts":1369487651819,"silentsave":true,"restoring":false,"patch":[[{"diffs":[[1,"body {\n\tbackground: #333;\n\n\tfont-family: 'Arial';\n}\n\n#infos{\n\tposition: relative;\n\twidth: auto;\n\theight: auto;\n\n\tfont-size: 16px;\n\tcolor: #EEE;\n\n}"]],"start1":0,"start2":0,"length1":0,"length2":146}]],"length":146}
+{"contributors":[],"silentsave":false,"ts":1369487656943,"patch":[[{"diffs":[[0,"e: 1"],[-1,"6"],[1,"2"],[0,"px;\n"]],"start1":121,"start2":121,"length1":9,"length2":9}]],"length":146,"saved":false}

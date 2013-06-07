@@ -23,7 +23,7 @@
 window.mmo.Network.FileDescriptor = function () {
     return (function () {
         if (window.WebSocket) {
-            var ws = new WebSocket(window.mmo.SERVER_ADDR + ":" + window.mmo.SERVER_PORT);
+            var ws = new WebSocket('ws://'+window.mmo.SERVER_ADDR + ":" + window.mmo.SERVER_PORT);
         }
         else {
             console.log('Votre navigateur ne supporte pas les webSocket!');
