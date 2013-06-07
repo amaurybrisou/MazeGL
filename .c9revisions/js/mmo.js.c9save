@@ -1,6 +1,0 @@
-{"ts":1369419324423,"silentsave":true,"restoring":false,"patch":[[{"diffs":[[1,"var mmo = (function(){\n    //define mmo statics properties;\n    return {\n    \n    };\n})();"]],"start1":0,"start2":0,"length1":0,"length2":90}]],"length":90}
-{"contributors":[],"silentsave":false,"ts":1369471011054,"patch":[[{"diffs":[[0,"rn {"],[-1,"\n    \n    "],[0,"};\n}"]],"start1":68,"start2":68,"length1":18,"length2":8}]],"length":80,"saved":false}
-{"ts":1369471036039,"patch":[[{"diffs":[[0,"tion(){\n"],[1,"    var print;\n"],[0,"    //de"]],"start1":15,"start2":15,"length1":16,"length2":31},{"diffs":[[0,"return {"],[1,"\n        \n        "],[0,"};\n})();"]],"start1":79,"start2":79,"length1":16,"length2":34}]],"length":113,"saved":false}
-{"ts":1369471321685,"patch":[[{"diffs":[[0,"(){\n"],[-1,"    var print;\n"],[0,"    "]],"start1":19,"start2":19,"length1":23,"length2":8}]],"length":98,"saved":false}
-{"contributors":[],"silentsave":false,"ts":1369563778724,"patch":[[{"diffs":[[0,"eturn {\n"],[-1,"        "],[0,"\n       "]],"start1":65,"start2":65,"length1":24,"length2":16}]],"length":90,"saved":false}
-{"contributors":[],"silentsave":false,"ts":1369889415436,"patch":[[{"diffs":[[0,"eturn {\n"],[1,"            "],[0,"\n       "]],"start1":65,"start2":65,"length1":16,"length2":28}]],"length":102,"saved":false}
