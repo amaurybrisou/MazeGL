@@ -1,0 +1,35 @@
+{
+  "author": "Thomas Goguelin & Amaury Brisou <amaury.brisou@gmail.com> (http://puzzledge.org)",
+  "name": "mmo",
+  "description": "WebGL Multiplayer Game Project",
+  "version": "0.0.0",
+  "homepage": "http://puzeeldge.org",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/amaurybrisou/WebGL_Server.git"
+    },
+    "main": "init.js",
+    "scripts": {
+      "test": "mocha test/*.js"
+    },
+    "dependencies": {
+     "three" : "",
+     "websocket" : "",
+     "connect": "",
+     "connect-assetmanager": "",
+     "connect-assetmanager-handlers": ""
+     },
+
+     "devDependencies": {
+       "mocha": "",
+       "three" : "",
+       "websocket" : "",
+       "connect": "",
+       "connect-assetmanager": "",
+       "connect-assetmanager-handlers": ""
+       },
+       "optionalDependencies": {},
+       "engines": {
+        "node": "*"
+      }
+}

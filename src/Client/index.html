@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+
+        <title>Stones</title>
+
+        <link rel="stylesheet" href="css/main.css" type="text/css" media="screen" />
+
+        <script type="text/javascript" src="js/libs/three.js"></script>
+        <script type="text/javascript" src="js/libs/ColladaLoader.js"></script>
+        <script type="text/javascript" src="js/libs/THREEx.KeyboardState.js"></script>
+                <script type="text/javascript" src="js/libs/firstPersonnControls.js"></script>
+
+
+
+        <!-- Load First Level Namespaces -->
+
+        <script type="text/javascript" src="js/mmo.js"></script>
+
+        <script type="text/javascript" src="js/Logger/Logger.js"></script>
+        <script type="text/javascript" src="js/Logger/StdoutLogger.js"></script>
+
+        <!-- Load Second Level Namespaces -->
+        <script type="text/javascript" src="js/Loader/Loader.js"></script>
+        <script type="text/javascript" src="js/Shaders/Shaders.js"></script>
+        <script type="text/javascript" src="js/Attributes/Attributes.js"></script>
+        <script type="text/javascript" src="js/Loader/ColladaLoader.js"></script>
+        <script type="text/javascript" src="js/Builders/Builders.js"></script>
+        <script type="text/javascript" src="js/Network/Network.js"></script>
+        <script type="text/javascript" src="js/Materials/Materials.js"></script>
+        <script type="text/javascript" src="js/Lights/Lights.js"></script>
+        <script type="text/javascript" src="js/World_Objects/World_Objects.js"></script>
+        <script type="text/javascript" src="js/World/World.js"></script>
+        <script type="text/javascript" src="js/Avatar/Avatar.js"></script>
+        <script type="text/javascript" src="js/Global.js"></script>
+        <script type="text/javascript" src="js/Events/Events.js"></script>
+
+        <script type="text/javascript" src="js/Events/KeyboardEvents/KeyboardEvents.js"></script>
+        <script type="text/javascript" src="js/Events/MouseEvents/MouseEvents.js"></script>
+
+
+        <script type="text/javascript" src="js/Events/KeyboardEvents/Avatar_kb.js"></script>
+        <script type="text/javascript" src="js/Events/MouseEvents/Avatar_mo.js"></script>
+        <script type="text/javascript" src="js/World_Objects/Camera.js"></script>
+
+        <script type="text/javascript" src="js/Renderer/Renderer.js"></script>
+
+        <script type="text/javascript" src="js/Materials/Sun_mat.js"></script>
+
+        <script type="text/javascript" src="js/Materials/Origin_mat.js"></script>
+        <script type="text/javascript" src="js/Materials/Stone_mat.js"></script>
+        <script type="text/javascript" src="js/Materials/Planet_mat.js"></script>
+
+        <script type="text/javascript" src="js/Builders/WorldBuilder.js"></script>
+
+        <script type="text/javascript" src="js/Attributes/Origin_attr.js"></script>
+        <script type="text/javascript" src="js/World_Objects/Sun.js"></script>
+
+        <script type="text/javascript" src="js/World_Objects/Fog.js"></script>
+
+
+
+
+
+        <!-- Load Third Level Namespaces -->
+        <script type="text/javascript" src="js/Materials/Avatar_mat.js"></script>
+        <script type="text/javascript" src="js/Attributes/Avatar_attr.js"></script>
+
+        <script type="text/javascript" src="js/Avatar/FirstAvatar.js"></script>
+        <script type="text/javascript" src="js/Avatar/Avatar_daemon.js"></script>
+
+        <script type="text/javascript" src="js/Builders/AvatarBuilder.js"></script>
+
+        <script type="text/javascript" src="js/Attributes/Stone_attr.js"></script>
+        <script type="text/javascript" src="js/World_Objects/Stone.js"></script>
+        <script type="text/javascript" src="js/Builders/StoneBuilder.js"></script>
+
+        <script type="text/javascript" src="js/World/FirstWorld.js"></script>
+
+
+
+        <script type="text/javascript" src="js/Network/FileDescriptor.js"></script>
+
+
+
+        <script type="text/javascript" src="js/Avatar/Avatar_debug.js"></script>
+
+        
+        <script type="text/javascript" src="js/init.js"></script>
+
+    </head>
+
+    <body>
+
+        <div id="canvasCont">
+        </div>
+
+        <div id="infos">
+            time :
+        </div>
+
+
+        <!-- STONE SHADER -->
+        <script id="stonevertexshader" type="x-shader/x-vertex">
+            uniform float amplitude;
+            attribute float displacement;
+            varying vec3 vNormal;
+
+            void main() {
+
+                // set the vNormal value with the attribute value passed in by Three.js
+                vNormal = normal;
+
+                vec3 newPosition = position + normal * vec3(displacement*amplitude);
+
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition,1.0);
+            }
+
+        </script>
+
+        <script id="stonefragmentshader" type="x-shader/x-vertex">
+            uniform float lightPosX;
+            uniform float lightPosY;
+            uniform float lightPosZ;
+            uniform float lightColor;
+            uniform float darkness;
+            varying vec3 vNormal;
+
+            void main() {
+                // calc the dot product and clamp
+                // 0 -> 1 rather than -1 -> 1
+                vec3 light = vec3(lightPosX,lightPosY,lightPosZ);
+
+                // ensure it's normalized
+                light = normalize(light);
+
+                // calculate the dot product of
+                // the light to the vertex normal
+                float dProd = max(darkness, dot(vNormal, light)*lightColor);
+
+                // feed into our frag colour
+                gl_FragColor = vec4(dProd, dProd, dProd, 1.0);
+            }
+
+        </script>
+
+
+    </body>
+
+</html>

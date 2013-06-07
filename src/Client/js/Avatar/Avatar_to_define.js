@@ -1,0 +1,39 @@
+(function(){
+    //load Builders
+    window.mmo.Avatar.Avatar_v1 = function(){
+        var f = function(){
+            if(typeof window.mmo == "undefined"){
+                window.Logger.log(window.Level.PIZZA,"Namespace mmo not Loaded", this);
+                return false;
+            } else if(typeof window.mmo.Avatar == "undefined"){
+                window.Logger.log(window.Level.COFFE,"Namespace mmo Altered", this);
+                return false;
+            }
+            return true;
+        };
+
+        if (!f()){
+            return;
+        }
+    }
+})();
+
+
+window.mmo.Avatar.Avatar_to_define = function(material, x, y, z, config, model_path){
+    window.mmo.Avatar.call(this);
+
+    model_path = null;
+
+    var cube = new window.THREE.Mesh(
+        new window.THREE.CubeGeometry(200, 200, 200),
+        new window.THREE.MeshBasicMaterial({
+        color: 'red'
+      }));
+
+      cube.rotation.x = Math.PI * 0.1;
+
+    return cube;
+
+}
+
+window.mmo.Avatar.Avatar_to_define.prototype = Object.create(window.mmo.Avatar.prototype);
