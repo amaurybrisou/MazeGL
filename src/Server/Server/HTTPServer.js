@@ -20,7 +20,8 @@ var HTTPServer = (function(){
 					return;
 				}
 
-				if (fs.statSync(filename).isDirectory()) filename += '/index.html';
+				if (fs.statSync(filename).isDirectory()) 
+					filename += '/index.html';
 
 				fs.readFile(filename, "binary", function(err, file) {
 					if(err) {
@@ -37,7 +38,7 @@ var HTTPServer = (function(){
 			});
 		}).listen(port, address, function(){
 				var address = httpServer.address();
-				console.log("Server Bound on "+address.address+":"+address.port);
+				console.log("HTTP Server Bound on "+address.address+":"+address.port);
 		});
 
 		return httpServer;

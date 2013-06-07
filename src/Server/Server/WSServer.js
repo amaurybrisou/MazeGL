@@ -11,7 +11,7 @@ var WSServer = (function(){
 	return function(address, port){	
 		http_server.listen(port, address, function() {
 			var address = http_server.address();
-			console.log("Server Bound on "+address.address+":"+address.port);
+			console.log("WebSocket Server Bound on "+address.address+":"+address.port);
 		});
 
 		// create the http_server

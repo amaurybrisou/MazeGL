@@ -7,7 +7,7 @@ var Client = (function(){
     return function(){
     this.target = new THREE.Vector3( 0, 0, 0 );
 
-    this.movementSpeed = 40;
+    this.movementSpeed = 30;
     this.lookSpeed = 0.05;
 
     this.noFly = false;
