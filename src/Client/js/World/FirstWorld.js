@@ -31,7 +31,7 @@ window.mmo.World.FirstWorld = function() {
     window.mmo.RENDERER             = window.mmo.Renderer();
 
      //NETWORK   SERVER CLOUD9
-    window.mmo.SERVER_ADDR =  '127.6.24.1';
+    window.mmo.SERVER_ADDR =  '94.23.199.5';
     window.mmo.SERVER_PORT =  9999;
 
     //SERVER AMAURY
