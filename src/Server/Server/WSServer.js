@@ -37,11 +37,12 @@ var WSServer = (function(){
 
 			var con;
 			connection.on('message', function(message) {
-				if (message.type === 'utf8' && message.utf8Data !== "") {
-					recv_data = JSON.parse(message.utf8Data);
-					return_data = ServerRequest(new_client, recv_data);
-					if(return_data !== undefined){
-                        setInterval(function() {
+				setInterval(function() {
+					if (message.type === 'utf8' && message.utf8Data !== "") {
+						recv_data = JSON.parse(message.utf8Data);
+						return_data = ServerRequest(new_client, recv_data);
+						if(return_data !== undefined){
+                        
                             new_client.con.send(JSON.stringify(return_data))    
                         }, Configuration.__FRAMERATE__); //30fps 
 						
