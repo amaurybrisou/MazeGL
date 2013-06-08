@@ -107,7 +107,7 @@ window.mmo.World = function() {
 
         // animate
         window.mmo.avatar_obj.animate();
-        //window.mmo.camera.animate();
+        window.mmo.camera.animate();
         window.mmo.SUN.animate(t);
         // color ratios
         if (Math.cos(t / window.mmo.DAY_NIGHT_SPEED) + 0.06 >= window.mmo.DARKNESS) {

@@ -42,20 +42,17 @@ window.mmo.World_Objects.Camera = function () {
 
         that.lookAt(window.mmo.avatar_obj.position);
 
-
         window.mmo.avatar_obj.add(window.mmo.camera);
 
     };
 
     this.animate = function () {
 
-        that.position.x = window.mmo.avatar_obj.position.x;
-        that.position.y = window.mmo.avatar_obj.position.y; + window.mmo.AVATAR_SCALE * window.mmo.CAM_POS_RATIO / 4;
-        that.position.z = window.mmo.avatar_obj.position.z; + window.mmo.AVATAR_SCALE * window.mmo.CAM_POS_RATIO;
-
+        that.position.set(window.mmo.avatar_obj.position.x, window.mmo.avatar_obj.position.y, window.mmo.avatar_obj.position.z);
         that.lookAt(window.mmo.avatar_obj.position);
-
-        //window.mmo.avatar_obj.add(window.mmo.camera);
+        that.position.x = window.mmo.AVATAR_SCALE/2;
+        that.position.y = window.mmo.AVATAR_SCALE;
+        that.position.z = window.mmo.AVATAR_SCALE * 4;
 
 
     };
