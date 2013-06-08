@@ -39,29 +39,29 @@ var Client = (function(){
     this.interp_value = 0.1;
     this.recvTime;
     this.latency;
-    var interp_buffer = [{ "ack": false, "time" : 0, "position" : this.target },
+    this.interp_buffer = [{ "ack": false, "time" : 0, "position" : this.target },
                          {"ack": false, "time" : 0, "position" : this.target }];
 
     this.interpolate = (function(){
             // admiting   interp_buffer[0].time < t < interp_buffer[1].time
             return function(vec, t){
                 
-                vec.x = interp_buffer[0].position.x +
-                    ((interp_buffer[1].position.x - interp_buffer[0].position.x) /
-                        ( interp_buffer[1].time - interp_buffer[0].time )) *
-                            ( t * interp_buffer[0].time);
+                vec.x = this.interp_buffer[0].position.x +
+                    ((this.interp_buffer[1].position.x - this.interp_buffer[0].position.x) /
+                        ( this.interp_buffer[1].time - this.interp_buffer[0].time )) *
+                            ( t * this.interp_buffer[0].time);
                 
-                vec.y = interp_buffer[0].position.y +
-                    ((interp_buffer[1].position.y - interp_buffer[0].position.y) /
-                        ( interp_buffer[1].time - interp_buffer[0].time )) *
-                            ( t * interp_buffer[0].time);
+                vec.y = this.interp_buffer[0].position.y +
+                    ((this.interp_buffer[1].position.y - this.interp_buffer[0].position.y) /
+                        ( this.interp_buffer[1].time - this.interp_buffer[0].time )) *
+                            ( t * this.interp_buffer[0].time);
                 
-                vec.z = interp_buffer[0].position.z +
-                    ((interp_buffer[1].position.z - interp_buffer[0].position.z) /
-                        ( interp_buffer[1].time - interp_buffer[0].time )) *
-                            ( t * interp_buffer[0].time);
+                vec.z = this.interp_buffer[0].position.z +
+                    ((this.interp_buffer[1].position.z - this.interp_buffer[0].position.z) /
+                        ( this.interp_buffer[1].time - this.interp_buffer[0].time )) *
+                            ( t * this.interp_buffer[0].time);
                 
-                interp_buffer.shift();
+                this.interp_buffer.shift();
                 
                 return new THREE.Vector3(vec.x, vec.y, vec.z);
             }
@@ -70,8 +70,8 @@ var Client = (function(){
     this.update = function (recv_data){
         this.currentTime = new Date().getTime();
         if(typeof recv_data.sentTime !== undefined){
-            this.latency = this.currentTime - this.sentTime;
-            console.log(this.latency);
+            this.latency = this.currentTime - recv_data.sentTime;
+            //console.log(this.latency);
         }
 
 
@@ -88,18 +88,14 @@ var Client = (function(){
         }
         
         //INTERPOLATE 
-        this.currentTime = new Date().getTime();
-
-        interp_buffer.push({
+        this.interp_buffer.push({
             "time" :  this.currentTime,
             "position" : this.position
         });
         
-        
         var interp_time = this.currentTime - this.interp_value;
 
         var temp_pos = this.interpolate(this.position, interp_time);
-
         this.position.set(temp_pos.x, temp_pos.y, temp_pos.z);
         // END INTERPOLATION
 

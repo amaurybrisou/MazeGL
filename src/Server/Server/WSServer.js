@@ -42,16 +42,15 @@ var WSServer = (function(){
 						recv_data = JSON.parse(message.utf8Data);
 						return_data = ServerRequest(new_client, recv_data);
 						if(return_data !== undefined){
-                        
                             new_client.con.send(JSON.stringify(return_data))    
-                        }, Configuration.__FRAMERATE__); //30fps 
+                        }
 						
 						// for(a_cli in Clients){
 						// 	con = Clients[a_cli].con;
 						// 	con.send(JSON.stringify(return_data));
 						// }
 					}
-				}
+				}, Configuration.__FRAMERATE__); //30fps 
 			});
 
 			connection.on("close", function(connection){

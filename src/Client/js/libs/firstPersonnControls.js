@@ -301,7 +301,7 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
     
 
     this.update = function (delta) {
-        if(that.moveBackward ||
+        if(that.onMouseMove || that.moveBackward ||
             that.moveLeft || that.moveRight ||
             that.moveForward || that.moveDown ||
             that.mouveUp || that.moveLeft ){
@@ -344,23 +344,23 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
                 window.mmo.FileDescriptor.send(JSON.stringify(u_struct));
             }
         }   
-        if(that.onMouseMove){
-            this.local_move(delta);
-        }     
+        // if(that.onMouseMove){
+        //     this.local_move(delta);
+        // }     
     };
     
     this.move = function(positions){
-        if(typeof positions.sentTime !== undefined){
-            that.latency = that.sentTime - positions.sentTime;
-            console.log("Latency : "+that.latency);
-        }
-        
+        // if(typeof pos.sentTime !== undefined){
+        //     that.latency = that.sentTime - pos.sentTime;
+        //     console.log("Latency : "+that.latency);
+        // }
 
-
-        // that.object.lookAt(positions.TargetPosition);
-        // that.object.position.x = positions.AvatarPosition.x;
-        // that.object.position.y = positions.AvatarPosition.y;
-        // that.object.position.z = positions.AvatarPosition.z;
+        console.log(positions.TargetPosition);
+        console.log(positions.AvatarPosition);
+        this.object.lookAt(positions.TargetPosition);
+        this.object.position.x = positions.AvatarPosition.x;
+        this.object.position.y = positions.AvatarPosition.y;
+        this.object.position.z = positions.AvatarPosition.z;
     };
 
     this.local_move = function(delta){

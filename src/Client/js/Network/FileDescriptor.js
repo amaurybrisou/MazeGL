@@ -35,10 +35,10 @@ window.mmo.Network.FileDescriptor = function () {
             Logger.log(Level.INFO, "Connection Established", "FileDescriptor");
         };
 
-        var obj, data, received_msg;
+        var  data, received_msg;
         ws.onmessage = function (evt) {
             received_msg = evt.data;
-
+            console.log(received_msg);
             data = JSON.parse(received_msg);
 
             if(data[0] === "init" && typeof data[1] !== undefined){
@@ -46,17 +46,21 @@ window.mmo.Network.FileDescriptor = function () {
                 return;
             }
 
-            while(data.length > 0){
-                obj = data.shift();
-
-                if(typeof obj.TargetPosition !== undefined
-                 && typeof obj.AvatarPosition !== undefined){
+            // if(typeof received_msg.TargetPosition !== undefined
+            //      && typeof received_msg.AvatarPosition !== undefined){
+            //         window.mmo.avatar_controls.move(data);
+            // }
+            // while(data.length > 0){
+            //     obj = data.shift();
+            //     console.log(obj);
+            //     if(typeof obj.TargetPosition !== undefined
+            //      && typeof obj.AvatarPosition !== undefined){
                     
-                    //window.mmo.avatar_controls.move(obj);
-                }
+            //         window.mmo.avatar_controls.move(obj);
+            //     }
 
                  
-            }
+            // }
         };
         ws.onclose = function (e) {
             if (!e.wasClean) {

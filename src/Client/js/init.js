@@ -60,5 +60,5 @@ window.onload = function () {
                 // end burning
             }, window.mmo.__FRAMERATE__);
         })(loop);
-    }, 50);
+    }, 150);
 };
