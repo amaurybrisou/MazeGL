@@ -23,13 +23,22 @@ window.mmo.World.FirstWorld = function() {
     window.mmo.WORLD_TYPE           = window.mmo.World.FirstWorld;
 
     //FRAMERATE
-    window.mmo.__FRAMERATE__ =  1000 / 60;
+    window.mmo.__FRAMERATE__ =  1000 / 30;
     //WINDOW
     window.mmo.SCREEN_SIZE_RATIO    = 100;
     window.mmo.WIDTH                = window.innerWidth - window.mmo.SCREEN_SIZE_RATIO;
     window.mmo.HEIGHT               = window.innerHeight - window.mmo.SCREEN_SIZE_RATIO;
     window.mmo.RENDERER             = window.mmo.Renderer();
 
+     //NETWORK   SERVER CLOUD9
+    window.mmo.SERVER_ADDR =  '127.6.24.1';
+    window.mmo.SERVER_PORT =  9999;
+
+    //SERVER AMAURY
+    //window.mmo.SERVER_ADDR = 'ws://192.168.1.7';
+    //window.mmo.SERVER_PORT =  9999;
+
+    window.mmo.FileDescriptor = window.mmo.Network.FileDescriptor();
 
     //COLORS
     window.mmo.BLACK                    = 0xFFFFFF;
@@ -94,11 +103,11 @@ window.mmo.World.FirstWorld = function() {
 
 
     //CAMERA
-    window.mmo.VIEW_ANGLE       = 60;
+    window.mmo.VIEW_ANGLE       = 100;
     window.mmo.ASPECT           = window.mmo.WIDTH / window.mmo.HEIGHT;
     window.mmo.NEAR             = 0.1;
     window.mmo.FAR              = window.mmo.WORLDSIZE;
-    window.mmo.CAM_ROT_SPEED    = 20000;
+    window.mmo.CAM_ROT_SPEED    = 2000;
     window.mmo.CAM_POS_X        = 50
     window.mmo.CAM_POS_Y        = 20;
     window.mmo.CAM_POS_Z        = -10;
@@ -120,16 +129,6 @@ window.mmo.World.FirstWorld = function() {
     //ambient light
     window.mmo.AMBIENT_LIGHT                = 0xeeeeee;
 
-
-    //NETWORK   SERVER CLOUD9
-    window.mmo.SERVER_ADDR =  '127.6.24.1';
-    window.mmo.SERVER_PORT =  9999;
-
-    //SERVER AMAURY
-    //window.mmo.SERVER_ADDR = 'ws://192.168.1.7';
-    //window.mmo.SERVER_PORT =  9999;
-
-    window.mmo.FileDescriptor = window.mmo.Network.FileDescriptor();
     
     //AVATAR I
     window.mmo.AVATAR_TYPE                      = window.mmo.Avatar.FirstAvatar;
@@ -150,7 +149,6 @@ window.mmo.World.FirstWorld = function() {
     window.mmo.AVATAR_II_NO_FLY                   = true;
     window.mmo.AVATAR_II_TRANS_VIEW_INCREMENT     = 40;
     window.mmo.AVATAR_II_ROT_VIEW_INCREMENT       = 0.09;
-
 
     this.animate = function(t, position){
         this.SUN.animate(t, position, this.WORLDSIZE, this.FAR);

@@ -104,7 +104,75 @@ window.mmo.World = function() {
     };
 
     this.animate = function(t, position){
-        window.mmo.sun.animate(t, window.mmo.position, window.mmo.WORLDSIZE);
+
+        // animate
+        window.mmo.avatar_obj.animate();
+        //window.mmo.camera.animate();
+        window.mmo.SUN.animate(t);
+        // color ratios
+        if (Math.cos(t / window.mmo.DAY_NIGHT_SPEED) + 0.06 >= window.mmo.DARKNESS) {
+            window.mmo.BC = Math.cos(t / window.mmo.DAY_NIGHT_SPEED) + 0.06;
+        }
+        else {
+            window.mmo.BC = window.mmo.DARKNESS;
+        }
+        if (Math.cos(t / window.mmo.DAY_NIGHT_SPEED) + 0.06 >= window.mmo.LIGHTNESS) {
+            window.mmo.BC = window.mmo.LIGHTNESS;
+        }
+
+
+        if (Math.cos(t / window.mmo.DAY_NIGHT_SPEED) >= window.mmo.DARKNESS) {
+            window.mmo.SC = Math.cos(t / window.mmo.DAY_NIGHT_SPEED);
+        }
+        else {
+            window.mmo.SC = window.mmo.DARKNESS;
+        }
+        if (Math.cos(t / window.mmo.DAY_NIGHT_SPEED) >= window.mmo.LIGHTNESS) {
+            window.mmo.SC = window.mmo.LIGHTNESS;
+        }
+
+        if (-Math.cos(t / window.mmo.DAY_NIGHT_SPEED) >= window.mmo.DARKNESS) {
+            window.mmo.SEC = -Math.cos(t / window.mmo.DAY_NIGHT_SPEED);
+        }
+        else {
+            window.mmo.SEC = window.mmo.DARKNESS;
+        }
+        if (-Math.cos(t / window.mmo.DAY_NIGHT_SPEED) >= window.mmo.LIGHTNESS) {
+            window.mmo.SEC = window.mmo.LIGHTNESS;
+        }
+
+
+        // background color
+        window.mmo.BG_COLOR.setRGB(window.mmo.BC, window.mmo.BC, window.mmo.BC);
+
+        window.mmo.RENDERER.setClearColor(window.mmo.BG_COLOR, 1.0);
+
+        // floor color
+        window.mmo.PLANET_MAT.color.setRGB(window.mmo.SC, window.mmo.SC, window.mmo.SC);
+
+        // stones color
+        window.mmo.STONES_FACES_MAT.color.setRGB(window.mmo.SC, window.mmo.SC, window.mmo.SC);
+
+        // stones edges color
+        window.mmo.STONES_EDGES_MAT.color.setRGB(window.mmo.SEC, window.mmo.SEC, window.mmo.SEC);
+
+        // fog color
+        this.fog.color.setRGB(window.mmo.SEC, window.mmo.SEC, window.mmo.SEC);
+
+
+
+
+        // main light and sun movements
+        window.mmo.MAIN_LIGHT.position.y = Math.cos(t / window.mmo.DAY_NIGHT_SPEED) * window.mmo.FAR / 2;
+        /*    window.mmo.sun.position.y = Math.cos(t/day_night_speed)*FAR/4;
+        */
+        window.mmo.MAIN_LIGHT.position.x = Math.sin(t / window.mmo.DAY_NIGHT_SPEED) * window.mmo.WORLDSIZE / 2;
+        /*    window.mmo.sun.position.x = Math.sin(t/day_night_speed)*WORLDSIZE/1.8;
+        */
+
+        window.mmo.MAIN_LIGHT.lookAt(window.mmo.position);
+        //window.mmo.SUN.lookAt(window.mmo.position);
+
     };
 };
 

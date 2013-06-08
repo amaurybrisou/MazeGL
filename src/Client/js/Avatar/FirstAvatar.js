@@ -54,8 +54,8 @@ window.mmo.Avatar.FirstAvatar = function (x, y, z) {
 
 
     // define controls
-    window.mmo.avatar_controls = this.avatar_controls = window.mmo.Events.getAvatarControls(this, window.mmo.SCREEN_SIZE_RATIO);
-    //this.fd = window.mmo.FileDescriptor;
+    window.mmo.avatar_controls = this.avatar_controls =
+        window.mmo.Events.getAvatarControls(this, window.mmo.SCREEN_SIZE_RATIO);
 
     var that = this;
 

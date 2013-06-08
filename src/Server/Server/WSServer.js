@@ -1,7 +1,8 @@
 var WebSocketServer = require('websocket').server;
 var http = require('http');
 var ServerRequest = require('./WSServerRequest.js').ServerRequest;
-var Client = require('../Client/Client.js').Client;
+var Client = require('../Client/Client.js');
+var Configuration = require('../../Config/Configuration.js');
 
 var WSServer = (function(){
 	var http_server = http.createServer(function(request, response) {})
@@ -29,8 +30,10 @@ var WSServer = (function(){
 
 			var connection = request.accept();
 
-			var new_client = { con : connection, cli : new Client() };
+				var new_client = { con : connection, cli : Client() };
 			Clients.push(new_client);
+
+			connection.send(JSON.stringify(["init", Configuration]));
 
 			var con;
 			connection.on('message', function(message) {
@@ -38,9 +41,9 @@ var WSServer = (function(){
 					recv_data = JSON.parse(message.utf8Data);
 					return_data = ServerRequest(new_client, recv_data);
 					if(return_data !== undefined){
-                        setTimeout(function() {
+                        setInterval(function() {
                             new_client.con.send(JSON.stringify(return_data))    
-                        }, 3);
+                        }, Configuration.__FRAMERATE__); //30fps 
 						
 						// for(a_cli in Clients){
 						// 	con = Clients[a_cli].con;

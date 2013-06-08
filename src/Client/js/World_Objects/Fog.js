@@ -24,7 +24,6 @@ window.mmo.World_Objects.Fog_obj = function(){
     this.color.setRGB()
     this.setDensity(window.mmo.FOG_DENSITY);
     
-    console.log(this)
 }
 
 window.mmo.World_Objects.Sun_obj.prototype = Object.create(window.THREE.Mesh.prototype);

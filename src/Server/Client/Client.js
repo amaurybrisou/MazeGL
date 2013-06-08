@@ -1,4 +1,5 @@
-var Utils = require('../Utils/Utils.js').Utils;
+var Utils = require('../Utils/Utils.js');
+var Configuration = require('../../Config/Configuration.js');
 var THREE = require('three');
 
 
@@ -7,24 +8,13 @@ var Client = (function(){
     return function(){
     this.target = new THREE.Vector3( 0, 0, 0 );
 
-    this.movementSpeed = 30;
-    this.lookSpeed = 0.05;
+    for(var config in Configuration){
+        this[config] = Configuration[config];
+    }
 
-    this.noFly = false;
-    this.lookVertical = false;
-    this.autoForward = false;
-
-    this.activeLook = true;
-
-    this.heightSpeed = false;
-    this.heightCoef = 1.0;
-    this.heightMin = 0.0;
-
-    this.constrainVertical = true;
-    this.verticalMin = 0;
-    this.verticalMax = Math.PI;
-
-    this.autoSpeedFactor = 0.0;
+    for(var util in Utils){
+        this[util] = Utils[util];
+    }
 
     this.mouseX = 0;
     this.mouseY = 0;
@@ -45,13 +35,45 @@ var Client = (function(){
     this.moveDown = false;
     this.AvatarPosition = new THREE.Vector3(0,0,0);
 
-    this.freeze = false;
+    this.currentTime = new Date().getTime();
+    this.interp_value = 0.1;
+    this.recvTime;
+    this.latency;
+    var interp_buffer = [{ "ack": false, "time" : 0, "position" : this.target },
+                         {"ack": false, "time" : 0, "position" : this.target }];
 
-    for(util in Utils){
-        this[util] = Utils[util];
-    }
+    this.interpolate = (function(){
+            // admiting   interp_buffer[0].time < t < interp_buffer[1].time
+            return function(vec, t){
+                
+                vec.x = interp_buffer[0].position.x +
+                    ((interp_buffer[1].position.x - interp_buffer[0].position.x) /
+                        ( interp_buffer[1].time - interp_buffer[0].time )) *
+                            ( t * interp_buffer[0].time);
+                
+                vec.y = interp_buffer[0].position.y +
+                    ((interp_buffer[1].position.y - interp_buffer[0].position.y) /
+                        ( interp_buffer[1].time - interp_buffer[0].time )) *
+                            ( t * interp_buffer[0].time);
+                
+                vec.z = interp_buffer[0].position.z +
+                    ((interp_buffer[1].position.z - interp_buffer[0].position.z) /
+                        ( interp_buffer[1].time - interp_buffer[0].time )) *
+                            ( t * interp_buffer[0].time);
+                
+                interp_buffer.shift();
+                
+                return new THREE.Vector3(vec.x, vec.y, vec.z);
+            }
+        }());
 
     this.update = function (recv_data){
+        this.currentTime = new Date().getTime();
+        if(typeof recv_data.sentTime !== undefined){
+            this.latency = this.currentTime - this.sentTime;
+            console.log(this.latency);
+        }
+
 
         //retrieve request variables into 'this'
         for(key in recv_data){
@@ -65,6 +87,22 @@ var Client = (function(){
             }
         }
         
+        //INTERPOLATE 
+        this.currentTime = new Date().getTime();
+
+        interp_buffer.push({
+            "time" :  this.currentTime,
+            "position" : this.position
+        });
+        
+        
+        var interp_time = this.currentTime - this.interp_value;
+
+        var temp_pos = this.interpolate(this.position, interp_time);
+
+        this.position.set(temp_pos.x, temp_pos.y, temp_pos.z);
+        // END INTERPOLATION
+
         var actualMoveSpeed = 0;
 
         if (!this.freeze) {
@@ -178,11 +216,11 @@ var Client = (function(){
     TargetPosition.y = position.y + 100 * Math.cos(this.phi);
     TargetPosition.z = position.z + 100 * Math.sin(this.phi) * Math.sin(this.theta);
     
-    return {'TargetPosition' : TargetPosition, 'AvatarPosition' : this.position};
+    return { 'TargetPosition' : TargetPosition, 'AvatarPosition' : this.position};
 
     };
     return this;
-}
+};
 }());
 
-module.exports.Client = Client;
+module.exports = Client;

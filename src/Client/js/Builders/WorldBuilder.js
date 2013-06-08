@@ -73,6 +73,12 @@ window.mmo.Builders.WorldBuilder = function () {
     // build fog
     this.fog = window.mmo.FOG;
     
+    window.mmo.shadowMapEnabled = true;
+
+    window.mmo.RENDERER.setClearColor(window.mmo.BG_COLOR, 1.0);
+    window.mmo.RENDERER.clear();
+
+    window.mmo.camera.lookAt(window.mmo.position);
     
     
     //this.camera = config.camera;

@@ -26,12 +26,13 @@ window.mmo.Network.FileDescriptor = function () {
             var ws = new WebSocket('ws://'+window.mmo.SERVER_ADDR + ":" + window.mmo.SERVER_PORT);
         }
         else {
-            console.log('Votre navigateur ne supporte pas les webSocket!');
+            Logger.log(Level.INFO,'Votre navigateur ne supporte pas les webSocket!',
+             "FileDescriptor");
             return null;
         }
 
         ws.onopen = function () {
-
+            Logger.log(Level.INFO, "Connection Established", "FileDescriptor");
         };
 
         var obj, data, received_msg;
@@ -39,12 +40,19 @@ window.mmo.Network.FileDescriptor = function () {
             received_msg = evt.data;
 
             data = JSON.parse(received_msg);
-            
+
+            if(data[0] === "init" && typeof data[1] !== undefined){
+                window.mmo.srv = data[1];
+                return;
+            }
+
             while(data.length > 0){
                 obj = data.shift();
-                if(typeof obj.TargetPosition !== "undefined"
-                 && typeof obj.AvatarPosition !== "undefined"){
-                    window.mmo.avatar_controls.move(obj);
+
+                if(typeof obj.TargetPosition !== undefined
+                 && typeof obj.AvatarPosition !== undefined){
+                    
+                    //window.mmo.avatar_controls.move(obj);
                 }
 
                  
@@ -52,9 +60,9 @@ window.mmo.Network.FileDescriptor = function () {
         };
         ws.onclose = function (e) {
             if (!e.wasClean) {
-                console.log(e.code + " " + e.reason);
+                Logger.log(Level.SEVERE, e.code + " " + e.reason, "FileDescriptor");
             }
-            console.log("Connection is closed...");
+            Logger.log(Level.INFO, "Connection is closed...", "FileDescriptor");
         };
 
         return ws;

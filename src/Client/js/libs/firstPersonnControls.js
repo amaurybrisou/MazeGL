@@ -12,28 +12,32 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
 
     this.domElement = (domElement !== undefined) ? domElement : document;
 
-    this.movementSpeed = 1.0;
-    this.lookSpeed = 0.05;
+    //Configuration Obtains from the server
+    this.movementSpeed = window.mmo.srv.movementSpeed;
+    this.lookSpeed = window.mmo.srv.lookSpeed;
+    this.noFly = window.mmo.srv.noFly;
+    this.lookVertical = window.mmo.srv.lookVertical;
+    this.autoForward = window.mmo.srv.autoForward;
+    this.activeLook = window.mmo.srv.activeLook;
+    this.heightSpeed = window.mmo.srv.heightSpeed;
+    this.heightCoef = window.mmo.srv.heightCoef;
+    this.heightMin = window.mmo.srv.heightMin;
+    this.constrainVertical = window.mmo.srv.constrainVertical;
+    this.verticalMin = window.mmo.srv.verticalMin;
+    this.verticalMax = window.mmo.srv.verticalMax;
+    this.autoSpeedFactor = window.mmo.srv.autoSpeedFactor;
+    this.freeze = window.mmo.srv.freeze;
 
-    this.noFly = false;
-    this.lookVertical = window.mmo.LOOK_VERTICAL;
-    this.autoForward = false;
+    this.currentTime = new Date().getTime();
+    this.interp_value = window.mmo.srv.interp_value;
+    this.recvTime;
+    this.latency;
+    var interp_buffer = [{ "ack": false, "time" : 0, "position" : this.target },
+                         {"ack": false, "time" : 0, "position" : this.target }];
 
-    this.activeLook = true;
-
-    this.heightSpeed = false;
-    this.heightCoef = 1.0;
-    this.heightMin = 0.0;
-
-    this.constrainVertical = false;
-    this.verticalMin = 0;
-    this.verticalMax = Math.PI;
-
-    this.autoSpeedFactor = 0.0;
-
-    this.mouseX = 0;
-    this.mouseY = 0;
-    this.mouseWheel = 0;
+    // end Conf server
+    // Destroy window object;
+    window.mmo.srv = undefined;
 
     this.lat = 0;
     this.lon = 0;
@@ -44,8 +48,11 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
     this.moveBackward = false;
     this.moveLeft = false;
     this.moveRight = false;
-    this.freeze = false;
     this.mouseDragOn = false;
+    this.mouseX = 0;
+    this.mouseY = 0;
+    this.mouseWheel = 0;
+
     
 
     if (that.domElement === document) {
@@ -148,9 +155,6 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
 
     };
 
-    var jumper = function (__event) {
-        console.log(__event.KeyCode());
-    }
 
     this.onKeyDown = function (event) {
         switch (event.keyCode) {
@@ -266,21 +270,68 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
 
     };
 
-    var DataBuffer = [];
-    var OldData = "";
+
+    
+
+    this.interpolate = (function(){
+        // admiting   interp_buffer[0].time < t < interp_buffer[1].time
+        return function(vec, t){
+            
+            vec.x = interp_buffer[0].position.x +
+                ((interp_buffer[1].position.x - interp_buffer[0].position.x) /
+                    ( interp_buffer[1].time - interp_buffer[0].time )) *
+                        ( t * interp_buffer[0].time);
+            
+            vec.y = interp_buffer[0].position.y +
+                ((interp_buffer[1].position.y - interp_buffer[0].position.y) /
+                    ( interp_buffer[1].time - interp_buffer[0].time )) *
+                        ( t * interp_buffer[0].time);
+            
+            vec.z = interp_buffer[0].position.z +
+                ((interp_buffer[1].position.z - interp_buffer[0].position.z) /
+                    ( interp_buffer[1].time - interp_buffer[0].time )) *
+                        ( t * interp_buffer[0].time);
+            
+            interp_buffer.shift();
+            
+            return new THREE.Vector3(vec.x, vec.y, vec.z);
+        }
+    }());
+
+    
+
     this.update = function (delta) {
-        if(that.onMouseMove || that.moveBackward ||
+        if(that.moveBackward ||
             that.moveLeft || that.moveRight ||
             that.moveForward || that.moveDown ||
             that.mouveUp || that.moveLeft ){
-            var data = {
+
+
+            that.currentTime = new Date().getTime();
+
+            interp_buffer.push({
+                "time" :  that.currentTime,
+                "position" : that.object.position
+            });
+            
+            
+            var interp_time = that.currentTime - that.interp_value;
+
+            var temp_pos = that.interpolate(that.object.position, interp_time);
+
+            that.object.position.set(temp_pos.x, temp_pos.y, temp_pos.z);
+
+            
+            this.local_move(delta);
+            
+            var u_struct = {
+                'sentTime': that.currentTime,
                 'rotation': that.object.rotation,
-                'moveBackward': that.moveBackward,
                 'position':  that.object.position,
-                'moveLeft': that.moveLeft,
-                'onMouseMove': that.onMouseMove,
-                'moveRight': that.moveRight,
                 'moveForward': that.moveForward,
+                'moveBackward': that.moveBackward,
+                'moveLeft': that.moveLeft,
+                'moveRight': that.moveRight,
                 'mouseX': that.mouseX,
                 'mouseY': that.mouseY,
                 'moveDown': that.moveDown,
@@ -288,28 +339,117 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
                 'delta': delta
             };
 
-
-            DataBuffer.push(data);
-            if(DataBuffer.length === 25){
-                setInterval(
-                    function() {
-                        if (window.mmo.FileDescriptor.bufferedAmount == 0){
-                            window.mmo.FileDescriptor.send(JSON.stringify(DataBuffer));
-                        }
-                    },
-                    50);
-                DataBuffer = [];
+            
+            if (window.mmo.FileDescriptor.bufferedAmount == 0){
+                window.mmo.FileDescriptor.send(JSON.stringify(u_struct));
             }
-        
-       }     
+        }   
+        if(that.onMouseMove){
+            this.local_move(delta);
+        }     
     };
     
     this.move = function(positions){
-        that.object.lookAt(positions.TargetPosition);
-        that.object.position.x = positions.AvatarPosition.x;
-        that.object.position.y = positions.AvatarPosition.y;
-        that.object.position.z = positions.AvatarPosition.z;
+        if(typeof positions.sentTime !== undefined){
+            that.latency = that.sentTime - positions.sentTime;
+            console.log("Latency : "+that.latency);
+        }
+        
+
+
+        // that.object.lookAt(positions.TargetPosition);
+        // that.object.position.x = positions.AvatarPosition.x;
+        // that.object.position.y = positions.AvatarPosition.y;
+        // that.object.position.z = positions.AvatarPosition.z;
     };
+
+    this.local_move = function(delta){
+        var actualMoveSpeed = 0;
+        
+        if ( !this.freeze ) {
+
+            if ( this.heightSpeed ) {
+
+                var y = THREE.Math.clamp( this.object.position.y, this.heightMin, this.heightMax );
+                var heightDelta = y - this.heightMin;
+
+                this.autoSpeedFactor = delta * ( heightDelta * this.heightCoef );
+
+            } else {
+
+                this.autoSpeedFactor = 0.0;
+
+            }
+
+            actualMoveSpeed = delta * this.movementSpeed;
+
+            if ( this.moveForward || ( this.autoForward && !this.moveBackward ) ) 
+                this.object.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
+            if ( this.moveBackward ) this.object.translateZ( actualMoveSpeed );
+
+            if ( this.moveLeft ) this.object.translateX( - actualMoveSpeed );
+            if ( this.moveRight ) this.object.translateX( actualMoveSpeed );
+
+            if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
+            if ( this.moveDown ) this.object.translateY( - actualMoveSpeed );
+
+            var actualLookSpeed = delta * this.lookSpeed;
+
+            if ( !this.activeLook ) {
+
+                actualLookSpeed = 0;
+
+            }
+
+            this.lon += this.mouseX * actualLookSpeed;
+            if( this.lookVertical ) this.lat -= this.mouseY * actualLookSpeed;
+
+            this.lat = Math.max( - 85, Math.min( 85, this.lat ) );
+            this.phi = ( 90 - this.lat ) * Math.PI / 180;
+            this.theta = this.lon * Math.PI / 180;
+
+            var targetPosition = this.target,
+                position = this.object.position;
+
+            targetPosition.x = position.x + 100 * Math.sin( this.phi ) * Math.cos( this.theta );
+            targetPosition.y = position.y + 100 * Math.cos( this.phi );
+            targetPosition.z = position.z + 100 * Math.sin( this.phi ) * Math.sin( this.theta );
+
+        }
+    
+
+        var verticalLookRatio = 1;
+
+        if ( this.constrainVertical ) {
+
+            verticalLookRatio = Math.PI / ( this.verticalMax - this.verticalMin );
+
+        }
+
+        this.lon += this.mouseX * actualLookSpeed;
+        if( this.lookVertical ) this.lat -= this.mouseY * actualLookSpeed * verticalLookRatio;
+
+        this.lat = Math.max( - 85, Math.min( 85, this.lat ) );
+        this.phi = ( 90 - this.lat ) * Math.PI / 180;
+
+        this.theta = this.lon * Math.PI / 180;
+
+        if ( this.constrainVertical ) {
+
+            this.phi = THREE.Math.mapLinear( this.phi, 0, Math.PI, this.verticalMin, this.verticalMax );
+
+        }
+
+        var targetPosition = this.target,
+            position = this.object.position;
+
+        targetPosition.x = position.x + 100 * Math.sin( this.phi ) * Math.cos( this.theta );
+        targetPosition.y = position.y + 100 * Math.cos( this.phi );
+        targetPosition.z = position.z + 100 * Math.sin( this.phi ) * Math.sin( this.theta );
+
+        this.object.lookAt( targetPosition );
+
+    }
 
     function bind(scope, fn) {
 
