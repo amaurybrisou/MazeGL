@@ -89,7 +89,7 @@ var world_core = function(world_instance){
 
     //WORLD ASPECT
     this.WORLDSIZE            = 216000;
-    this.LIGHT_SPEED          = 10000;
+    this.LIGHT_SPEED          = 100000;
     this.DAY_NIGHT_SPEED      = this.LIGHT_SPEED;
     this.ORIGIN_SIZE          = 0.2;
     this.SUN_SIZE             = this.WORLDSIZE/10;
