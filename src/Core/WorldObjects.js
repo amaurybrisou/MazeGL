@@ -30,16 +30,16 @@ var WorldObjects = {
 
         };
 
-        this.animate = function () {
+        this.animate = function (instance) {
 
             that.position.set(
                 avatar_obj.position.x,
                 avatar_obj.position.y,
                 avatar_obj.position.z);
             that.lookAt(avatar_obj.position);
-            that.position.x = AVATAR_SCALE/2;
-            that.position.y = AVATAR_SCALE;
-            that.position.z = AVATAR_SCALE * 4;
+            that.position.x = instance.AVATAR_SCALE/2;
+            that.position.y = instance.AVATAR_SCALE;
+            that.position.z = instance.AVATAR_SCALE * 4;
 
 
         };

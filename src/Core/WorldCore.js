@@ -1,7 +1,8 @@
 if(typeof global != 'undefined'){
-	var WorldBuilder = require('./Builders.js').WorldBuilder;
+
 	var FileDescriptor = require('./FileDescriptor.js');
 	var Materials = require('./Materials.js');
+    var Attributes = require('./Attributes.js');
     var WorldObjects = require('./WorldObjects.js');
     var FirstAvatar = require('./FirstAvatar.js');
 	var THREE = require('three');
@@ -127,14 +128,6 @@ var world_core = function(world_instance){
     this.SUN              = new WorldObjects.Sun_obj(
     	0, 100, 0, this.SUN_MAT, this.SUN_SIZE);
 
-
-    //SHADERS
-    //this.UNIFORMS = Shaders.Uniforms();
-
-
-    
-
-
     //LIGHTS
     //sun light
     this.LIGHTS = {
@@ -188,6 +181,8 @@ var world_core = function(world_instance){
         this.LOOK_VERTICAL    = true;
         this.FREEZE           = false;
 
+        this.PLANET_MAT = Materials.Planet_Materials(this.FLOOR_COLOR);
+
         //NETWORK   SERVER CLOUD9
 	    this.SERVER_ADDR =  '127.0.0.1';
 	    this.SERVER_PORT =  80;
@@ -205,9 +200,10 @@ var world_core = function(world_instance){
                 // animate
                 if(!this.server){
                     this.avatar_obj.animate();
-                    //  this.camera.animate();
+                    //this.camera.animate(this);
+                    //this.SUN.animate(t, this);
                 }
-                this.SUN.animate(t, this);
+                
                 // color ratios
                 if (Math.cos(t / this.DAY_NIGHT_SPEED) + 0.06 >= this.DARKNESS) {
                     this.BC = Math.cos(t / this.DAY_NIGHT_SPEED) + 0.06;
@@ -246,9 +242,10 @@ var world_core = function(world_instance){
 
                 if(!this.server){
                     this.Renderer.setClearColor(this.BG_COLOR, 1.0);
+                    this.PLANET_MAT.color.setRGB(this.SC, this.SC, this.SC);
                 }
                 // floor color
-                //this.PLANET_MAT.color.setRGB(this.SC, this.SC, this.SC);
+                
 
                 // stones color
                 this.STONES_FACES_MAT.color.setRGB(this.SC, this.SC, this.SC);
@@ -258,8 +255,6 @@ var world_core = function(world_instance){
 
                 // fog color
                 this.FOG.color.setRGB(this.SEC, this.SEC, this.SEC);
-
-
 
 
                 // main light and sun movements
@@ -273,32 +268,31 @@ var world_core = function(world_instance){
                 */
 
                 this.LIGHTS.MAIN_LIGHT.lookAt(this.position);
+
+                // HTML CONTENT
+                span.innerHTML = ''; // clear existing
+
+                var connection_status = Network.FileDescriptor.readyState === ( 1 || 2 || 0 )
+                ? "Connected" : "Disconnected";
+                text = 'time : ' + Math.round(this.LIGHTS.MAIN_LIGHT.position.y / 1000) + 
+                '</br>cam coords : ' + this.camera.position.x + 
+                " " + this.camera.position.y + 
+                " " + this.camera.position.z + 
+                '</br>mesh coords : ' + this.avatar_obj.position.x + 
+                " " + this.avatar_obj.position.y + 
+                " " + this.avatar_obj.position.z +
+                "</br>Status : "+connection_status;
+
+                span.innerHTML = text;
                 //window.mmo.SUN.lookAt(window.mmo.position);
-                this.updateid = window.requestAnimationFrame(
-                    this.animate.bind(this), this.Renderer.domElement );
+
+                // this.updateid = window.requestAnimationFrame(
+                //     this.animate.bind(this), this.Renderer.domElement );
+                requestAnimFrame.call(window, this.animate);
+                this.Renderer.clear();
+                this.Renderer.render(this, this.camera);
             }
-            //Create the default configuration settings
-        //this.client_create_configuration();
 
-            //A list of recent server updates we interpolate across
-            //This is the buffer that is the driving factor for our networking
-        this.server_updates = [];
-
-            //Connect to the socket.io server!
-        //this.client_connect_to_server();
-
-            //We start pinging the server to determine latency
-        //this.client_create_ping_timer();
-
-            //Set their colors from the storage or locally
-        // this.color = localStorage.getItem('color') || '#cc8822' ;
-        // localStorage.setItem('color', this.color);
-        // this.players.self.color = this.color;
-
-        //     //Make this only if requested
-        // if(String(window.location).indexOf('debug') != -1) {
-        //     this.client_create_debug_gui();
-        // }
 
     } else { //if !server
         this.animate = function(){
@@ -311,62 +305,47 @@ var world_core = function(world_instance){
 
 
     if(!this.server){
-        this.camera = WorldUtils.getCamera(this);
+        this.camera = this.getCamera(this);
         this.add(this.camera);
         
         this.camera.lookAt(this.position);
         console.log("Camera Loaded ", "WorldBuilder");
     
-
-        this.WORLD_TEXTURE = WorldUtils.getWorldTexture(this);
+        this.WORLD_TEXTURE = this.getWorldTexture(this);
         this.WORLD_TEXTURE.repeat.set(1024, 1024);
         console.log("World_Texture Loaded ", "WorldBuilder");
     }
 
     // build floor
-    this.PLANE = WorldUtils.getPlane(
-        this.PLANE_ROT_X,
-        this.PLANE_ROT_Y,
-        this.PLANE_RECV_SHADOW,
-        this.FLOOR_COLOR,
-        this.WORLDSIZE);
+    this.PLANE = this.getPlane();
     this.add(this.PLANE);
     console.log("Plane Loaded");
 
     // build sun
     this.add(this.SUN);
     
-    this.MAIN_LIGHT = WorldUtils.getMainLight(this.LIGHTS);
+    this.MAIN_LIGHT = this.getMainLight();
     this.add(this.MAIN_LIGHT);
     console.log("Main Light Loaded ");
 
-    this.AMBIENT_LIGHT = new THREE.AmbientLight(this.LIGHTS.AMBIENT_LIGHT);
+    this.AMBIENT_LIGHT = new THREE.AmbientLight();
     this.add(this.AMBIENT_LIGHT);
     console.log("Ambient Light Loaded ");
 
     // build origin
-    this.wo_origin = Attributes.Origin(
-        this.ORIGIN_COLOR,
-        this.ORIGIN_SIZE,
-        this.WORLDSIZE);
+    this.wo_origin = Attributes.Origin();
     for (var i = 0; i < this.wo_origin.length; i++) {
         this.add(this.wo_origin[i]);
     }
     console.log("Origin Loaded ");
 
     //Build Stones;
-    Builders.StoneBuilder(
-        this,
-        this.NB_STONES,
-        this.WORLDSIZE,
-        this.STONES_FACES_MAT,
-        this.STONES_EDGES_MAT,
-        this.STONES_SIZE_RATIO);
+    this.StoneBuilder();
     console.log("Stones Loaded ");
 
     // build avatar
     if(!this.server){
-        avatar_obj = WorldUtils.getAvatar(this);
+        avatar_obj = this.getAvatar(this);
         this.camera.reset();
 
         this.add(this.avatar_obj);
@@ -376,11 +355,6 @@ var world_core = function(world_instance){
     // build fog
     this.fog = this.FOG;
     
-
-    // window.mmo.shadowMapEnabled = true;
-
-    // window.mmo.RENDERER.setClearColor(window.mmo.BG_COLOR, 1.0);
-    // window.mmo.RENDERER.clear();
     if(!this.server){
         this.camera.lookAt(this.position);
     }
@@ -388,6 +362,103 @@ var world_core = function(world_instance){
 }; //world.constructor
 
 world_core.prototype = Object.create(THREE.Scene.prototype);
+
+world_core.prototype.StoneBuilder =  function(){
+
+    var x, y, z, width, height, depth;
+    var stones = [];
+
+    for(var i=0; i<this.NB_STONES; i++){
+
+        // STONE
+        height = Math.random()*this.WORLDSIZE/this.STONES_SIZE_RATIO;
+        width = Math.random()*height*3/4 + 100;
+        depth = Math.random()*height*3/4 + 100;
+
+        x = Math.random()*this.WORLDSIZE - this.WORLDSIZE/2;
+        y = height/2;
+        z = Math.random()*this.WORLDSIZE - this.WORLDSIZE/2;
+
+        stones[i] = WorldObjects.Stone(
+            x, y, z, width, height, depth, this.STONES_FACES_MAT, this.STONES_EDGES_MAT);
+        this.add(stones[i]);
+    }
+   
+};
+
+world_core.prototype.getCamera = function(){
+    var camera = new WorldObjects.Camera(this);
+    
+    camera.position.set(
+        this.CAM_POS_X,
+        this.CAM_POS_Y,
+        this.CAM_POS_Z
+    );
+    return camera;
+};
+
+world_core.prototype.getColor = function(rgb_str){
+    return new window.THREE.Color(rgb_str);
+};
+
+
+world_core.prototype.getPlane = function(){
+    var PLANET_MAT = Materials.Planet_Materials(this.FLOOR_COLOR);
+    var PLANET_GEO = Materials.Planet_Geo(this.WORLDSIZE);
+   
+    
+    var plane = new THREE.Mesh(
+        PLANET_GEO,
+        PLANET_MAT);
+ 
+    plane.rotation.x = this.PLANE_ROT_X;
+    plane.position.y = this.PLANE_ROT_Y;
+    plane.receiveShadow = this.PLANE_RECV_SHADOW;
+    
+    return plane;
+};
+
+world_core.prototype.getAvatar = function(){
+
+    var avatarMat = Materials.Avatar_mat(
+        this.AVATAR_COLOR);
+
+    var avatar_obj = new this.AVATAR_TYPE(
+        0, 0, 0, avatarMat, this);
+    return avatar_obj;
+};
+
+world_core.prototype.getMainLight = function(){
+    
+    var MAIN_LIGHT = new THREE.SpotLight(this.LIGHT_COLOR);
+    
+    MAIN_LIGHT.castShadow = this.MAIN_LIGHT_CAST_SHADOW;
+    MAIN_LIGHT.angle = this.MAIN_LIGHT_ANGLE;
+    MAIN_LIGHT.exponent = this.MAIN_LIGHT_EXPONENT;
+    MAIN_LIGHT.shadowBias = this.MAIN_LIGHT_SHADOWBIAS;
+    MAIN_LIGHT.shadowCameraFar = this.MAIN_LIGHT_SHADOW_CAMERA_FAR;
+    MAIN_LIGHT.shadowCameraFov = this.MAIN_LIGHT_SHADOW_CAMERA_FOV;
+    return MAIN_LIGHT;
+};
+
+world_core.prototype.getWorldTexture = function(){
+    var WORLD_TEXTURE = THREE.ImageUtils.loadTexture(this.WORLD_TEXTURE_URL);
+    
+    WORLD_TEXTURE.wrapS = WORLD_TEXTURE.wrapT = THREE.RepeatWrapping;
+    return WORLD_TEXTURE;
+};
+
+world_core.prototype.getSun = function(){
+    var sun_mat = Materials.Sun_mat(this.SUN_COLOR);
+    
+    return new WorldObjects.Sun_obj(this.SUN_SIZE, 50, 50,
+        sun_mat,
+        {
+            DAY_NIGHT_SPEED : this.DAY_NIGHT_SPEED,
+            WORLDSIZE : this.WORLDSIZE,
+            FAR : this.FAR
+        });
+};   
 
 if( 'undefined' != typeof global ) {
     module.exports = global.world_core = world_core;

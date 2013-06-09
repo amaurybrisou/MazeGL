@@ -1,11 +1,7 @@
 window.onload = function () {
 
-    setTimeout(function(){
-
-        world = new world_core();
-       
-        world.animate(new Date().getTime());
-
+    world = new world_core();
+    world.animate(new Date().getTime());
 
         // // var previous;
         // // var current = window.mmo.avatar_obj.position;
@@ -48,5 +44,5 @@ window.onload = function () {
         //         // end burning
         //     }, window.mmo.__FRAMERATE__);
         // })(loop);
-    }, 150);
+    
 };
