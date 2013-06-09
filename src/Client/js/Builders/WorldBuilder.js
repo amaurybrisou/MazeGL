@@ -17,7 +17,6 @@
     }
 })();
 
-
 window.mmo.Builders.WorldBuilder = function () {
     window.mmo.World.call(this);
 

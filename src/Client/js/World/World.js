@@ -18,6 +18,7 @@
         window.Logger.log(window.Level.FINE, "Module Loaded", "World");
     };
 })();
+
 //Default World extends window.mmo one to create your own
 window.mmo.World = function() {
     window.THREE.Scene.call(this);
