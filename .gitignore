@@ -1,2 +1,2 @@
-src/Server/node_modules/
+src/node_modules/*
 *.c9
