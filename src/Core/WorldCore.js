@@ -183,6 +183,7 @@ var world_core = function(world_instance){
         this.LOOK_VERTICAL    = true;
         this.FREEZE           = false;
 
+        this.PLANET_GEO = Materials.Planet_Geo(this.WORLDSIZE);
         this.PLANET_MAT = Materials.Planet_Materials(this.FLOOR_COLOR);
 
         //NETWORK   SERVER CLOUD9
@@ -335,7 +336,11 @@ var world_core = function(world_instance){
     console.log("Ambient Light Loaded ");
 
     // build origin
-    this.wo_origin = Attributes.Origin();
+    this.wo_origin = Attributes.Origin(
+        this.ORIGIN_COLOR,
+        this.ORIGIN_SIZE,
+        this.WORLDSIZE);
+    
     for (var i = 0; i < this.wo_origin.length; i++) {
         this.add(this.wo_origin[i]);
     }
@@ -418,13 +423,9 @@ world_core.prototype.getColor = function(rgb_str){
 
 
 world_core.prototype.getPlane = function(){
-    var PLANET_MAT = Materials.Planet_Materials(this.FLOOR_COLOR);
-    var PLANET_GEO = Materials.Planet_Geo(this.WORLDSIZE);
-   
-    
     var plane = new THREE.Mesh(
-        PLANET_GEO,
-        PLANET_MAT);
+        this.PLANET_GEO,
+        this.PLANET_MAT);
  
     plane.rotation.x = this.PLANE_ROT_X;
     plane.position.y = this.PLANE_ROT_Y;
