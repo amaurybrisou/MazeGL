@@ -10,7 +10,7 @@ var WSServer = (function(){
         //See http://socket.io/
     	wsServer.configure(function (){
 
-	        wsServer.set('log level', 4);
+	        wsServer.set('log level', 0);
 
 	        wsServer.set('authorization', function (handshakeData, callback) {
 	          callback(null, true); // error first callback style

@@ -40,6 +40,8 @@ if('undefined' != typeof(global)) frame_time = 45; //on server we run at 45ms, 2
 
 var world_core = function(world_instance){
     THREE.Scene.call(this);
+
+    var that = this;
     //Store the instance, if any
     this.instance = world_instance;
     //Store a flag if we are the server
@@ -146,7 +148,7 @@ var world_core = function(world_instance){
     //Client specific initialisation
     if(!this.server){
 
-        this.Renderer = Renderer(this);
+        this.Renderer = RENDERER(this);
 
         document.getElementById('canvasCont').appendChild(this.Renderer.domElement);
 
@@ -185,7 +187,7 @@ var world_core = function(world_instance){
 
         //NETWORK   SERVER CLOUD9
 	    this.SERVER_ADDR =  '127.0.0.1';
-	    this.SERVER_PORT =  80;
+	    this.SERVER_PORT =  9999;
 	    this.FileDescriptor = Network.FileDescriptor(
             this.SERVER_ADDR,
             this.SERVER_PORT);
@@ -198,99 +200,99 @@ var world_core = function(world_instance){
         
         this.animate = function(t, position){
                 // animate
-                if(!this.server){
-                    this.avatar_obj.animate();
-                    //this.camera.animate(this);
-                    //this.SUN.animate(t, this);
+                if(!that.server){
+                    that.avatar_obj.animate();
+                    //that.camera.animate(that);
+                    //that.SUN.animate(t, that);
                 }
                 
                 // color ratios
-                if (Math.cos(t / this.DAY_NIGHT_SPEED) + 0.06 >= this.DARKNESS) {
-                    this.BC = Math.cos(t / this.DAY_NIGHT_SPEED) + 0.06;
+                if (Math.cos(t / that.DAY_NIGHT_SPEED) + 0.06 >= that.DARKNESS) {
+                    that.BC = Math.cos(t / that.DAY_NIGHT_SPEED) + 0.06;
                 }
                 else {
-                    this.BC = this.DARKNESS;
+                    that.BC = that.DARKNESS;
                 }
-                if (Math.cos(t / this.DAY_NIGHT_SPEED) + 0.06 >= this.LIGHTNESS) {
-                    this.BC = this.LIGHTNESS;
+                if (Math.cos(t / that.DAY_NIGHT_SPEED) + 0.06 >= that.LIGHTNESS) {
+                    that.BC = that.LIGHTNESS;
                 }
 
 
-                if (Math.cos(t / this.DAY_NIGHT_SPEED) >= this.DARKNESS) {
-                    this.SC = Math.cos(t / this.DAY_NIGHT_SPEED);
+                if (Math.cos(t / that.DAY_NIGHT_SPEED) >= that.DARKNESS) {
+                    that.SC = Math.cos(t / that.DAY_NIGHT_SPEED);
                 }
                 else {
-                    this.SC = this.DARKNESS;
+                    that.SC = that.DARKNESS;
                 }
-                if (Math.cos(t / this.DAY_NIGHT_SPEED) >= this.LIGHTNESS) {
-                    this.SC = this.LIGHTNESS;
+                if (Math.cos(t / that.DAY_NIGHT_SPEED) >= that.LIGHTNESS) {
+                    that.SC = that.LIGHTNESS;
                 }
 
-                if (-Math.cos(t / this.DAY_NIGHT_SPEED) >= this.DARKNESS) {
-                    this.SEC = -Math.cos(t / this.DAY_NIGHT_SPEED);
+                if (-Math.cos(t / that.DAY_NIGHT_SPEED) >= that.DARKNESS) {
+                    that.SEC = -Math.cos(t / that.DAY_NIGHT_SPEED);
                 }
                 else {
-                    this.SEC = this.DARKNESS;
+                    that.SEC = that.DARKNESS;
                 }
-                if (-Math.cos(t / this.DAY_NIGHT_SPEED) >= this.LIGHTNESS) {
-                    this.SEC = this.LIGHTNESS;
+                if (-Math.cos(t / that.DAY_NIGHT_SPEED) >= that.LIGHTNESS) {
+                    that.SEC = that.LIGHTNESS;
                 }
 
 
                 // background color
-                this.BG_COLOR.setRGB(this.BC, this.BC, this.BC);
+                that.BG_COLOR.setRGB(that.BC, that.BC, that.BC);
 
-                if(!this.server){
-                    this.Renderer.setClearColor(this.BG_COLOR, 1.0);
-                    this.PLANET_MAT.color.setRGB(this.SC, this.SC, this.SC);
+                if(!that.server){
+                    that.Renderer.setClearColor(that.BG_COLOR, 1.0);
+                    that.PLANET_MAT.color.setRGB(that.SC, that.SC, that.SC);
                 }
                 // floor color
                 
 
                 // stones color
-                this.STONES_FACES_MAT.color.setRGB(this.SC, this.SC, this.SC);
+                that.STONES_FACES_MAT.color.setRGB(that.SC, that.SC, that.SC);
 
                 // stones edges color
-                this.STONES_EDGES_MAT.color.setRGB(this.SEC, this.SEC, this.SEC);
+                that.STONES_EDGES_MAT.color.setRGB(that.SEC, that.SEC, that.SEC);
 
                 // fog color
-                this.FOG.color.setRGB(this.SEC, this.SEC, this.SEC);
+                that.FOG.color.setRGB(that.SEC, that.SEC, that.SEC);
 
 
                 // main light and sun movements
-                this.LIGHTS.MAIN_LIGHT.position.y = Math.cos(t / this.DAY_NIGHT_SPEED) * 
-                    this.FAR / 2;
+                that.LIGHTS.MAIN_LIGHT.position.y = Math.cos(t / that.DAY_NIGHT_SPEED) * 
+                    that.FAR / 2;
                 /*    window.mmo.sun.position.y = Math.cos(t/day_night_speed)*FAR/4;
                 */
-                this.LIGHTS.MAIN_LIGHT.position.x = Math.sin(t / this.DAY_NIGHT_SPEED) *
-                    this.WORLDSIZE / 2;
+                that.LIGHTS.MAIN_LIGHT.position.x = Math.sin(t / that.DAY_NIGHT_SPEED) *
+                    that.WORLDSIZE / 2;
                 /*    window.mmo.sun.position.x = Math.sin(t/day_night_speed)*WORLDSIZE/1.8;
                 */
 
-                this.LIGHTS.MAIN_LIGHT.lookAt(this.position);
+                that.LIGHTS.MAIN_LIGHT.lookAt(that.position);
 
                 // HTML CONTENT
                 span.innerHTML = ''; // clear existing
 
                 var connection_status = Network.FileDescriptor.readyState === ( 1 || 2 || 0 )
                 ? "Connected" : "Disconnected";
-                text = 'time : ' + Math.round(this.LIGHTS.MAIN_LIGHT.position.y / 1000) + 
-                '</br>cam coords : ' + this.camera.position.x + 
-                " " + this.camera.position.y + 
-                " " + this.camera.position.z + 
-                '</br>mesh coords : ' + this.avatar_obj.position.x + 
-                " " + this.avatar_obj.position.y + 
-                " " + this.avatar_obj.position.z +
+                text = 'time : ' + Math.round(that.LIGHTS.MAIN_LIGHT.position.y / 1000) + 
+                '</br>cam coords : ' + that.camera.position.x + 
+                " " + that.camera.position.y + 
+                " " + that.camera.position.z + 
+                '</br>mesh coords : ' + that.avatar_obj.position.x + 
+                " " + that.avatar_obj.position.y + 
+                " " + that.avatar_obj.position.z +
                 "</br>Status : "+connection_status;
 
                 span.innerHTML = text;
                 //window.mmo.SUN.lookAt(window.mmo.position);
 
-                // this.updateid = window.requestAnimationFrame(
-                //     this.animate.bind(this), this.Renderer.domElement );
-                requestAnimFrame.call(window, this.animate);
-                this.Renderer.clear();
-                this.Renderer.render(this, this.camera);
+                // that.updateid = window.requestAnimationFrame(
+                //     that.animate.bind(that), that.Renderer.domElement );
+                requestAnimFrame.call(window, that.animate);
+                that.Renderer.clear();
+                that.Renderer.render(that, that.camera);
             }
 
 
@@ -347,7 +349,7 @@ var world_core = function(world_instance){
     if(!this.server){
         avatar_obj = this.getAvatar(this);
         this.camera.reset();
-
+        this.avatar_obj.add(this.camera);
         this.add(this.avatar_obj);
         console.log("Avatar Loaded ", "WorldBuilder");
     }
@@ -360,6 +362,19 @@ var world_core = function(world_instance){
     }
 
 }; //world.constructor
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 world_core.prototype = Object.create(THREE.Scene.prototype);
 

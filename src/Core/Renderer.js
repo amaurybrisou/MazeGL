@@ -1,4 +1,4 @@
-var Renderer = function(world){
+var RENDERER = function(world){
     var renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
     renderer.setSize(world.WIDTH, world.HEIGHT);
 
