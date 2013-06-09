@@ -88,8 +88,8 @@ var world_core = function(world_instance){
     this.AVATAR_COLOR             = new THREE.Color("rgb(33,33,33)");
 
     //WORLD ASPECT
-    this.WORLDSIZE            = 216000/2;
-    this.LIGHT_SPEED          = 100000;
+    this.WORLDSIZE            = 216000;
+    this.LIGHT_SPEED          = 10000;
     this.DAY_NIGHT_SPEED      = this.LIGHT_SPEED;
     this.ORIGIN_SIZE          = 0.2;
     this.SUN_SIZE             = this.WORLDSIZE/10;
@@ -203,7 +203,7 @@ var world_core = function(world_instance){
                 // animate
                 if(!that.server){
                     that.avatar_obj.animate();
-                    //that.camera.animate(that);
+                    that.camera.animate(that);
                     //that.SUN.animate(t, that);
                 }
                 
@@ -248,7 +248,7 @@ var world_core = function(world_instance){
                     that.PLANET_MAT.color.setRGB(that.SC, that.SC, that.SC);
                 }
                 // floor color
-                
+                that.PLANET_MAT.color.setRGB(that.SC, that.SC, that.SC);
 
                 // stones color
                 that.STONES_FACES_MAT.color.setRGB(that.SC, that.SC, that.SC);
@@ -257,7 +257,7 @@ var world_core = function(world_instance){
                 that.STONES_EDGES_MAT.color.setRGB(that.SEC, that.SEC, that.SEC);
 
                 // fog color
-                that.FOG.color.setRGB(that.SEC, that.SEC, that.SEC);
+                that.FOG.color.setRGB(that.BC, that.BC, that.BC);
 
 
                 // main light and sun movements
