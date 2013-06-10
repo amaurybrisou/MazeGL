@@ -263,14 +263,13 @@ var world_core = function(world_instance){
         this.animate = function(t, position){
                 // animate
                 if(!that.server){
-<<<<<<< HEAD
+
                     if(typeof this.avatar_obj != 'undefined'){
                         that.avatar_obj.animate();
                     }
-=======
-                    that.avatar_obj.animate();
-                    that.camera.animate(that);
->>>>>>> 2a9ebfe316689b1160ebb6c9c90742eb19f5df41
+                    
+                    //that.camera.animate(that);
+
                     //that.SUN.animate(t, that);
                 }
                 
