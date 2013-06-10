@@ -99,15 +99,15 @@ var Client = (function(){
         }
         
         //INTERPOLATE 
-        this.interp_buffer.push({
-            "time" :  this.currentTime,
-            "position" : this.position
-        });
+        // this.interp_buffer.push({
+        //     "time" :  this.currentTime,
+        //     "position" : this.position
+        // });
         
-        var interp_time = this.currentTime - this.interp_value;
+        // var interp_time = this.currentTime - this.interp_value;
 
-        var temp_pos = this.interpolate(this.position, interp_time);
-        this.position.set(temp_pos.x, temp_pos.y, temp_pos.z);
+        // var temp_pos = this.interpolate(this.position, interp_time);
+        // this.position.set(temp_pos.x, temp_pos.y, temp_pos.z);
         // END INTERPOLATION
 
         var actualMoveSpeed = 0;
