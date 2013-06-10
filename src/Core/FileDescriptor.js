@@ -18,15 +18,36 @@ var Network = {
             });
 
             ws.on('cl_create_avatar', function (data) {
-                console.log("Creating Player "+data);
-                world.addPlayer(data.userid);
+                console.log("Creating Player "+data.userid);
+                world.addLocalPlayer(data.userid);
+                console.log("Player Created");
+
             });
 
             ws.on('cl_client_connect', function (coords) {
                 console.log("Adding Remote Player");
                 world.addOtherPlayer(coords);
+                console.log("New Remote Player Added");
+
             });
             
+            ws.on('cl_disconnect', function (userid) {
+                console.log("Remote Player Disconnect "+userid);
+                world.deletePlayer(userid);
+                console.log("Remote Player Removed");
+
+            });
+
+            ws.on('cl_init_players', function(clients){
+                console.log(clients);
+                for(var client in clients){
+                    console.log("Adding : "+clients[client].userid+
+                        "  at "+clients[client]);
+                    world.addOtherPlayer(clients[client]);
+                }
+                console.log("Already Present Player(s) Added");
+            });
+
             ws.on('cl_update_players', function(data){
                 world.updatePlayers(data);
             });

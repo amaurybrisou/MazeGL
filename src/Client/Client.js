@@ -3,10 +3,8 @@ var THREE = require('three');
 
 var Client = (function(){
 
-    return function(userid, socket){
+    return function(){
     this.target = new THREE.Vector3( 0, 0, 0 );
-
-    
 
     this.movementSpeed = 40;
     this.lookSpeed = 0.05;

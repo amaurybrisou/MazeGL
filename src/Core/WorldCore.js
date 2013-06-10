@@ -390,7 +390,7 @@ var world_core = function(world_instance){
 
 world_core.prototype = Object.create(THREE.Scene.prototype);
 
-world_core.prototype.addPlayer = (function(){
+world_core.prototype.addLocalPlayer = (function(){
     // build avatar
     return function(userid){
         if(this.server){
@@ -421,9 +421,7 @@ world_core.prototype.addPlayer = (function(){
             that.avatar_controls.update(window.clock.getDelta());
         };
 
-        console.log("Player Created");
         this.add(this.avatar_obj);
-        console.log(this.avatar_obj.userid);
 
         return this.avatar_obj;
     };
@@ -443,14 +441,20 @@ world_core.prototype.addOtherPlayer = (function(){
         }
         avatar_obj.userid = coords.userid;
 
-        console.log("New Remote Player Added");
         this.add(avatar_obj);
 
         this.Clients[avatar_obj.userid] = avatar_obj;
-        console.log(this.Clients);
+        console.log("Clients Now in the Room : "+this.Clients);
     };
 }());
 
+world_core.prototype.deletePlayer = function(userid){
+    var cli = this.Clients[userid];
+    if(cli != undefined){
+        this.remove(cli);
+        cli  = undefined;
+    }
+};
 world_core.prototype.updatePlayers = function(new_coords){
     var cli = this.Clients[new_coords.userid];
     if(cli != undefined){
