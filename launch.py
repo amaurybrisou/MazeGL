@@ -35,7 +35,7 @@ def main():
 		print("Launching HTTP Server on port "+str(port)+" need to be root")
 	else :
 		cur_dir = os.getcwd()
-		call([ cur_dir+"/src/Server/init.js", str(port)])
+		call([ cur_dir+"/src/init.js", str(port)])
 
 if __name__ == "__main__":
 		try:

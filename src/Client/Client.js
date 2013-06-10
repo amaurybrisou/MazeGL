@@ -1,16 +1,27 @@
 var Utils = require('../Utils/Utils.js');
-var Configuration = require('../Config/Configuration.js');
 var THREE = require('three');
-
 
 var Client = (function(){
 
-    return function(){
+    return function(userid, socket){
     this.target = new THREE.Vector3( 0, 0, 0 );
 
-    for(var config in Configuration){
-        this[config] = Configuration[config];
-    }
+    
+
+    this.movementSpeed = 40;
+    this.lookSpeed = 0.05;
+    this.noFly = false;
+    this.lookVertical = false;
+    this.autoForward = false;
+    this.activeLook = true;
+    this.heightSpeed = false;
+    this.heightCoef = 1.0;
+    this.heightMin = 0.0;
+    this.constrainVertical = true;
+    this.verticalMin = 0;
+    this.verticalMax = Math.PI;
+    this.autoSpeedFactor = 0.0;
+    this.freeze = false;
 
     for(var util in Utils){
         this[util] = Utils[util];

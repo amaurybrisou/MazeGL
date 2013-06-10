@@ -5,11 +5,10 @@ if(typeof global != 'undefined'){
 var Controls = {
     AvatarControls : (function () {
         return function (object, instance) {
-                console.log(instance);
-
+            console.log(object.userid);
             var avatar_controls = 
             new THREE.FirstPersonControls(object, instance.SCREEN_SIZE_RATIO,
-             window.document);
+                window.document);
             avatar_controls.movementSpeed = instance.AVATAR_TRANS_VIEW_INCREMENT;
             avatar_controls.lookSpeed = instance.AVATAR_ROT_VIEW_INCREMENT;
             

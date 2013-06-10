@@ -13,40 +13,47 @@ var ws_server =  WSServer(http_server);
 //var Client = require('./Client/Client.js');
 var UUID = require('node-uuid');
 var Client = require('./Client/Client.js');
+
 var Clients = [];
 
 var world = mmo.createWorld();
+
 ws_server.sockets.on('connection', function (socket) {
 
-	var client = new Client();
-
-		client.userid = UUID();
-		client.socket = socket;
-
+	//var client = world.worldcore.addPlayer();
+    var userid = UUID()
+    var client = new Client( userid, socket);
+	
     //tell the player they connected, giving them their id
-	socket.emit('onconnected', { id: socket.userid } );
+	socket.set('client', { 'userid' : userid, 'client' : client}, function(){
+        socket.emit('onconnected', { userid : userid } )
+    });
+    
 
-    //now we can find them a game to play with someone.
-    //if no game exists with someone waiting, they create one and wait.
-	//world.addPlayer(client);
-
+    socket.emit('cl_create_avatar', { userid: userid });
+    socket.broadcast.emit('cl_client_connect', 
+        { userid: userid, x : 0, y : 0, z : 0});
+    //socket.emit('cl_init_players', )
+    
     //Useful to know when someone connects
-	mmo.log('\t socket.io:: player ' + socket.userid + ' connected');
+	mmo.log('Socket.io:: player ' + userid + ' connected');
 
 
-    //Now we want to handle some of the messages that sockets will send.
-    //They send messages here, and we send them to the game_server to handle.
-	socket.on('message', function(m) {
-
-    	//client.onMessage(socket, m);
-
+	socket.on('cl_move', function(u_struct) {
+            socket.get('client', function(error, cli){
+                new_coords = cli.client.update(u_struct);
+                var position = new_coords.AvatarPosition;
+                socket.broadcast.emit('cl_update_players',
+                { userid : cli.userid, x : position.x,
+                    y : position.y, z : position.z });
+            });
 	});//socket.on message
 
 	socket.on('disconnect', function () {
 
         //Useful to know when soomeone disconnects
-    	mmo.log('\t socket.io:: socket disconnected ' + 
-    		socket.userid + ' ' + socket.game_id);
+    	mmo.log('Socket.io:: socket disconnected ' + 
+    		client.userid);
     	
         //If the socket was in a game, set by game_server.findGame,
         //we can tell the game server to update that game state.

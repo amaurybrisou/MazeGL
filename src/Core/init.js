@@ -1,6 +1,6 @@
 window.onload = function () {
 
-    world = new world_core();
+    window.world = new world_core();
     world.animate(new Date().getTime());
 
         // // var previous;

@@ -42,6 +42,7 @@ var world_core = function(world_instance){
     THREE.Scene.call(this);
 
     var that = this;
+    this.Clients = [];
     //Store the instance, if any
     this.instance = world_instance;
     //Store a flag if we are the server
@@ -145,6 +146,17 @@ var world_core = function(world_instance){
         AMBIENT_LIGHT                : 0xeeeeee,
     }
     
+    this.AVATAR_TYPE                     = FirstAvatar;
+    this.AVATAR_MODEL_PATH               = null; // "Models/daemon2.obj";
+    this.AVATAR_SCALE                    = 5;
+    this.AVATAR_SIDE                     = function(){
+        return this.AVATAR_SCALE/2 + Math.random()*this.AVATAR_SCALE/2;
+    };
+    this.AVATAR_RANGE_TARGET             = 100;
+    this.AVATAR_NO_FLY                   = true;
+    this.AVATAR_TRANS_VIEW_INCREMENT     = 40;
+    this.AVATAR_ROT_VIEW_INCREMENT       = 0.09;
+
     //Client specific initialisation
     if(!this.server){
 
@@ -155,20 +167,12 @@ var world_core = function(world_instance){
         this.Renderer.setClearColor(this.BG_COLOR, 1.0);
         this.Renderer.clear();
 
+        
         var span = document.getElementById('infos');
         var text = document.createTextNode('');
 
         //AVATAR I
-        this.AVATAR_TYPE                       = FirstAvatar;
-        this.AVATAR_MODEL_PATH                = null; // "Models/daemon2.obj";
-        this.AVATAR_SCALE                    = 5;
-        this.AVATAR_SIDE                     = function(){
-        	return this.AVATAR_SCALE/2 + Math.random()*this.AVATAR_SCALE/2;
-        };
-        this.AVATAR_RANGE_TARGET             = 100;
-        this.AVATAR_NO_FLY                   = true;
-        this.AVATAR_TRANS_VIEW_INCREMENT     = 40;
-        this.AVATAR_ROT_VIEW_INCREMENT       = 0.09;
+        
     
         //CAMERA
         this.VIEW_ANGLE       = 100;
@@ -195,15 +199,73 @@ var world_core = function(world_instance){
 
         var avatarMat = Materials.Avatar_mat(
                 this.AVATAR_COLOR);
-        this.avatar_obj = new this.AVATAR_TYPE(
-                0, 0, 0, avatarMat, this);
+        
 
+        if(!this.server){
+            this.camera = this.getCamera(this);
+            this.add(this.camera);
+            
+            this.camera.lookAt(this.position);
+            console.log("Camera Loaded ", "WorldBuilder");
+        
+            this.WORLD_TEXTURE = this.getWorldTexture(this);
+            this.WORLD_TEXTURE.repeat.set(1024, 1024);
+            console.log("World_Texture Loaded ", "WorldBuilder");
+        }
+
+        // build floor
+        this.PLANE = this.getPlane();
+        this.add(this.PLANE);
+        console.log("Plane Loaded");
+
+        // build sun
+        this.add(this.SUN);
+        
+        this.MAIN_LIGHT = this.getMainLight();
+        this.add(this.MAIN_LIGHT);
+        console.log("Main Light Loaded ");
+
+        this.AMBIENT_LIGHT = new THREE.AmbientLight();
+        this.add(this.AMBIENT_LIGHT);
+        console.log("Ambient Light Loaded ");
+
+        // build origin
+        this.wo_origin = Attributes.Origin(
+            this.ORIGIN_COLOR,
+            this.ORIGIN_SIZE,
+            this.WORLDSIZE);
+        
+        for (var i = 0; i < this.wo_origin.length; i++) {
+            this.add(this.wo_origin[i]);
+        }
+        console.log("Origin Loaded ");
+
+        //Build Stones;
+        this.StoneBuilder();
+        console.log("Stones Loaded ");
+
+        // // build avatar
+        if(!this.server){
+            //this.avatar_obj = this.getAvatar(this);
+        //     this.camera.reset();
+        //     this.avatar_obj.add(this.camera);
+        //     this.add(this.avatar_obj);
+        //     console.log("Avatar Loaded ", "WorldBuilder");
+         }
+        
+        // build fog
+        this.fog = this.FOG;
+        
+        if(!this.server){
+            this.camera.lookAt(this.position);
+        }
         
         this.animate = function(t, position){
                 // animate
                 if(!that.server){
-                    that.avatar_obj.animate();
-                    //that.camera.animate(that);
+                    if(typeof this.avatar_obj != 'undefined'){
+                        that.avatar_obj.animate();
+                    }
                     //that.SUN.animate(t, that);
                 }
                 
@@ -280,18 +342,19 @@ var world_core = function(world_instance){
                 text = 'time : ' + Math.round(that.LIGHTS.MAIN_LIGHT.position.y / 1000) + 
                 '</br>cam coords : ' + that.camera.position.x + 
                 " " + that.camera.position.y + 
-                " " + that.camera.position.z + 
-                '</br>mesh coords : ' + that.avatar_obj.position.x + 
-                " " + that.avatar_obj.position.y + 
-                " " + that.avatar_obj.position.z +
-                "</br>Status : "+connection_status;
+                " " + that.camera.position.z; 
+                if(typeof this.Clients.length > 0){
+                        text += '</br>mesh coords : ' + that.avatar_obj.position.x + 
+                    " " + that.avatar_obj.position.y + 
+                    " " + that.avatar_obj.position.z ;
+                }
+                text += "</br>Status : "+connection_status;
 
                 span.innerHTML = text;
-                //window.mmo.SUN.lookAt(window.mmo.position);
+                
 
-                // that.updateid = window.requestAnimationFrame(
-                //     that.animate.bind(that), that.Renderer.domElement );
-                requestAnimFrame.call(window, that.animate);
+                that.updateid = window.requestAnimationFrame(
+                    that.animate.bind(that), that.Renderer.domElement );
                 that.Renderer.clear();
                 that.Renderer.render(that, that.camera);
             }
@@ -304,66 +367,6 @@ var world_core = function(world_instance){
         this.server_time = 0;
         this.laststate = {};
 
-    }
-
-
-    if(!this.server){
-        this.camera = this.getCamera(this);
-        this.add(this.camera);
-        
-        this.camera.lookAt(this.position);
-        console.log("Camera Loaded ", "WorldBuilder");
-    
-        this.WORLD_TEXTURE = this.getWorldTexture(this);
-        this.WORLD_TEXTURE.repeat.set(1024, 1024);
-        console.log("World_Texture Loaded ", "WorldBuilder");
-    }
-
-    // build floor
-    this.PLANE = this.getPlane();
-    this.add(this.PLANE);
-    console.log("Plane Loaded");
-
-    // build sun
-    this.add(this.SUN);
-    
-    this.MAIN_LIGHT = this.getMainLight();
-    this.add(this.MAIN_LIGHT);
-    console.log("Main Light Loaded ");
-
-    this.AMBIENT_LIGHT = new THREE.AmbientLight();
-    this.add(this.AMBIENT_LIGHT);
-    console.log("Ambient Light Loaded ");
-
-    // build origin
-    this.wo_origin = Attributes.Origin(
-        this.ORIGIN_COLOR,
-        this.ORIGIN_SIZE,
-        this.WORLDSIZE);
-    
-    for (var i = 0; i < this.wo_origin.length; i++) {
-        this.add(this.wo_origin[i]);
-    }
-    console.log("Origin Loaded ");
-
-    //Build Stones;
-    this.StoneBuilder();
-    console.log("Stones Loaded ");
-
-    // build avatar
-    if(!this.server){
-        avatar_obj = this.getAvatar(this);
-        this.camera.reset();
-        this.avatar_obj.add(this.camera);
-        this.add(this.avatar_obj);
-        console.log("Avatar Loaded ", "WorldBuilder");
-    }
-    
-    // build fog
-    this.fog = this.FOG;
-    
-    if(!this.server){
-        this.camera.lookAt(this.position);
     }
 
 }; //world.constructor
@@ -382,6 +385,78 @@ var world_core = function(world_instance){
 
 
 world_core.prototype = Object.create(THREE.Scene.prototype);
+
+world_core.prototype.addPlayer = (function(){
+    // build avatar
+    return function(userid){
+        if(this.server){
+            this.avatar_obj = new THREE.Object3D();
+            this.avatar_obj.position.set(0,0,0);
+        } else {
+            this.avatar_obj = this.getAvatar(this);
+        }
+
+        if(typeof this.camera === 'undefined'){
+            this.camera = this.getCamera();
+        }
+
+        this.avatar_obj.userid = userid;
+
+        this.camera.reset(this);
+        this.avatar_obj.add(this.camera);
+       
+        
+        
+        // define controls
+        this.avatar_controls =
+            Controls.AvatarControls(this.avatar_obj, this);
+
+        var that = this;
+
+        this.avatar_obj.animate = function () {
+            that.avatar_controls.update(window.clock.getDelta());
+        };
+
+        console.log("Player Created");
+        this.add(this.avatar_obj);
+        console.log(this.avatar_obj.userid);
+
+        return this.avatar_obj;
+    };
+}());
+
+world_core.prototype.addOtherPlayer = (function(){
+    var avatar_obj;
+    // build avatar
+    return function(coords){
+        if(this.server){
+            avatar_obj = new THREE.Object3D();
+            
+            avatar_obj.position.set(coords.x, coords.y, coords.z);
+        } else {
+            avatar_obj = this.getAvatar(coords);
+
+        }
+        avatar_obj.userid = coords.userid;
+
+        console.log("New Remote Player Added");
+        this.add(avatar_obj);
+
+        this.Clients[avatar_obj.userid] = avatar_obj;
+        console.log(this.Clients);
+    };
+}());
+
+world_core.prototype.updatePlayers = function(new_coords){
+    var cli = this.Clients[new_coords.userid];
+    if(cli != undefined){
+        cli.position.set(
+            new_coords.x,
+            new_coords.y,
+            new_coords.z);
+    }
+    
+};
 
 world_core.prototype.StoneBuilder =  function(){
 
@@ -407,13 +482,49 @@ world_core.prototype.StoneBuilder =  function(){
 };
 
 world_core.prototype.getCamera = function(){
-    var camera = new WorldObjects.Camera(this);
-    
+    var that = this;
+    var camera = new THREE.PerspectiveCamera(
+            this.VIEW_ANGLE,
+            this.ASPECT,
+            this.NEAR,
+            this.FAR);
     camera.position.set(
         this.CAM_POS_X,
         this.CAM_POS_Y,
         this.CAM_POS_Z
     );
+    
+
+    
+    camera.reset = function () {
+        this.position.set(
+            that.avatar_obj.position.x,
+            that.avatar_obj.position.y,
+            that.avatar_obj.position.z);
+
+            this.position.x += 0;
+            this.position.y += that.AVATAR_SCALE * that.CAM_POS_RATIO / 4;
+            this.position.z += that.AVATAR_SCALE * that.CAM_POS_RATIO;
+
+            this.lookAt(that.avatar_obj.position);
+
+    };
+
+    camera.animate = function () {
+
+        this.position.set(
+            that.avatar_obj.position.x,
+            that.avatar_obj.position.y,
+            that.avatar_obj.position.z);
+        this.lookAt(that.avatar_obj.position);
+        this.position.x = that.AVATAR_SCALE/2;
+        this.position.y = that.AVATAR_SCALE;
+        this.position.z = that.AVATAR_SCALE * 4;
+
+
+    };
+    
+    
     return camera;
 };
 
@@ -434,14 +545,15 @@ world_core.prototype.getPlane = function(){
     return plane;
 };
 
-world_core.prototype.getAvatar = function(){
+world_core.prototype.getAvatar = function(coords){
+    var x = coords.x || 0,
+        y = coords.y || 0,
+        z = coords.z || 0;
 
     var avatarMat = Materials.Avatar_mat(
         this.AVATAR_COLOR);
-
-    var avatar_obj = new this.AVATAR_TYPE(
-        0, 0, 0, avatarMat, this);
-    return avatar_obj;
+    return new this.AVATAR_TYPE(
+        x, y, z, avatarMat, this);
 };
 
 world_core.prototype.getMainLight = function(){

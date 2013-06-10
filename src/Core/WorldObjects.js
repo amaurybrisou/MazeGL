@@ -4,45 +4,7 @@ if(typeof global != 'undefined'){
 
 var WorldObjects = {
     Camera : function (instance) {
-        THREE.PerspectiveCamera.call(this,
-            instance.VIEW_ANGLE,
-            instance.ASPECT,
-            instance.NEAR,
-            instance.FAR);
-
-        var that = this;
-
-        this.reset = function () {
-            that.position.set(
-            avatar_obj.position.x,
-            avatar_obj.position.y,
-            avatar_obj.position.z);
-
-
-
-            that.position.x += 0;
-            that.position.y += instance.AVATAR_SCALE * instance.CAM_POS_RATIO / 4;
-            that.position.z += instance.AVATAR_SCALE * instance.CAM_POS_RATIO;
-
-            that.lookAt(avatar_obj.position);
-
-            avatar_obj.add(instance.camera);
-
-        };
-
-        this.animate = function (instance) {
-
-            that.position.set(
-                avatar_obj.position.x,
-                avatar_obj.position.y,
-                avatar_obj.position.z);
-            that.lookAt(avatar_obj.position);
-            that.position.x = instance.AVATAR_SCALE/2;
-            that.position.y = instance.AVATAR_SCALE;
-            that.position.z = instance.AVATAR_SCALE * 4;
-
-
-        };
+        
     },
 
     Sun_obj : function(x, y, z, material, size){

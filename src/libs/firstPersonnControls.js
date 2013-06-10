@@ -321,8 +321,9 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
 
             
             this.local_move(delta);
-            
+
             var u_struct = {
+                'userid': that.object.userid,
                 'sentTime': that.currentTime,
                 'rotation': that.object.rotation,
                 'position':  that.object.position,
@@ -337,30 +338,14 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
                 'delta': delta
             };
 
+            world.FileDescriptor.move(u_struct);
             
-            if (Network.FileDescriptor.bufferedAmount == 0){
-                Network.FileDescriptor.send(JSON.stringify(u_struct));
-            }
         }   
         // if(that.onMouseMove){
         //     this.local_move(delta);
         // }     
     };
-    
-    this.move = function(positions){
-        // if(typeof pos.sentTime !== undefined){
-        //     that.latency = that.sentTime - pos.sentTime;
-        //     console.log("Latency : "+that.latency);
-        // }
-
-        console.log(positions.TargetPosition);
-        console.log(positions.AvatarPosition);
-        this.object.lookAt(positions.TargetPosition);
-        this.object.position.x = positions.AvatarPosition.x;
-        this.object.position.y = positions.AvatarPosition.y;
-        this.object.position.z = positions.AvatarPosition.z;
-    };
-
+  
     this.local_move = function(delta){
         
         var actualMoveSpeed = 0;
