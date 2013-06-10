@@ -347,7 +347,8 @@ var world_core = function(world_instance){
                 '</br>cam coords : ' + that.camera.position.x + 
                 " " + that.camera.position.y + 
                 " " + that.camera.position.z; 
-                if(typeof this.Clients.length > 0){
+                if(typeof that.avatar_obj != 'undefined' && 
+                    that.avatar_obj.position != 'undefined'){
                         text += '</br>mesh coords : ' + that.avatar_obj.position.x + 
                     " " + that.avatar_obj.position.y + 
                     " " + that.avatar_obj.position.z ;
@@ -449,10 +450,9 @@ world_core.prototype.addOtherPlayer = (function(){
 }());
 
 world_core.prototype.deletePlayer = function(userid){
-    var cli = this.Clients[userid];
-    if(cli != undefined){
-        this.remove(cli);
-        cli  = undefined;
+    if(this.Clients.hasOwnProperty(userid)){
+        this.remove(this.Clients[userid]);
+        delete this.Clients[userid];
     }
 };
 world_core.prototype.updatePlayers = function(new_coords){
