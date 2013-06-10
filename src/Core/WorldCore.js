@@ -220,6 +220,8 @@ var world_core = function(world_instance){
 
         // build sun
         this.add(this.SUN);
+        console.log("Sun Loaded");
+
         
         this.MAIN_LIGHT = this.getMainLight();
         this.add(this.MAIN_LIGHT);
@@ -270,7 +272,7 @@ var world_core = function(world_instance){
                     
                     //that.camera.animate(that);
 
-                    //that.SUN.animate(t, that);
+                    that.SUN.animate(t, that);
                 }
                 
                 // color ratios
