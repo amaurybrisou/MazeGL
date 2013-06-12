@@ -1,10 +1,7 @@
 if(typeof global != 'undefined'){
-
 	var FileDescriptor = require('./FileDescriptor.js');
-	var Materials = require('./Materials.js');
-    var Attributes = require('./Attributes.js');
     var WorldObjects = require('./WorldObjects.js');
-    var FirstAvatar = require('./FirstAvatar.js');
+    var Configuration = require("./Configuration.js");
 	var THREE = require('three');
 }
 
@@ -24,8 +21,10 @@ if('undefined' != typeof(global)) frame_time = 45; //on server we run at 45ms, 2
 
     if ( !window.requestAnimationFrame ) {
         window.requestAnimationFrame = function ( callback, element ) {
-            var currTime = Date.now(), timeToCall = Math.max( 0, frame_time - ( currTime - lastTime ) );
-            var id = window.setTimeout( function() { callback( currTime + timeToCall ); }, timeToCall );
+            var currTime = Date.now(), timeToCall = Math.max(
+                0, frame_time - ( currTime - lastTime ) );
+            var id = window.setTimeout( function() { 
+                callback( currTime + timeToCall ); }, timeToCall );
             lastTime = currTime + timeToCall;
             return id;
         };
@@ -42,6 +41,7 @@ var world_core = function(world_instance){
     THREE.Scene.call(this);
 
     var that = this;
+
     this.Clients = [];
     //Store the instance, if any
     this.instance = world_instance;
@@ -63,155 +63,37 @@ var world_core = function(world_instance){
     //     //as this happens at a fixed frequency
     // this.create_physics_simulation();
 
-    //     //Start a fast paced timer for measuring time easier
-    // this.create_timer();
+    //Start a fast paced timer for measuring time easier
+    //this.create_timer();
 
-    //WINDOW
-    this.SCREEN_SIZE_RATIO    = 100;
-    this.WIDTH                = window.innerWidth - this.SCREEN_SIZE_RATIO;
-    this.HEIGHT               = window.innerHeight - this.SCREEN_SIZE_RATIO;
-
-    //COLORS
-    this.BLACK                    = 0xFFFFFF;
-    this.RED                      = new THREE.Color("rgb(219,0,0)");
-    this.BG_COLOR                 = new THREE.Color("rgb(246,246,246)");
-    this.FLOOR_COLOR              = new THREE.Color("rgb(249,249,249)");
-    this.LIGHT_COLOR              = new THREE.Color("rgb(249,249,249)");
-    this.STONES_EDGES_COLOR       = new THREE.Color("rgb(33,33,33)");
-    this.STONES_FACES_COLOR       = new THREE.Color("rgb(249,249,249)");
-    this.SUN_COLOR                = new THREE.Color("rgb(33,33,33)");
-    this.ORIGIN_COLOR             = new THREE.Color("rgb(66,66,66)");
-    this.BC                       = 0;
-    this.SC                       = 0;
-    this.SEC                      = 0;
-    this.DARKNESS                 = 0.17;
-    this.LIGHTNESS                = 0.9;
-    this.AVATAR_COLOR             = new THREE.Color("rgb(33,33,33)");
-
-    //WORLD ASPECT
-    this.WORLDSIZE            = 216000;
-    this.LIGHT_SPEED          = 100000;
-    this.DAY_NIGHT_SPEED      = this.LIGHT_SPEED;
-    this.ORIGIN_SIZE          = 0.2;
-    this.SUN_SIZE             = this.WORLDSIZE/10;
-    this.WORLD_TEXTURE_URL    = "textures/noise_blur.png";
-    this.TEXTURE_SIZE         = 512;
-
-    //WORLD OBJECTS
-    //floor
-    this.PLANET_FLOOR             = new THREE.PlaneGeometry(
-    	this.WORLDSIZE, this.WORLDSIZE, 10, 10);
-    this.PLANE_ROT_X              = (-Math.PI/2);
-    this.PLANE_ROT_Y              = 0;
-    //stones
-    this.NB_STONES                = 1000;
-    this.STONES_SIZE_RATIO        = 100;
-    this.STONES_EDGES_LINEWIDTH   = 4;
-    //fog
-    this.FOG_DENSITY              = 0.00002;
-    this.FOG                      = new THREE.FogExp2(
-    	this.FOG_COLOR, this.FOG_DENSITY);
-
-    //MATERIALS
-    //stones mat
-    this.STONES_EDGES_MAT = new Materials.strokeStoneMat(
-    	this.STONES_EDGES_COLOR,
-    	this.STONES_EDGES_LINEWIDTH); //color , wireframeLinewidth
-    this.STONES_FACES_MAT = new Materials.fillStoneMat(
-    	this.STONES_FACES_COLOR); // color
-    //sun mat
-    this.SUN_MAT          = new Materials.Sun_mat(
-    	this.SUN_COLOR); // color
-    //avatar mat
-    this.AVATAR_MAT       = new Materials.Avatar_mat(
-    	this.AVATAR_COLOR);
-
-
-    //sun
-    this.SUN              = new WorldObjects.Sun_obj(
-    	0, 100, 0, this.SUN_MAT, this.SUN_SIZE);
-
-    //LIGHTS
-    //sun light
-    this.LIGHTS = {
-        MAIN_LIGHT                   : new THREE.SpotLight(this.LIGHT_COLOR),
-        MAIN_LIGHT_CAST_SHADOW       : true,
-        MAIN_LIGHT_ANGLE             : Math.PI/2,
-        MAIN_LIGHT_EXPONENT          : 2,
-        MAIN_LIGHT_CAST_SHADOW       : true,
-        MAIN_LIGHT_SHADOW_CAMERA_FAR : this.WORLDSIZE*2,
-        MAIN_LIGHT_SHADOW_CAMERA_FOV : 100,
-        MAIN_LIGHT_SHADOWBIAS        : 2,
-        //ambient light
-        AMBIENT_LIGHT                : 0xeeeeee,
-    }
-    
-    this.AVATAR_TYPE                     = FirstAvatar;
-    this.AVATAR_MODEL_PATH               = null; // "Models/daemon2.obj";
-    this.AVATAR_SCALE                    = 5;
-    this.AVATAR_SIDE                     = function(){
-        return this.AVATAR_SCALE/2 + Math.random()*this.AVATAR_SCALE/2;
-    };
-    this.AVATAR_RANGE_TARGET             = 100;
-    this.AVATAR_NO_FLY                   = true;
-    this.AVATAR_TRANS_VIEW_INCREMENT     = 40;
-    this.AVATAR_ROT_VIEW_INCREMENT       = 0.09;
-
-    //Client specific initialisation
     if(!this.server){
 
+        
+
+        var object = new Configuration(this.server);
+        for (var key in object ){
+            this[key] = object[key];
+        }  
+
+        var span = document.getElementById('infos');
+        var text = document.createTextNode('');    
+        
         this.Renderer = RENDERER(this);
 
         document.getElementById('canvasCont').appendChild(this.Renderer.domElement);
 
         this.Renderer.setClearColor(this.BG_COLOR, 1.0);
         this.Renderer.clear();
-
         
-        var span = document.getElementById('infos');
-        var text = document.createTextNode('');
-
-        //AVATAR I
+        this.camera = this.getCamera();
+        this.add(this.camera);
         
+        this.camera.lookAt(this.position);
+        console.log("Camera Loaded ", "WorldBuilder");
     
-        //CAMERA
-        this.VIEW_ANGLE       = 100;
-        this.ASPECT           = this.WIDTH / this.HEIGHT;
-        this.NEAR             = 0.1;
-        this.FAR              = this.WORLDSIZE;
-        this.CAM_ROT_SPEED    = 2000;
-        this.CAM_POS_X        = 50
-        this.CAM_POS_Y        = 20;
-        this.CAM_POS_Z        = -10;
-        this.CAM_POS_RATIO    = 3;
-        this.LOOK_VERTICAL    = true;
-        this.FREEZE           = false;
-
-        this.PLANET_GEO = Materials.Planet_Geo(this.WORLDSIZE);
-        this.PLANET_MAT = Materials.Planet_Materials(this.FLOOR_COLOR);
-
-        //NETWORK   SERVER CLOUD9
-	    this.SERVER_ADDR =  '127.0.0.1';
-	    this.SERVER_PORT =  9999;
-	    this.FileDescriptor = Network.FileDescriptor(
-            this.SERVER_ADDR,
-            this.SERVER_PORT);
-
-        var avatarMat = Materials.Avatar_mat(
-                this.AVATAR_COLOR);
-        
-
-        if(!this.server){
-            this.camera = this.getCamera(this);
-            this.add(this.camera);
-            
-            this.camera.lookAt(this.position);
-            console.log("Camera Loaded ", "WorldBuilder");
-        
-            this.WORLD_TEXTURE = this.getWorldTexture(this);
-            this.WORLD_TEXTURE.repeat.set(1024, 1024);
-            console.log("World_Texture Loaded ", "WorldBuilder");
-        }
+        this.WORLD_TEXTURE = this.getWorldTexture();
+        this.WORLD_TEXTURE.repeat.set(1024, 1024);
+        console.log("World_Texture Loaded ", "WorldBuilder");
 
         // build floor
         this.PLANE = this.getPlane();
@@ -221,7 +103,6 @@ var world_core = function(world_instance){
         // build sun
         this.add(this.SUN);
         console.log("Sun Loaded");
-
         
         this.MAIN_LIGHT = this.getMainLight();
         this.add(this.MAIN_LIGHT);
@@ -231,37 +112,20 @@ var world_core = function(world_instance){
         this.add(this.AMBIENT_LIGHT);
         console.log("Ambient Light Loaded ");
 
-        // build origin
-        this.wo_origin = Attributes.Origin(
-            this.ORIGIN_COLOR,
-            this.ORIGIN_SIZE,
-            this.WORLDSIZE);
-        
-        for (var i = 0; i < this.wo_origin.length; i++) {
-            this.add(this.wo_origin[i]);
+        for (var i = 0; i < this.WORLD_ORIGIN.length; i++) {
+           this.add(this.WORLD_ORIGIN[i]);
         }
         console.log("Origin Loaded ");
 
         //Build Stones;
         this.StoneBuilder();
         console.log("Stones Loaded ");
-
-        // // build avatar
-        if(!this.server){
-            //this.avatar_obj = this.getAvatar(this);
-        //     this.camera.reset();
-        //     this.avatar_obj.add(this.camera);
-        //     this.add(this.avatar_obj);
-        //     console.log("Avatar Loaded ", "WorldBuilder");
-         }
         
         // build fog
         this.fog = this.FOG;
-        
-        if(!this.server){
-            this.camera.lookAt(this.position);
-        }
-        
+
+        this.camera.lookAt(this.position);
+  
         this.animate = function(t, position){
                 // animate
                 if(!that.server){
@@ -329,23 +193,23 @@ var world_core = function(world_instance){
 
 
                 // main light and sun movements
-                that.LIGHTS.MAIN_LIGHT.position.y = Math.cos(t / that.DAY_NIGHT_SPEED) * 
+                that.MAIN_LIGHT.position.y = Math.cos(t / that.DAY_NIGHT_SPEED) * 
                     that.FAR / 2;
                 /*    window.mmo.sun.position.y = Math.cos(t/day_night_speed)*FAR/4;
                 */
-                that.LIGHTS.MAIN_LIGHT.position.x = Math.sin(t / that.DAY_NIGHT_SPEED) *
+                that.MAIN_LIGHT.position.x = Math.sin(t / that.DAY_NIGHT_SPEED) *
                     that.WORLDSIZE / 2;
                 /*    window.mmo.sun.position.x = Math.sin(t/day_night_speed)*WORLDSIZE/1.8;
                 */
 
-                that.LIGHTS.MAIN_LIGHT.lookAt(that.position);
+                that.MAIN_LIGHT.lookAt(that.position);
 
                 // HTML CONTENT
                 span.innerHTML = ''; // clear existing
 
                 var connection_status = Network.FileDescriptor.readyState === ( 1 || 2 || 0 )
                 ? "Connected" : "Disconnected";
-                text = 'time : ' + Math.round(that.LIGHTS.MAIN_LIGHT.position.y / 1000) + 
+                text = 'time : ' + Math.round(that.MAIN_LIGHT.position.y / 1000) + 
                 '</br>cam coords : ' + that.camera.position.x + 
                 " " + that.camera.position.y + 
                 " " + that.camera.position.z; 
@@ -358,22 +222,23 @@ var world_core = function(world_instance){
                 text += "</br>Status : "+connection_status;
 
                 span.innerHTML = text;
-                
 
                 that.updateid = window.requestAnimationFrame(
                     that.animate.bind(that), that.Renderer.domElement );
                 that.Renderer.clear();
                 that.Renderer.render(that, that.camera);
             }
-
-
     } else { //if !server
+        var object = new Configuration(this.server);
+        for (var key in object ){
+            object[key] = this[key];
+        }
+
         this.animate = function(){
 
         };
         this.server_time = 0;
         this.laststate = {};
-
     }
 
 }; //world.constructor
@@ -447,7 +312,6 @@ world_core.prototype.addOtherPlayer = (function(){
         this.add(avatar_obj);
 
         this.Clients[avatar_obj.userid] = avatar_obj;
-        console.log("Clients Now in the Room : "+this.Clients);
     };
 }());
 
@@ -467,6 +331,25 @@ world_core.prototype.updatePlayers = function(new_coords){
     }
     
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 world_core.prototype.StoneBuilder =  function(){
 
@@ -493,12 +376,12 @@ world_core.prototype.StoneBuilder =  function(){
 
 world_core.prototype.getCamera = function(){
     var that = this;
-    var camera = new THREE.PerspectiveCamera(
+    var s = new THREE.PerspectiveCamera(
             this.VIEW_ANGLE,
             this.ASPECT,
             this.NEAR,
             this.FAR);
-    camera.position.set(
+    s.position.set(
         this.CAM_POS_X,
         this.CAM_POS_Y,
         this.CAM_POS_Z
@@ -506,7 +389,9 @@ world_core.prototype.getCamera = function(){
     
 
     
-    camera.reset = function () {
+
+    s.reset = function () {
+        
         this.position.set(
             that.avatar_obj.position.x,
             that.avatar_obj.position.y,
@@ -520,7 +405,7 @@ world_core.prototype.getCamera = function(){
 
     };
 
-    camera.animate = function () {
+    s.animate = function () {
 
         this.position.set(
             that.avatar_obj.position.x,
@@ -535,7 +420,7 @@ world_core.prototype.getCamera = function(){
     };
     
     
-    return camera;
+    return s;
 };
 
 world_core.prototype.getColor = function(rgb_str){
@@ -551,7 +436,6 @@ world_core.prototype.getPlane = function(){
     plane.rotation.x = this.PLANE_ROT_X;
     plane.position.y = this.PLANE_ROT_Y;
     plane.receiveShadow = this.PLANE_RECV_SHADOW;
-    
     return plane;
 };
 
@@ -560,44 +444,153 @@ world_core.prototype.getAvatar = function(coords){
         y = coords.y || 0,
         z = coords.z || 0;
 
-    var avatarMat = Materials.Avatar_mat(
-        this.AVATAR_COLOR);
     return new this.AVATAR_TYPE(
-        x, y, z, avatarMat, this);
+        x, y, z, this.AVATAR_MAT, this);
 };
 
 world_core.prototype.getMainLight = function(){
     
-    var MAIN_LIGHT = new THREE.SpotLight(this.LIGHT_COLOR);
+    var s = new THREE.SpotLight(this.LIGHT_COLOR);
     
-    MAIN_LIGHT.castShadow = this.MAIN_LIGHT_CAST_SHADOW;
-    MAIN_LIGHT.angle = this.MAIN_LIGHT_ANGLE;
-    MAIN_LIGHT.exponent = this.MAIN_LIGHT_EXPONENT;
-    MAIN_LIGHT.shadowBias = this.MAIN_LIGHT_SHADOWBIAS;
-    MAIN_LIGHT.shadowCameraFar = this.MAIN_LIGHT_SHADOW_CAMERA_FAR;
-    MAIN_LIGHT.shadowCameraFov = this.MAIN_LIGHT_SHADOW_CAMERA_FOV;
-    return MAIN_LIGHT;
+    s.castShadow = this.MAIN_LIGHT_CAST_SHADOW;
+    s.angle = this.MAIN_LIGHT_ANGLE;
+    s.exponent = this.MAIN_LIGHT_EXPONENT;
+    s.shadowBias = this.MAIN_LIGHT_SHADOWBIAS;
+    s.shadowCameraFar = this.MAIN_LIGHT_SHADOW_CAMERA_FAR;
+    s.shadowCameraFov = this.MAIN_LIGHT_SHADOW_CAMERA_FOV;
+    return s;
 };
 
 world_core.prototype.getWorldTexture = function(){
-    var WORLD_TEXTURE = THREE.ImageUtils.loadTexture(this.WORLD_TEXTURE_URL);
+    var s = THREE.ImageUtils.loadTexture(this.WORLD_TEXTURE_URL);
     
-    WORLD_TEXTURE.wrapS = WORLD_TEXTURE.wrapT = THREE.RepeatWrapping;
-    return WORLD_TEXTURE;
+    s.wrapS = s.wrapT = THREE.RepeatWrapping;
+    return s;
+};  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+world_core.prototype.create_timer = function(){
+    setInterval(function(){
+        this._dt = new Date().getTime() - this._dte;
+        this._dte = new Date().getTime();
+        this.local_time += this._dt/1000.0;
+    }.bind(this), 4);
 };
 
-world_core.prototype.getSun = function(){
-    var sun_mat = Materials.Sun_mat(this.SUN_COLOR);
+world_core.prototype.create_physics_simulation = function() {
+
+    setInterval(function(){
+        this._pdt = (new Date().getTime() - this._pdte)/1000.0;
+        this._pdte = new Date().getTime();
+        this.update_physics();
+    }.bind(this), 15);
+
+}; //world_core.client_create_physics_simulation
+
+
+world_core.prototype.client_create_ping_timer = function() {
+
+        //Set a ping timer to 1 second, to maintain the ping/latency between
+        //client and server and calculated roughly how our connection is doing
+
+    setInterval(function(){
+
+        this.last_ping_time = new Date().getTime() - this.fake_lag;
+        this.socket.send('p.' + (this.last_ping_time) );
+
+    }.bind(this), 1000);
     
-    return new WorldObjects.Sun_obj(this.SUN_SIZE, 50, 50,
-        sun_mat,
-        {
-            DAY_NIGHT_SPEED : this.DAY_NIGHT_SPEED,
-            WORLDSIZE : this.WORLDSIZE,
-            FAR : this.FAR
-        });
-};   
+};
+
+world_core.prototype.client_create_debug_gui = function() {
+
+    this.gui = new dat.GUI();
+
+    var _playersettings = this.gui.addFolder('Your settings');
+
+        this.colorcontrol = _playersettings.addColor(this, 'color');
+
+            //We want to know when we change our color so we can tell
+            //the server to tell the other clients for us
+        this.colorcontrol.onChange(function(value) {
+            this.players.self.color = value;
+            localStorage.setItem('color', value);
+            this.socket.send('c.' + value);
+        }.bind(this));
+
+        _playersettings.open();
+
+    var _othersettings = this.gui.addFolder('Methods');
+
+        _othersettings.add(this, 'naive_approach').listen();
+        _othersettings.add(this, 'client_smoothing').listen();
+        _othersettings.add(this, 'client_smooth').listen();
+        _othersettings.add(this, 'client_predict').listen();
+
+    var _debugsettings = this.gui.addFolder('Debug view');
+        
+        _debugsettings.add(this, 'show_help').listen();
+        _debugsettings.add(this, 'fps_avg').listen();
+        _debugsettings.add(this, 'show_server_pos').listen();
+        _debugsettings.add(this, 'show_dest_pos').listen();
+        _debugsettings.add(this, 'local_time').listen();
+
+        _debugsettings.open();
+
+    var _consettings = this.gui.addFolder('Connection');
+        _consettings.add(this, 'net_latency').step(0.001).listen();
+        _consettings.add(this, 'net_ping').step(0.001).listen();
+
+            //When adding fake lag, we need to tell the server about it.
+        var lag_control = _consettings.add(this, 'fake_lag').step(0.001).listen();
+        lag_control.onChange(function(value){
+            this.socket.send('l.' + value);
+        }.bind(this));
+
+        _consettings.open();
+
+    var _netsettings = this.gui.addFolder('Networking');
+        
+        _netsettings.add(this, 'net_offset').min(0.01).step(0.001).listen();
+        _netsettings.add(this, 'server_time').step(0.001).listen();
+        _netsettings.add(this, 'client_time').step(0.001).listen();
+        //_netsettings.add(this, 'oldest_tick').step(0.001).listen();
+
+        _netsettings.open();
+
+}; //world_core.client_create_debug_gui
+
+world_core.prototype.client_onping = function(data) {
+
+    this.net_ping = new Date().getTime() - parseFloat( data );
+    this.net_latency = this.net_ping/2;
+
+};
+
 
 if( 'undefined' != typeof global ) {
     module.exports = global.world_core = world_core;
 }
+
+

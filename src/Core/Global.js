@@ -7,3 +7,4 @@ window.bind = function( scope, fn ) {
                 fn.apply( scope, arguments );
             };
 };
+

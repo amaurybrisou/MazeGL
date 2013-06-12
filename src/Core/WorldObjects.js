@@ -3,16 +3,12 @@ if(typeof global != 'undefined'){
 }
 
 var WorldObjects = {
-    Camera : function (instance) {
-        
-    },
-
     Sun_obj : function(x, y, z, material, size){
     
         THREE.Mesh.call(this,
                         new THREE.SphereGeometry(size,50,50),
                         material );
-              
+
         this.position.x = x;
         this.position.y = y;
         this.position.z = z;
@@ -65,14 +61,13 @@ var WorldObjects = {
         stone.castShadow = true;
 
         return stone;
-    }
+    }    
 
 
 };
-
-WorldObjects.Camera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
+    
 WorldObjects.Sun_obj.prototype = Object.create(THREE.Mesh.prototype);
-WorldObjects.Sun_obj.prototype = Object.create(THREE.Mesh.prototype);
+WorldObjects.Fog_obj.prototype = Object.create(THREE.FogExp2.prototype);
 
 if(typeof global != 'undefined'){
     module.exports = global.WorldObjects = WorldObjects;

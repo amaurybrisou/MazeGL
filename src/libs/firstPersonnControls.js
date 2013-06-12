@@ -29,13 +29,11 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
     this.autoSpeedFactor = 0.0,
     this.freeze = false,
 
-    this.currentTime = new Date().getTime();
-
+    this.t = new Date().getTime();
+    this.old_state ;
     this.recvTime;
     this.latency;
-    var interp_buffer = [{ "ack": false, "time" : 0, "position" : this.target },
-                         {"ack": false, "time" : 0, "position" : this.target }];
-
+    var server_updates = [];
 
     this.lat = 0;
     this.lon = 0;
@@ -51,7 +49,13 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
     this.mouseY = 0;
     this.mouseWheel = 0;
 
-    
+    this.onserver_update = function(data){
+        this.server_updates.push(data);
+        //Store 1sc of frames
+        if(this.server_updates.length >= ( 60*this.buffer_size )) {
+            this.server_updates.splice(0,1);
+        }
+    };
 
     if (that.domElement === document) {
 
@@ -305,22 +309,19 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
             that.mouveUp || that.moveLeft ){
 
 
-            that.currentTime = new Date().getTime();
+            //that.process_net_updates();
 
-            interp_buffer.push({
-                "time" :  that.currentTime,
-                "position" : that.object.position
-            });
+            // that.t = new Date().getTime();
             
             
-            var interp_time = that.currentTime - that.interp_value;
+            // var interp_time = that.currentTime - that.interp_value;
 
-            var temp_pos = that.interpolate(that.object.position, interp_time);
+            // var temp_pos = that.interpolate(that.object.position, interp_time);
 
-            that.object.position.set(temp_pos.x, temp_pos.y, temp_pos.z);
+            // that.object.position.set(temp_pos.x, temp_pos.y, temp_pos.z);
 
             
-            this.local_move(delta);
+            this.local_update(delta);
 
             var u_struct = {
                 'userid': that.object.userid,
@@ -346,7 +347,7 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
         // }     
     };
   
-    this.local_move = function(delta){
+    this.local_update = function(delta){
         
         var actualMoveSpeed = 0;
         

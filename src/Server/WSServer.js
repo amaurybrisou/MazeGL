@@ -1,23 +1,27 @@
-var io = require('socket.io');
-
+var sio = require('socket.io');
+var WSServerRequest = require('./WSServerRequest.js');
 var WSServer = (function(){
 
 	return function(httpServer){
 
-		var wsServer = io.listen(httpServer);
+		var io = sio.listen(httpServer);
 		
 		//Configure the socket.io connection settings.
         //See http://socket.io/
-    	wsServer.configure(function (){
+    	io.configure(function (){
 
-	        wsServer.set('log level', 0);
+	        io.set('log level', 0);
 
-	        wsServer.set('authorization', function (handshakeData, callback) {
+	        io.set('authorization', function (handshakeData, callback) {
 	          callback(null, true); // error first callback style
 	      	});
         }());
 
-	    return wsServer;
+    	io.on('connection', function(socket){
+    		WSServerRequest(io, socket);
+    	});
+
+	    return io;
 	};
 }());
 

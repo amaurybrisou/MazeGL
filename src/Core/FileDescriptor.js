@@ -58,7 +58,11 @@ var Network = {
 
                 socket.move = function(u_struct){
                     socket.emit('cl_move', u_struct);
-                }
+                };
+
+                socket.on('cl_ack_move', function(data){
+                    Network.FileDescriptor.onserver_update(data);
+                })
 
                 socket.on('close', function (e) {
                     if (!e.wasClean) {

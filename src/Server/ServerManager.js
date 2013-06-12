@@ -8,6 +8,8 @@ global.window = global.document = global;
 
 //Import shared game library code.
 require('../Core/WorldCore.js');
+var UUID = require('node-uuid');
+var Client = require('./Client.js');
 
 mmo.log = function() {
     if(verbose) console.log.apply(this,arguments);
@@ -26,7 +28,33 @@ setInterval(function(){
     mmo.local_time += mmo._dt/1000.0;
 }, 4);
 
+var Clients = [];
+
+mmo.AddClient = function(socket){
+    var userid = UUID();
+    var client = new Client();
+    Clients[userid] = { userid : userid, x:0, y:0, z:0 }; 
+    return { 'userid' : userid, 'client' : client };
+};
+
+mmo.getClients = function(userid){
+    var c = [];
+    for(var client in Clients){
+        if(Clients[client] != undefined || client !== userid){
+            c.push(Clients[client]);
+        }
+    }
+    return c;
+};
+
+mmo.delClient  = function(userid){
+    if(Clients.hasOwnProperty(userid)){
+        delete Clients[userid];
+    }
+};
+
 mmo.createWorld = function() {
+
 
     //Create a new game instance
     var world = {

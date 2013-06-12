@@ -48,8 +48,7 @@ var Client = (function(){
     this.interp_value = 0.1;
     this.recvTime;
     this.latency;
-    this.interp_buffer = [{ "ack": false, "time" : 0, "position" : this.target },
-                         {"ack": false, "time" : 0, "position" : this.target }];
+    this.interp_buffer = [];
 
     this.interpolate = (function(){
             // admiting   interp_buffer[0].time < t < interp_buffer[1].time
@@ -227,5 +226,23 @@ var Client = (function(){
     return this;
 };
 }());
+
+Client.prototype.refresh_fps = function() {
+
+        //We store the fps for 10 frames, by adding it to this accumulator
+    this.fps = 1/this.dt;
+    this.fps_avg_acc += this.fps;
+    this.fps_avg_count++;
+
+        //When we reach 10 frames we work out the average fps
+    if(this.fps_avg_count >= 10) {
+
+        this.fps_avg = this.fps_avg_acc/10;
+        this.fps_avg_count = 1;
+        this.fps_avg_acc = this.fps;
+
+    } //reached 10 frames
+
+};
 
 module.exports = Client;

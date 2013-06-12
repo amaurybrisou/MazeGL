@@ -39,12 +39,6 @@ var Materials = {
             WORLDSIZE, WORLDSIZE, 10, 10);
     },
 
-    Stone_Materials : function(){
-        return new THREE.MeshBasicMaterial({
-            color: STONES_COLOR
-        });
-    },
-
     fillStoneMat : function(stoneFaces_color){
         return new THREE.MeshBasicMaterial({
             color: stoneFaces_color

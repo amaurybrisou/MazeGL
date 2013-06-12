@@ -4,7 +4,8 @@ if(typeof global != 'undefined'){
 }
 
 var FirstAvatar = function (x, y, z, mat, instance) {
-        THREE.Mesh.call(this, new THREE.Geometry(), mat);
+        THREE.Mesh.call(this);
+        
         this.position.x = x;
         this.position.y = y;
         this.position.z = z;
