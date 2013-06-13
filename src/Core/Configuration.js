@@ -111,7 +111,7 @@ var Configuration = function(server){
     if(!server){
         this.AVATAR_TYPE      = FirstAvatar;
         //CAMERA
-        this.VIEW_ANGLE       = 100;
+        this.VIEW_ANGLE       = 60;
         this.ASPECT           = this.WIDTH / this.HEIGHT;
         this.NEAR             = 0.1;
         this.FAR              = this.WORLDSIZE;
