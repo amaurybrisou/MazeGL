@@ -21,6 +21,10 @@ var WSServer = (function(){
     		WSServerRequest(io, socket);
     	});
 
+    	io.send_server_update = function(laststate){
+			io.sockets.emit('server_update', laststate);
+		};
+
 	    return io;
 	};
 }());

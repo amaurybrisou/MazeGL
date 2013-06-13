@@ -29,11 +29,7 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
     this.autoSpeedFactor = 0.0,
     this.freeze = false,
 
-    this.t = new Date().getTime();
-    this.old_state ;
-    this.recvTime;
-    this.latency;
-    var server_updates = [];
+    
 
     this.lat = 0;
     this.lon = 0;
@@ -49,13 +45,7 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
     this.mouseY = 0;
     this.mouseWheel = 0;
 
-    this.onserver_update = function(data){
-        this.server_updates.push(data);
-        //Store 1sc of frames
-        if(this.server_updates.length >= ( 60*this.buffer_size )) {
-            this.server_updates.splice(0,1);
-        }
-    };
+
 
     if (that.domElement === document) {
 
@@ -272,35 +262,67 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
 
     };
 
+    this.t = new Date().getTime();
+    this.old_state ;
+    this.recvTime;
+    this.latency;
+    this.server_positions_updates = [];
+    this.inputs = [];
+    this.last_input_seq;
 
-    
-
-    this.interpolate = (function(){
-        // admiting   interp_buffer[0].time < t < interp_buffer[1].time
-        return function(vec, t){
-            
-            vec.x = interp_buffer[0].position.x +
-                ((interp_buffer[1].position.x - interp_buffer[0].position.x) /
-                    ( interp_buffer[1].time - interp_buffer[0].time )) *
-                        ( t * interp_buffer[0].time);
-            
-            vec.y = interp_buffer[0].position.y +
-                ((interp_buffer[1].position.y - interp_buffer[0].position.y) /
-                    ( interp_buffer[1].time - interp_buffer[0].time )) *
-                        ( t * interp_buffer[0].time);
-            
-            vec.z = interp_buffer[0].position.z +
-                ((interp_buffer[1].position.z - interp_buffer[0].position.z) /
-                    ( interp_buffer[1].time - interp_buffer[0].time )) *
-                        ( t * interp_buffer[0].time);
-            
-            interp_buffer.shift();
-            
-            return new THREE.Vector3(vec.x, vec.y, vec.z);
+    this.push_server_update = function(data){
+        this.server_positions_updates.push(data);
+        //Store 1sc of frames
+        if(this.server_positions_updates.length >= ( 60*this.buffer_size )) {
+            this.server_positions_updates.splice(0,1);
         }
-    }());
+    };
 
+    this.process_net_prediction_correction = function(){
+
+        if(!that.server_positions_updates.length) return;
+        var latest_server_data = 
+            that.server_positions_updates[that.server_positions_updates.length-1];
+
+        var my_last_input_on_server = that.last_input_seq || 
+            latest_server_data.last_server_input;
+        
+        var my_server_pos = that.position || 
+            latest_server_data.server_position;
+        if(my_last_input_on_server) {
+            
+            var my_server_pos;
+                //The last input sequence index in my local input list
+            var lastinputseq_index = -1;
+                //Find that input in the list, and store the index
+            for(var i = 0; i < that.inputs.length; ++i) {
+                if(that.inputs[i] == my_last_input_on_server) {
+                    lastinputseq_index = i;
+                    break;
+                }
+            }
+            console.log(my_server_pos);
+                //Now we can crop the list of any updates we have already processed
+            if(lastinputseq_index != -1) {
+                //so we have now gotten an acknowledgement from the server that our inputs here have been accepted
+                //and that we can predict from that known position instead
+
+                //remove the rest of the inputs we have confirmed on the server
+                var number_to_clear = Math.abs(lastinputseq_index - (-1));
+                that.inputs.splice(0, number_to_clear);
+                //The player is now located at the new server position, authoritive server
+                that.change_position(my_server_pos);
+                that.last_input_seq = lastinputseq_index;
+                //Now we reapply all the inputs that we have locally that
+                //the server hasn't yet confirmed. that will 'keep' our position the same,
+                //but also confirm the server position at the same time.
+            } // if(lastinputseq_index != -1)
+        } //if
+    }
     
+    this.change_position = function( b ) { 
+        that.object.position.set(b.x, b.y, b.z);
+    };
 
     this.update = function (delta) {
         if(that.onMouseMove || that.moveBackward ||
@@ -308,19 +330,7 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
             that.moveForward || that.moveDown ||
             that.mouveUp || that.moveLeft ){
 
-
-            //that.process_net_updates();
-
-            // that.t = new Date().getTime();
-            
-            
-            // var interp_time = that.currentTime - that.interp_value;
-
-            // var temp_pos = that.interpolate(that.object.position, interp_time);
-
-            // that.object.position.set(temp_pos.x, temp_pos.y, temp_pos.z);
-
-            
+            this.process_net_prediction_correction();
             this.local_update(delta);
 
             var u_struct = {
@@ -339,69 +349,28 @@ window.THREE.FirstPersonControls = function (object, screenSizeRatio, domElement
                 'delta': delta
             };
 
+            that.last_input_seq = u_struct;
+            that.inputs.push(u_struct);
+
             world.FileDescriptor.move(u_struct);
             
         }   
-        // if(that.onMouseMove){
-        //     this.local_move(delta);
-        // }     
     };
   
     this.local_update = function(delta){
         
         var actualMoveSpeed = 0;
-        
-        if ( !this.freeze ) {
 
-            if ( this.heightSpeed ) {
+        var actualLookSpeed = delta * this.lookSpeed;
 
-                var y = THREE.Math.clamp( this.object.position.y, this.heightMin, this.heightMax );
-                var heightDelta = y - this.heightMin;
+        if ( !this.activeLook ) {
 
-                this.autoSpeedFactor = delta * ( heightDelta * this.heightCoef );
+            actualLookSpeed = 0;
 
-            } else {
+         }
 
-                this.autoSpeedFactor = 0.0;
-
-            }
-
-            actualMoveSpeed = delta * this.movementSpeed;
-
-            if ( this.moveForward || ( this.autoForward && !this.moveBackward ) ) 
-                this.object.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
-            if ( this.moveBackward ) this.object.translateZ( actualMoveSpeed );
-
-            if ( this.moveLeft ) this.object.translateX( - actualMoveSpeed );
-            if ( this.moveRight ) this.object.translateX( actualMoveSpeed );
-
-            if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
-            if ( this.moveDown ) this.object.translateY( - actualMoveSpeed );
-
-            var actualLookSpeed = delta * this.lookSpeed;
-
-            if ( !this.activeLook ) {
-
-                actualLookSpeed = 0;
-
-            }
-
-            this.lon += this.mouseX * actualLookSpeed;
-            if( this.lookVertical ) this.lat -= this.mouseY * actualLookSpeed;
-
-            this.lat = Math.max( - 85, Math.min( 85, this.lat ) );
-            this.phi = ( 90 - this.lat ) * Math.PI / 180;
-            this.theta = this.lon * Math.PI / 180;
-
-            var targetPosition = this.target,
-                position = this.object.position;
-
-            targetPosition.x = position.x + 100 * Math.sin( this.phi ) * Math.cos( this.theta );
-            targetPosition.y = position.y + 100 * Math.cos( this.phi );
-            targetPosition.z = position.z + 100 * Math.sin( this.phi ) * Math.sin( this.theta );
-
-        }
-    
+        var targetPosition = this.target,
+            position = this.object.position;
 
         var verticalLookRatio = 1;
 

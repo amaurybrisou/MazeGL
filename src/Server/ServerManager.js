@@ -53,8 +53,13 @@ mmo.delClient  = function(userid){
     }
 };
 
-mmo.createWorld = function() {
+mmo.send_server_update = function(data){
+    this.io.send_server_update(data);
+};
 
+mmo.createWorld = function(io) {
+    //store socket io in order to broadcast world updates;
+    this.io = io;
 
     //Create a new game instance
     var world = {
@@ -73,7 +78,7 @@ mmo.createWorld = function() {
     //game code like collisions and such.
     world.worldcore = new world_core( world );
     //Start updating the game loop on the server
-    world.worldcore.animate( new Date().getTime() );
+    world.worldcore.update( new Date().getTime() );
 
     mmo.log('server host at ' + world.worldcore.local_time);
     

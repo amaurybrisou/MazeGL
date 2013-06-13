@@ -44,11 +44,7 @@ var Client = (function(){
     this.moveDown = false;
     this.AvatarPosition = new THREE.Vector3(0,0,0);
 
-    this.currentTime = new Date().getTime();
-    this.interp_value = 0.1;
-    this.recvTime;
-    this.latency;
-    this.interp_buffer = [];
+    
 
     this.interpolate = (function(){
             // admiting   interp_buffer[0].time < t < interp_buffer[1].time
@@ -75,26 +71,44 @@ var Client = (function(){
             }
         }());
 
-    this.update = function (recv_data){
+    this.currentTime = new Date().getTime();
+    this.interp_value = 0.1;
+    this.recvTime;
+    this.server_time;
+
+    this.latency;
+    this.server_updates = [];
+    this.laststate = {};
+    this.server_time;
+    this.position = new THREE.Vector3(0,0,0);
+
+    this.getLastPosition = function(){
+        return this.position;
+    };
+
+    this.update = function (input_seq){
+        
+        this.last_input_seq = input_seq;
+
         this.currentTime = new Date().getTime();
-        if(typeof recv_data.sentTime !== undefined){
-            this.latency = this.currentTime - recv_data.sentTime;
+        if(typeof input_seq.sentTime !== undefined){
+            this.latency = this.currentTime - input_seq.sentTime;
             //console.log(this.latency);
         }
 
 
         //retrieve request variables into 'this'
-        for(key in recv_data){
+        for(key in input_seq){
             if(key === "position" || key ===  "rotation"){
                 this[key] = new THREE.Vector3(
-                    recv_data[key].x,
-                    recv_data[key].y, 
-                    recv_data[key].z);
+                    input_seq[key].x,
+                    input_seq[key].y, 
+                    input_seq[key].z);
             } else {
-                this[key] = recv_data[key];
+                this[key] = input_seq[key];
             }
         }
-        
+     
         //INTERPOLATE 
         // this.interp_buffer.push({
         //     "time" :  this.currentTime,
@@ -220,8 +234,8 @@ var Client = (function(){
     TargetPosition.y = position.y + 100 * Math.cos(this.phi);
     TargetPosition.z = position.z + 100 * Math.sin(this.phi) * Math.sin(this.theta);
     
-    return { 'TargetPosition' : TargetPosition, 'AvatarPosition' : this.position};
-
+    //return { 'TargetPosition' : TargetPosition, 'AvatarPosition' : this.position};
+        return this.position;
     };
     return this;
 };

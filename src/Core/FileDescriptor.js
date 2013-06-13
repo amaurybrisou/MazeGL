@@ -52,17 +52,23 @@ var Network = {
                     }
                 });
 
-                socket.on('cl_update_players', function(data){
+                socket.on('cl_update_player_positions', function(data){
                     world.updatePlayers(data);
+                });
+
+                socket.on('server_update', function(data){
+                
+                });
+
+                socket.on('cl_move_ack', function(data){
+                    world.avatar_controls.push_server_update(data);
                 });
 
                 socket.move = function(u_struct){
                     socket.emit('cl_move', u_struct);
                 };
 
-                socket.on('cl_ack_move', function(data){
-                    Network.FileDescriptor.onserver_update(data);
-                })
+
 
                 socket.on('close', function (e) {
                     if (!e.wasClean) {
