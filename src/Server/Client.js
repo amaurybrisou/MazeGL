@@ -200,39 +200,39 @@ var Client = (function(){
     
     }
 
-    var actualLookSpeed = this.delta * this.lookSpeed;
+    // var actualLookSpeed = this.delta * this.lookSpeed;
 
-    var verticalLookRatio = 1;
+    // var verticalLookRatio = 1;
 
-    if (this.constrainVertical) {
+    // if (this.constrainVertical) {
 
-        verticalLookRatio = Math.PI / (this.verticalMax - this.verticalMin);
+    //     verticalLookRatio = Math.PI / (this.verticalMax - this.verticalMin);
 
-    }
-    this.lon += this.mouseX * actualLookSpeed;
-    if (this.lookVertical) this.lat += this.mouseY * actualLookSpeed * verticalLookRatio;
+    // }
+    // this.lon += this.mouseX * actualLookSpeed;
+    // if (this.lookVertical) this.lat += this.mouseY * actualLookSpeed * verticalLookRatio;
 
-    this.lat = Math.max(-85, Math.min(85, this.lat));
-    this.phi = (90 - this.lat) * Math.PI / 180;
+    // this.lat = Math.max(-85, Math.min(85, this.lat));
+    // this.phi = (90 - this.lat) * Math.PI / 180;
 
-    this.theta = this.lon * Math.PI / 180;
+    // this.theta = this.lon * Math.PI / 180;
 
-    if (this.constrainVertical) {
+    // if (this.constrainVertical) {
 
-        this.phi = THREE.Math.mapLinear(
-            this.phi,
-            0,
-            Math.PI,
-            this.verticalMin,
-            this.verticalMax);
-    }
+    //     this.phi = THREE.Math.mapLinear(
+    //         this.phi,
+    //         0,
+    //         Math.PI,
+    //         this.verticalMin,
+    //         this.verticalMax);
+    // }
 
-    var TargetPosition = this.target;
-    var position = this.position;
+    // var TargetPosition = this.target;
+    // var position = this.position;
 
-    TargetPosition.x = position.x + 100 * Math.sin(this.phi) * Math.cos(this.theta);
-    TargetPosition.y = position.y + 100 * Math.cos(this.phi);
-    TargetPosition.z = position.z + 100 * Math.sin(this.phi) * Math.sin(this.theta);
+    // TargetPosition.x = position.x + 100 * Math.sin(this.phi) * Math.cos(this.theta);
+    // TargetPosition.y = position.y + 100 * Math.cos(this.phi);
+    // TargetPosition.z = position.z + 100 * Math.sin(this.phi) * Math.sin(this.theta);
     
     //return { 'TargetPosition' : TargetPosition, 'AvatarPosition' : this.position};
         return this.position;

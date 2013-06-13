@@ -35,7 +35,7 @@ var WSServerRequest = (function(){
 		socket.on('cl_move', function(u_struct) {
 	            socket.get('client', function(error, cli){
 	                var server_position = cli.client.update(u_struct);
-	                socket.emit('cl_move_ack', 
+	                socket.emit('cl_move_ack',
 	                	{ 'server_position' : server_position, 
 	                	  "last_server_input" : u_struct });	                
 	            });
