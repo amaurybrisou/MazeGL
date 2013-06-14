@@ -1,7 +1,6 @@
 if(typeof global != 'undefined'){
     var Materials = require('./Materials.js');
     var FileDescriptor = require('./FileDescriptor.js');
-
     var FirstAvatar = require('./FirstAvatar.js');
     var FirstAvatar = require('./Attributes.js');
     var WorldObjects = require('./WorldObjects.js');
@@ -107,6 +106,39 @@ var Configuration = function(server){
     this.AVATAR_TRANS_VIEW_INCREMENT     = 40;
     this.AVATAR_ROT_VIEW_INCREMENT       = 0.09;
 
+
+
+    this.lat = 0;
+    this.lon = 0;
+    this.phi = 0;
+    this.theta = 0;
+
+    this.moveForward = false;
+    this.moveBackward = false;
+    this.moveLeft = false;
+    this.moveRight = false;
+    this.mouseDragOn = false;
+    this.mouseX = 0;
+    this.mouseY = 0;
+    this.mouseWheel = 0;
+
+    this.eulerOrder = "XYZ";
+
+    this.movementSpeed = 40;
+    this.lookSpeed = 0.05;
+    this.noFly = false;
+    this.lookVertical = false;
+    this.autoForward = false;
+    this.activeLook = true;
+    this.heightSpeed = false;
+    this.heightCoef = 1.0;
+    this.heightMin = 0.0;
+    this.constrainVertical = true;
+    this.verticalMin = 0;
+    this.verticalMax = Math.PI;
+    this.autoSpeedFactor = 0.0;
+    this.freeze = false;
+
     //Client specific initialisation
     if(!server){
         this.AVATAR_TYPE      = FirstAvatar;
@@ -125,11 +157,14 @@ var Configuration = function(server){
 
         
         //NETWORK   SERVER CLOUD9
-        this.SERVER_ADDR =  '94.23.199.5';
+        // this.SERVER_ADDR =  '94.23.199.5';
         this.SERVER_PORT =  9999;
+        this.SERVER_ADDR =  '127.0.0.1';
+
         this.FileDescriptor = Network.FileDescriptor(
             this.SERVER_ADDR,
             this.SERVER_PORT);
+
 
         this.debug = true;
         this.show_help = false;             //Whether or not to draw the help text

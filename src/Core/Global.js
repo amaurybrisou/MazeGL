@@ -2,9 +2,3 @@
 
 window.clock = new window.THREE.Clock();
 
-window.bind = function( scope, fn ) {
-            return function () {
-                fn.apply( scope, arguments );
-            };
-};
-

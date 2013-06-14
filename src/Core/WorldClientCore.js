@@ -262,13 +262,24 @@ var WorldClientCore = {
 
 	        _netsettings.open();
 
+
+        var _stopanim = this.gui.addFolder('Animatioin');
+            
+            _stopanim.add(this, 'stop_update').listen();
+            _stopanim.open();
+
+
+
+
 	}, //world_core.client_create_debug_gui
+
 	client_onping : function(data) {
 
 	    this.net_ping = new Date().getTime() - parseFloat( data );
 	    this.net_latency = this.net_ping/2;
 
-	}
+	},
+
 };
 
 if(typeof global != 'undefined'){

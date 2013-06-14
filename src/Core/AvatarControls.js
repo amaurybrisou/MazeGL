@@ -28,7 +28,6 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
     this.autoSpeedFactor = 0.0,
     this.freeze = false,
 
-    this.buffer_size = 2;
     
     this.lat = 0;
     this.lon = 0;
@@ -44,7 +43,7 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
     this.mouseY = 0;
     this.mouseWheel = 0;
 
-    if (that.domElement === document) {
+    if (this.domElement === document) {
 
         this.viewHalfX = (window.innerWidth - screenSizeRatio) / 2;
         this.viewHalfY = (window.innerHeight - screenSizeRatio) / 2;
@@ -52,39 +51,39 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
     }
     else {
 
-        this.viewHalfX = that.domElement.offsetWidth / 2;
-        this.viewHalfY = that.domElement.offsetHeight / 2;
-        that.domElement.setAttribute('tabindex', - 1);
+        this.viewHalfX = this.domElement.offsetWidth / 2;
+        this.viewHalfY = this.domElement.offsetHeight / 2;
+        this.domElement.setAttribute('tabindex', - 1);
 
     }
 
     this.onMouseDown = function (event) {
 
-        if (that.domElement !== document) {
+        if (this.domElement !== document) {
 
-            that.domElement.focus();
+            this.domElement.focus();
 
         }
 
         event.preventDefault();
         event.stopPropagation();
 
-        if (that.activeLook) {
+        if (this.activeLook) {
 
             switch (event.button) {
 
             case 0:
-                that.moveForward = true;
+                this.moveForward = true;
                 break;
             case 2:
-                that.moveBackward = true;
+                this.moveBackward = true;
                 break;
 
             }
 
         }
 
-        that.mouseDragOn = true;
+        this.mouseDragOn = true;
 
     };
 
@@ -93,43 +92,43 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
         event.preventDefault();
         event.stopPropagation();
 
-        if (that.activeLook) {
+        if (this.activeLook) {
 
             switch (event.button) {
 
             case 0:
-                that.moveForward = false;
+                this.moveForward = false;
                 break;
             case 2:
-                that.moveBackward = false;
+                this.moveBackward = false;
                 break;
 
             }
 
         }
 
-        that.mouseDragOn = false;
+        this.mouseDragOn = false;
 
     };
 
     this.onMouseMove = function (event) {
-        if (that.domElement === document) {
+        if (this.domElement === document) {
 
-            that.mouseX = event.pageX - that.viewHalfX;
-            that.mouseY = event.pageY - that.viewHalfY;
+            this.mouseX = event.pageX - this.viewHalfX;
+            this.mouseY = event.pageY - this.viewHalfY;
 
         }
         else {
 
-            that.mouseX = event.pageX - that.domElement.offsetLeft - that.viewHalfX;
-            that.mouseY = event.pageY - that.domElement.offsetTop - that.viewHalfY;
+            this.mouseX = event.pageX - this.domElement.offsetLeft - this.viewHalfX;
+            this.mouseY = event.pageY - this.domElement.offsetTop - this.viewHalfY;
 
         }
 
     };
 
     this.onMouseWheel = function (e) {
-        if (that.domElement === document) {
+        if (this.domElement === document) {
             var event = window.event || event;
             var delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
 
@@ -154,54 +153,54 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
             break;
         case 65:
             /*A*/
-            if (that.moveForward === true) that.moveForward = false;
-            else that.moveForward = true;
+            if (this.moveForward === true) this.moveForward = false;
+            else this.moveForward = true;
             break;
         case 90:
             /*Z*/
-            that.moveForward = true;
+            this.moveForward = true;
             break;
 
         case 32:
 
-            that.moveUp = true;
+            this.moveUp = true;
             break;
 
         case 37:
             /*left*/
         case 81:
             /*Q*/
-            that.moveLeft = true;
+            this.moveLeft = true;
             break;
 
         case 83:
             /*S*/
-            that.moveBackward = true;
+            this.moveBackward = true;
             break;
 
         case 39:
             /*right*/
         case 68:
             /*D*/
-            that.moveRight = true;
+            this.moveRight = true;
             break;
 
         case 38:
             /*up*/
-            that.moveUp = true;
+            this.moveUp = true;
             break;
         case 40:
             /*down*/
-            that.moveDown = true;
+            this.moveDown = true;
             break;
 
         case 70:
             /*F*/
-            if (that.freeze === true) {
-                that.freeze = false;
+            if (this.freeze === true) {
+                this.freeze = false;
 
             }
-            else that.freeze = true;
+            else this.freeze = true;
             break;
 
         }
@@ -215,15 +214,15 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
 
         case 90:
             /*Z*/
-            that.moveForward = false;
+            this.moveForward = false;
             break;
 
         case 32:
-            that.moveUp = false;
-            that.moveDown = true;
-            var _that = that;
+            this.moveUp = false;
+            this.moveDown = true;
+            var _this = this;
             setTimeout(function () {
-                _that.moveDown = false;
+                _this.moveDown = false;
                 window.mmo.avatar_obj.position.y = 0;
             }, 200);
             break;
@@ -231,28 +230,28 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
             /*left*/
         case 81:
             /*Q*/
-            that.moveLeft = false;
+            this.moveLeft = false;
             break;
 
         case 83:
             /*S*/
-            that.moveBackward = false;
+            this.moveBackward = false;
             break;
 
         case 39:
             /*right*/
         case 68:
             /*D*/
-            that.moveRight = false;
+            this.moveRight = false;
             break;
 
         case 38:
             /*up*/
-            that.moveUp = false;
+            this.moveUp = false;
             break;
         case 40:
             /*down*/
-            that.moveDown = false;
+            this.moveDown = false;
             break;
 
         }
@@ -265,63 +264,108 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
     this.old_state ;
     this.recvTime;
     this.latency;
+    this.interp_value = 0.1;
+    this.buffer_size = 2;
+
+
     this.srv_pos_updates = [];
     this.inputs = [];
     this.last_input_seq;
 
-    this.interpolate = (function(){
-        return function(vec, t){
-            var current = srv_pos_updates[srv_pos_updates.length - 1].server_position;
-            var past = srv_pos_updates[srv_pos_updates.length - 11].server_position;
 
-            vec.x = past.x +
-                ((current.x - past.x) /
-                    ( srv_pos_updates[1].time - past.time )) *
-                        ( t * past.time);
+    this.interpolate = function(vec){
+
+        if(this.srv_pos_updates.length) return;
+
+        var current_time = this.t;
+        var count = this.srv_pos_updates.length-1;
+        var target = null;
+        var previous = null;
+
+        for(var i = 0; i < count; ++i) {
+
+            var point = this.srv_pos_updates[i];
+            var next_point = this.srv_pos_updates[i+1];
+
+                //Compare our point in time with the server times we have
+            if(current_time > point.server_time && current_time < next_point.server_time) {
+                target = next_point;
+                previous = point;
+                break;
+            }
+        }
+
+        if(!target) {
+            target = this.srv_pos_updates[0];
+                previous = this.srv_pos_updates[0];
+        }
+
+        if(target && previous) {
+
+            var c_time = target.server_time;
+            var p_time = previous.server_time;
+
+            var t = c_time - this.interp_value;
             
-            vec.y = past.y +
-                ((current.y - past.y) /
-                    ( srv_pos_updates[1].time - past.time )) *
-                        ( t * past.time);
+            var p_pos = previous;
+            var c_pos = target;
             
-            vec.z = past.z +
-                ((current.z - past.z) /
-                    ( srv_pos_updates[1].time - past.time )) *
-                        ( t * past.time);
+            vec.x = p_pos.x +
+                ((c_pos.x - p_pos.x) /
+                    ( c_time - p_time )) *
+                        ( t * p_time);
+
+            vec.y = p_pos.y +
+                ((c_pos.y - p_pos.y) /
+                    ( c_time - p_time )) *
+                        ( t * p_time);
+
+
+            vec.z = p_pos.z +
+                ((c_pos.z - p_pos.z) /
+                    ( c_time - p_time )) *
+                        ( t * p_time);
            
-            srv_pos_updates.shift();
-            
-            return new THREE.Vector3(vec.x, vec.y, vec.z); 
-        };
-    }());
+            vec.x = (vec.x === Infinity || -Infinity) ? 0 : vec.x;
+            vec.y = (vec.y === Infinity || -Infinity) ? 0 : vec.y;
+            vec.z = (vec.z === Infinity || -Infinity) ? 0 : vec.z;
+
+            this.change_position(vec);  
+        }   
+    };
 
     this.push_server_update = function(data){
+        this.server_time = data.server_time;
+        this.client_time = (this.net_offset/1000);
+
         this.srv_pos_updates.push(data);
         //Store 1sc of frames
         if(this.srv_pos_updates.length >= ( 60*this.buffer_size )) {
             this.srv_pos_updates.splice(0,1);
         }
+
+        this.oldest_tick = this.srv_pos_updates[0].server_time;
+        
+        this.process_net_prediction_correction();
     };
 
     this.process_net_prediction_correction = function(){
 
-        if(!that.srv_pos_updates.length) return;
-        var latest_server_data = 
-            that.srv_pos_updates[that.srv_pos_updates.length-1];
+        if(!this.srv_pos_updates.length) return;
 
-        var my_last_input_on_server = that.last_input_seq || 
-            latest_server_data.last_server_input;
+        var latest_server_data = 
+            this.srv_pos_updates[this.srv_pos_updates.length-1];
+
+        var my_last_input_on_server = this.last_input_seq || latest_server_data.last_server_input;
         
-        var my_server_pos = that.position || 
-            latest_server_data.server_position;
+        var my_server_pos = latest_server_data.server_position || this.object.position;
 
         if(my_last_input_on_server) {
-            
             //The last input sequence index in my local input list
             var lastinputseq_index = -1;
-                //Find that input in the list, and store the index
-            for(var i = 0; i < that.inputs.length; ++i) {
-                if(that.inputs[i] == my_last_input_on_server) {
+                //Find this input in the list, and store the index
+            for(var i = 0; i < this.inputs.length; ++i) {
+                if(this.inputs[i] == my_last_input_on_server) {
                     lastinputseq_index = i;
                     break;
                 }
@@ -329,59 +373,62 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
             
             //Now we can crop the list of any updates we have already processed
             if(lastinputseq_index != -1) {
-                //so we have now gotten an acknowledgement from the server that our inputs here have been accepted
-                //and that we can predict from that known position instead
+                //so we have now gotten an acknowledgement from the server this our inputs here have been accepted
+                //and this we can predict from this known position instead
 
                 //remove the rest of the inputs we have confirmed on the server
                 var number_to_clear = Math.abs(lastinputseq_index - (-1));
-                that.inputs.splice(0, number_to_clear);
+                this.inputs.splice(0, number_to_clear);
                 //The player is now located at the new server position, authoritive server
                 
-                that.change_position(my_server_pos);
+                this.change_position(my_server_pos);
 
 
-                that.last_input_seq = lastinputseq_index;
-                //Now we reapply all the inputs that we have locally that
-                //the server hasn't yet confirmed. that will 'keep' our position the same,
+                this.last_input_seq = lastinputseq_index;
+                //Now we reapply all the inputs this we have locally this
+                //the server hasn't yet confirmed. this will 'keep' our position the same,
                 //but also confirm the server position at the same time.
             } // if(lastinputseq_index != -1)
         } //if
     }
     
-    this.change_position = function( b ) { 
-        that.object.position.set(b.x, b.y, b.z);
+    this.change_position = function( b ) {
+        this.object.position.set(b.x, b.y, b.z);
     };
 
     this.update = function (delta) {
 
         //this.client_create_ping_timer(); 
 
-        if(that.onMouseMove || that.moveBackward ||
-            that.moveLeft || that.moveRight ||
-            that.moveForward || that.moveDown ||
-            that.mouveUp || that.moveLeft ){
+        if(this.onMouseMove || this.moveBackward ||
+            this.moveLeft || this.moveRight ||
+            this.moveForward || this.moveDown ||
+            this.mouveUp || this.moveLeft ){
 
-            this.process_net_prediction_correction();
+            this.t = new Date().getTime();
+
+            this.interpolate(this.object.position);
+
             this.local_update(delta);
 
             var u_struct = {
-                'userid': that.object.userid,
-                'sentTime': that.currentTime,
-                'rotation': that.object.rotation,
-                'position':  that.object.position,
-                'moveForward': that.moveForward,
-                'moveBackward': that.moveBackward,
-                'moveLeft': that.moveLeft,
-                'moveRight': that.moveRight,
-                'mouseX': that.mouseX,
-                'mouseY': that.mouseY,
-                'moveDown': that.moveDown,
-                'moveUp': that.moveUp,
+                'userid': this.object.userid,
+                'sentTime': this.currentTime,
+                'rotation': this.object.rotation,
+                'position':  this.object.position,
+                'moveForward': this.moveForward,
+                'moveBackward': this.moveBackward,
+                'moveLeft': this.moveLeft,
+                'moveRight': this.moveRight,
+                'mouseX': this.mouseX,
+                'mouseY': this.mouseY,
+                'moveDown': this.moveDown,
+                'moveUp': this.moveUp,
                 'delta': delta
             };
 
-            that.last_input_seq = u_struct;
-            that.inputs.push(u_struct);
+            this.last_input_seq = u_struct;
+            this.inputs.push(u_struct);
 
             world.FileDescriptor.move(u_struct);
             
@@ -434,6 +481,7 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
 
         this.object.lookAt( targetPosition );
 
+        this.refresh_fps();
     }
     
 
@@ -461,5 +509,24 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
         };
 
     };
+
+
+    this.refresh_fps = function() {
+
+            //We store the fps for 10 frames, by adding it to this accumulator
+        this.fps = 1/this.dt;
+        this.fps_avg_acc += this.fps;
+        this.fps_avg_count++;
+
+            //When we reach 10 frames we work out the average fps
+        if(this.fps_avg_count >= 10) {
+
+            this.fps_avg = this.fps_avg_acc/10;
+            this.fps_avg_count = 1;
+            this.fps_avg_acc = this.fps;
+
+        } //reached 10 frames
+
+    }
 
 };

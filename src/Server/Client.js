@@ -71,7 +71,7 @@ var Client = (function(){
             }
         }());
 
-    this.currentTime = new Date().getTime();
+    this.currentTime ;
     this.interp_value = 0.1;
     this.recvTime;
     this.server_time;
@@ -79,7 +79,7 @@ var Client = (function(){
     this.latency;
     this.server_updates = [];
     this.laststate = {};
-    this.server_time;
+    this.server_time = new Date().getTime();
     this.position = new THREE.Vector3(0,0,0);
 
     this.getLastPosition = function(){
@@ -90,7 +90,7 @@ var Client = (function(){
         
         this.last_input_seq = input_seq;
 
-        this.currentTime = new Date().getTime();
+        this.server_time = new Date().getTime();
         if(typeof input_seq.sentTime !== undefined){
             this.latency = this.currentTime - input_seq.sentTime;
             //console.log(this.latency);
@@ -197,6 +197,9 @@ var Client = (function(){
     TargetPosition.x = position.x + (100 * Math.sin(this.phi) * Math.cos(this.theta));
     TargetPosition.y = position.y + (100 * Math.cos(this.phi));
     TargetPosition.z = position.z + (100 * Math.sin(this.phi) * Math.sin(this.theta));
+
+
+    this.refresh_fps();
     
     }
 

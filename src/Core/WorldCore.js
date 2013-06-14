@@ -38,7 +38,6 @@ if('undefined' != typeof(global)) frame_time = 45; //on server we run at 45ms, 2
 }());
 
 
-Number.prototype.fixed = function(n) { n = n || 3; return parseFloat(this.toFixed(n)); };
 
 var world_core = function(world_instance){
     THREE.Scene.call(this);
@@ -54,9 +53,6 @@ var world_core = function(world_instance){
     this.instance = world_instance;
     //Store a flag if we are the server
     this.server = this.instance !== undefined;
-
-    //The speed at which the clients move.
-    this.playerspeed = 40;
 
         //Set up some physics integration values
     this._pdt = 0.0001; //The physics update delta time
@@ -88,6 +84,11 @@ var world_core = function(world_instance){
 
 world_core.prototype = Object.create(THREE.Scene.prototype);
 
+
+world_core.prototype.stop_update = function() { window.cancelAnimationFrame( this.updateid ); };
+Number.prototype.fixed = function(n) { n = n || 3; return parseFloat(this.toFixed(n)); };
+
+
 world_core.prototype.update = function(t){
     this.dt = this.lastframetime ? ( (t - this.lastframetime)/1000.0).fixed() : 0.016;
 
@@ -95,7 +96,7 @@ world_core.prototype.update = function(t){
     this.lastframetime = t;
 
     if(!this.server) {
-        this.client_update();
+        this.client_update(this.dt);
     } else {
         this.server_update();
     }

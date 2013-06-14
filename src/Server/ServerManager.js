@@ -50,6 +50,7 @@ mmo.getClients = function(userid){
 mmo.delClient  = function(userid){
     if(Clients.hasOwnProperty(userid)){
         delete Clients[userid];
+        //world_core.deletePlayer(userid);
     }
 };
 
