@@ -214,7 +214,7 @@ var WorldClientCore = {
 	    setInterval(function(){
 
 	        this.last_ping_time = new Date().getTime() - this.fake_lag;
-	        this.socket.send('p.' + (this.last_ping_time) );
+	        mmo.socket.send('p.' + (this.last_ping_time) );
 
 	    }.bind(this), 1000);
     
@@ -223,49 +223,19 @@ var WorldClientCore = {
 
 	    this.gui = new dat.GUI();
 
-	    var _othersettings = this.gui.addFolder('Methods');
+	    var _debugsettings = this.gui.addFolder('Informations');
 
-	        _othersettings.add(this, 'naive_approach').listen();
-	        _othersettings.add(this, 'client_smoothing').listen();
-	        _othersettings.add(this, 'client_smooth').listen();
-	        _othersettings.add(this, 'client_predict').listen();
+            _debugsettings.add(this, 'fps_avg').listen();
+            _debugsettings.add(this, 'local_time').listen();
 
-	    var _debugsettings = this.gui.addFolder('Debug view');
+	        _debugsettings.add(this, 'net_latency').step(0.001).listen();
+	        _debugsettings.add(this, 'net_ping').step(0.001).listen();
 	        
-	        _debugsettings.add(this, 'show_help').listen();
-	        _debugsettings.add(this, 'fps_avg').listen();
-	        _debugsettings.add(this, 'show_server_pos').listen();
-	        _debugsettings.add(this, 'show_dest_pos').listen();
-	        _debugsettings.add(this, 'local_time').listen();
+	        _debugsettings.add(this, 'server_time').step(0.001).listen();
+	        _debugsettings.add(this, 'client_time').step(0.001).listen();
 
-	        _debugsettings.open();
-
-	    var _consettings = this.gui.addFolder('Connection');
-	        _consettings.add(this, 'net_latency').step(0.001).listen();
-	        _consettings.add(this, 'net_ping').step(0.001).listen();
-
-	            //When adding fake lag, we need to tell the server about it.
-	        var lag_control = _consettings.add(this, 'fake_lag').step(0.001).listen();
-	        lag_control.onChange(function(value){
-	            this.socket.send('l.' + value);
-	        }.bind(this));
-
-	        _consettings.open();
-
-	    var _netsettings = this.gui.addFolder('Networking');
-	        
-	        _netsettings.add(this, 'net_offset').min(0.01).step(0.001).listen();
-	        _netsettings.add(this, 'server_time').step(0.001).listen();
-	        _netsettings.add(this, 'client_time').step(0.001).listen();
-	        //_netsettings.add(this, 'oldest_tick').step(0.001).listen();
-
-	        _netsettings.open();
-
-
-        var _stopanim = this.gui.addFolder('Animatioin');
-            
-            _stopanim.add(this, 'stop_update').listen();
-            _stopanim.open();
+            _debugsettings.add(this, 'stop_update').listen();
+            _debugsettings.open();
 
 
 
