@@ -70,7 +70,9 @@ var WSServer = (function(){
 		        console.log("Client removed "+userid+" from world "+world_id);
 			}); //socket.on disconnect
 
-			
+			socket.on('ping', function(){
+				socket.volatile.emit('ping', new Date().getTime());
+			});
 
 		});
 
@@ -86,8 +88,10 @@ var WSServer = (function(){
         });
 
     	io.send_server_update = function(laststate){
-				io.sockets.emit('server_update', laststate);
-			};
+			io.sockets.emit('server_update', laststate);
+		};
+
+
 
 	    return io;
 	};

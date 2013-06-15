@@ -19,8 +19,6 @@ mmo.fake_latency = 0;
 mmo.local_time = 0;
 mmo._dt = new Date().getTime();
 mmo._dte = new Date().getTime();
-    //a local queue of messages we delay if faking latency
-mmo.messages = [];
 
 setInterval(function(){
     mmo._dt = new Date().getTime() - mmo._dte;
@@ -66,8 +64,6 @@ mmo.clear = function(world_id){
         this.worlds[world_id].worldcore.deletePlayer(userid);
     }
 }
-
-
 
 mmo.createWorld = function(id, io ) {
     //Create a new game instance

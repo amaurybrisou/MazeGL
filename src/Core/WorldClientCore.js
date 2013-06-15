@@ -214,7 +214,7 @@ var WorldClientCore = {
 	    setInterval(function(){
 
 	        this.last_ping_time = new Date().getTime() - this.fake_lag;
-	        mmo.socket.send('p.' + (this.last_ping_time) );
+	        world.FileDescriptor.send_ping(this.last_ping_time);
 
 	    }.bind(this), 1000);
     

@@ -72,7 +72,13 @@ var Network = {
                     socket.emit('cl_move', u_struct);
                 };
 
+                socket.send_ping = function(ping_time){
+                    socket.emit('ping', ping_time);
+                };
 
+                socket.on('ping', function(t){
+                    world.client_onping(t);
+                });
 
                 socket.on('close', function (e) {
                     if (!e.wasClean) {
