@@ -1,5 +1,6 @@
 var mmo = module.exports = { worlds : {}, worlds_count:0 };
 var UUID = require('node-uuid');
+
 var verbose = true;
 
 //Since we are sharing code with the browser, we
@@ -8,7 +9,6 @@ global.window = global.document = global;
 
 //Import shared game library code.
 require('../Core/WorldCore.js');
-var UUID = require('node-uuid');
 var Client = require('./Client.js');
 
 mmo.log = function() {
@@ -28,7 +28,9 @@ setInterval(function(){
     mmo.local_time += mmo._dt/1000.0;
 }, 4);
 
+
 var Clients = [];
+
 
 mmo.AddClient = function(socket){
     var userid = UUID();
@@ -47,27 +49,36 @@ mmo.getClients = function(userid){
     return c;
 };
 
-mmo.delClient  = function(userid){
+mmo.delClient  = function(userid, world_id){
     if(Clients.hasOwnProperty(userid)){
         delete Clients[userid];
-        //world_core.deletePlayer(userid);
+        this.worlds[world_id].worldcore.deletePlayer(userid);
     }
 };
 
-mmo.send_server_update = function(data){
-    this.io.send_server_update(data);
+mmo.send_server_update = function(data, world_id){
+    this.worlds[world_id].io.send_server_update(data);
 };
 
-mmo.createWorld = function(io) {
-    //store socket io in order to broadcast world updates;
-    this.io = io;
+mmo.clear = function(world_id){
+    for(var userid in Clients){
+        delete Clients[userid];
+        this.worlds[world_id].worldcore.deletePlayer(userid);
+    }
+}
 
+
+
+mmo.createWorld = function(id, io ) {
     //Create a new game instance
+
     var world = {
-            id : UUID(), //generate a new id for the game
+            id : id, //generate a new id for the game
             player_client:null, //nobody else joined yet, since its new
-            player_count:0 //for simple checking of state
+            player_count:0, //for simple checking of state
+            io : io
         };
+
 
 	//Store it in the list of game
     this.worlds[ world.id ] = world;
@@ -79,7 +90,7 @@ mmo.createWorld = function(io) {
     //game code like collisions and such.
     world.worldcore = new world_core( world );
     //Start updating the game loop on the server
-    world.worldcore.update( new Date().getTime() );
+    world.worldcore.update( new Date().getTime());
 
     mmo.log('server host at ' + world.worldcore.local_time);
     
@@ -87,3 +98,4 @@ mmo.createWorld = function(io) {
     return world;
 
 }; //game_server.createGame
+

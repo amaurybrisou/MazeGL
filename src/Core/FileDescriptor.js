@@ -13,7 +13,12 @@ var Network = {
                 return null;
             }
             socket.on('connect', function(){
-                socket.on('onconnected', function (data) {
+
+
+                
+            });
+
+            socket.on('onconnected', function (data) {
                     console.log("Connection Established "+data.userid);
                 });
 
@@ -21,7 +26,6 @@ var Network = {
                     console.log("Creating Player "+data.userid);
                     world.addLocalPlayer(data.userid);
                     console.log("Player Created");
-
                 });
 
                 socket.on('cl_client_connect', function (coords) {
@@ -74,14 +78,15 @@ var Network = {
                     if (!e.wasClean) {
                         console.log(e.code + " " + e.reason);
                     }
+                    world.clear();
                     console.log("Connection is closed...");
                 });
 
                 socket.on('disconnect', function () {
                     socket.disconnect();
+                    world.clear();
                     console.log("Connection Closed");
                 });
-            });
             return socket;
 
         };

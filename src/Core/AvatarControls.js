@@ -277,7 +277,7 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
 
         if(this.srv_pos_updates.length) return;
 
-        var current_time = this.t;
+        var current_time = this.client_time;
         var count = this.srv_pos_updates.length-1;
         var target = null;
         var previous = null;
@@ -297,18 +297,29 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
 
         if(!target) {
             target = this.srv_pos_updates[0];
-                previous = this.srv_pos_updates[0];
+            previous = this.srv_pos_updates[0];
         }
 
         if(target && previous) {
 
-            var c_time = target.server_time;
-            var p_time = previous.server_time;
+            this.target_time = target.server_time;
 
-            var t = c_time - this.interp_value;
+            var difference = this.target_time - current_time;
+            var max_difference = (target.server_time -
+                previous.server_time).fixed(3);
+            var time_point = (difference/max_difference).fixed(3);
+
+
+            if( isNaN(time_point) ) time_point = 0;
+            if(time_point == -Infinity) time_point = 0;
+            if(time_point == Infinity) time_point = 0;
+
+            var latest_server_data = 
+                this.srv_pos_updates[ this.srv_pos_updates.length-1 ];
+            var p_time = previous.server_time;
             
-            var p_pos = previous;
-            var c_pos = target;
+            var p_pos = previous.position;
+            var c_pos = target.position;
             
             vec.x = p_pos.x +
                 ((c_pos.x - p_pos.x) /
@@ -326,9 +337,9 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
                     ( c_time - p_time )) *
                         ( t * p_time);
            
-            vec.x = (vec.x === Infinity || -Infinity) ? 0 : vec.x;
-            vec.y = (vec.y === Infinity || -Infinity) ? 0 : vec.y;
-            vec.z = (vec.z === Infinity || -Infinity) ? 0 : vec.z;
+            vec.x = (vec.x === Infinity || -Infinity) ? 0 : vec.x.fixed();
+            vec.y = (vec.y === Infinity || -Infinity) ? 0 : vec.y.fixed();
+            vec.z = (vec.z === Infinity || -Infinity) ? 0 : vec.z.fixed();
 
             this.change_position(vec);  
         }   
@@ -336,7 +347,7 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
 
     this.push_server_update = function(data){
         this.server_time = data.server_time;
-        this.client_time = (this.net_offset/1000);
+        this.client_time = this.server_time - (this.net_offset/1000);
 
         this.srv_pos_updates.push(data);
         //Store 1sc of frames

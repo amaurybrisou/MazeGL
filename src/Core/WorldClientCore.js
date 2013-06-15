@@ -4,10 +4,7 @@ var WorldClientCore = {
 	cl_create_world : function(){
 		this.state_time = new Date().getTime();
 
-        var object = new Configuration(this.server);
-        for (var key in object ){
-            this[key] = object[key];
-        }
+        this.client_create_ping_timer();
 
         if(this.debug){
             this.client_create_debug_gui();
@@ -70,7 +67,7 @@ var WorldClientCore = {
 
 	},
 
-    cl_create_avatar : function(coords){
+    client_create_avatar : function(coords){
 
         this.avatar_obj = this.getAvatar(this);
 
@@ -188,6 +185,8 @@ var WorldClientCore = {
 
             this.Renderer.clear();
             this.Renderer.render(this, this.camera);
+
+            this.client_refresh_fps();
 
 	},
 	client_refresh_fps : function() {

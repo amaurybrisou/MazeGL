@@ -54,10 +54,8 @@ var world_core = function(world_instance){
     //Store a flag if we are the server
     this.server = this.instance !== undefined;
 
-        //Set up some physics integration values
-    this._pdt = 0.0001; //The physics update delta time
-    this._pdte = new Date().getTime(); //The physics update last delta time
-        //A local timer for precision on server and client
+       
+    //A local timer for precision on server and client
     this.local_time = 0.016; //The local timer
     this._dt = new Date().getTime(); //The local timer delta
     this._dte = new Date().getTime(); //The local timer last frame time
@@ -69,14 +67,15 @@ var world_core = function(world_instance){
     //Start a fast paced timer for measuring time easier
     this.create_timer();
 
+    var object = new Configuration(this.server);
+    for (var key in object ){
+        this[key] = object[key];
+    }
+
     if(!this.server){
+
         this.cl_create_world();       
     } else { //if server
-        var object = new Configuration(this.server);
-        for (var key in object ){
-            object[key] = this[key];
-        }
-
         this.server_time = 0;
         this.laststate = {};
     }
@@ -108,7 +107,7 @@ world_core.prototype.update = function(t){
 world_core.prototype.server_update = function(){
         this.server_time = this.local_time;
         this.update_world_state();
-        mmo.send_server_update(this.laststate);
+        mmo.send_server_update(this.laststate, this.instance.id);
 };
 
 world_core.prototype.update_world_state = function(){
@@ -158,12 +157,10 @@ world_core.prototype.addLocalPlayer = (function(){
             this.avatar_obj = new THREE.Object3D();
             this.avatar_obj.position.set(0,0,0);
         } else {
-            this.cl_create_avatar();
+            this.client_create_avatar();
         }
         this.avatar_obj.userid = userid;
         this.add(this.avatar_obj);
-
-        return this.avatar_obj;
     };
 }());
 
@@ -190,11 +187,20 @@ world_core.prototype.addOtherPlayer = (function(){
 
 world_core.prototype.deletePlayer = function(userid){
     if(this.Clients.hasOwnProperty(userid)){
-        this.remove(this.Clients[userid]);
-        delete this.Clients[userid];
+        this.remove(this.Clients[userid].avatar_obj);
+        delete this.Clients[userid].avatar_obj;
     }
 };
 
+world_core.prototype.clear = function(){
+    this.remove(this.avatar_obj);
+    this.avatar_obj = undefined;
+    for(var userid in this.Clients){
+        console.log(userid);
+        this.remove(this.Clients[userid].avatar_obj);
+        delete this.Clients[userid].avatar_obj;
+    }
+};
 
 
 
