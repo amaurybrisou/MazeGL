@@ -90,7 +90,7 @@ var WorldClientCore = {
     },
 	client_update : function(){
             // animate
-            var t  = (this.local_time - this.state_time) / this._pdt;
+            var t  = this.dt;
 
             if(typeof this.avatar_obj != 'undefined'){
                 this.avatar_obj.animate();
@@ -243,10 +243,12 @@ var WorldClientCore = {
 	}, //world_core.client_create_debug_gui
 
 	client_onping : function(data) {
-
+		console.log(data);
 	    this.net_ping = new Date().getTime() - parseFloat( data );
+		console.log(new Date().getTime());
+		console.log(parseFloat(data));
 	    this.net_latency = this.net_ping/2;
-
+		console.log(this.net_ping);
 	},
 
 };
