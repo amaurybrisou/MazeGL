@@ -49,6 +49,7 @@ var Configuration = function(server){
     this.NB_STONES                = 1000;
     this.STONES_SIZE_RATIO        = 100;
     this.STONES_EDGES_LINEWIDTH   = 4;
+    this.STONES_UNIV_SIZE         = 20;
     //fog
     this.FOG_DENSITY              = 0.00002;
     this.FOG                      = new THREE.FogExp2(
@@ -159,7 +160,7 @@ var Configuration = function(server){
         //NETWORK   SERVER CLOUD9
         // this.SERVER_ADDR =  '94.23.199.5';
         this.SERVER_PORT =  9999;
-        this.SERVER_ADDR =  '94.23.199.5';
+        this.SERVER_ADDR =  '127.0.0.1';
 
         this.FileDescriptor = Network.FileDescriptor(
             this.SERVER_ADDR,
