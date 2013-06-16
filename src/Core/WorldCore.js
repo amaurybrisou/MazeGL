@@ -257,6 +257,53 @@ world_core.prototype.StoneBuilder =  function(){
    
 };
 
+
+world_core.prototype.MountainBuilder = function(Xo, Zo, spread, decrease_factor){
+    var in_spread = 0;
+    var oHeight = 100;
+    var theta = 0;
+
+    while(in_spread<spread) {
+
+        // create the origin positioned stone
+        if(in_spread==0){
+            this.add(WorldObjects.Stone_Algo(
+                Xo, 
+                Zo, 
+                this.STONES_UNIV_SIZE,
+                oHeight, 
+                this.STONES_FACES_MAT, 
+                this.STONES_EDGES_MAT)
+            );
+        }
+        
+        // then create children stones in a "circular" way
+        else {
+            for(var i=0; i<8*in_spread; i++) {
+                theta = i * 45/in_spread * Math.PI / 180;
+                height = oHeight - decrease_factor*in_spread;
+
+                this.add(WorldObjects.Stone_Algo(
+                    Xo + this.STONES_UNIV_SIZE * in_spread * Math.cos(theta), 
+                    Zo + this.STONES_UNIV_SIZE * in_spread * Math.sin(theta), 
+                    this.STONES_UNIV_SIZE,
+                    height, 
+                    this.STONES_FACES_MAT, 
+                    this.STONES_EDGES_MAT)
+                );
+
+            }
+        }
+
+        in_spread ++;
+
+    }
+};
+
+
+
+
+
 world_core.prototype.getCamera = function(){
     var that = this;
     var s = new THREE.PerspectiveCamera(

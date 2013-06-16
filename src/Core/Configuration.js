@@ -49,6 +49,7 @@ var Configuration = function(server){
     this.NB_STONES                = 1000;
     this.STONES_SIZE_RATIO        = 100;
     this.STONES_EDGES_LINEWIDTH   = 4;
+    this.STONES_UNIV_SIZE         = 20;
     //fog
     this.FOG_DENSITY              = 0.00002;
     this.FOG                      = new THREE.FogExp2(

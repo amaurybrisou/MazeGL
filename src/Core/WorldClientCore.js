@@ -53,9 +53,15 @@ var WorldClientCore = {
         console.log("Origin Loaded ");
 
         //Build Stones;
-        this.StoneBuilder();
+        //this.StoneBuilder();
         console.log("Stones Loaded ");
         
+        //Build a mountain...
+        this.MountainBuilder(500,500,20,6);
+
+        //And another one ...
+        //this.MountainBuilder(-100,-100,6);
+
         // build fog
         this.fog = this.FOG;
 
