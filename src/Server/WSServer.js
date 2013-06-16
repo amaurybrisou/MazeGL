@@ -56,7 +56,7 @@ var WSServer = (function(){
 			                	  'last_server_input' : u_struct, 
 			                	  'server_time' : cli.client.server_time });
 	                	socket.broadcast.emit('cl_update_player_positions',
-	                		{ 'userid': userid, 'position': server_position });
+	                		{ 'userid': userid, 'server_position': server_position });
 		                              
 		            });
 			});//socket.on message
@@ -90,8 +90,6 @@ var WSServer = (function(){
     	io.send_server_update = function(laststate){
 			io.sockets.emit('server_update', laststate);
 		};
-
-
 
 	    return io;
 	};

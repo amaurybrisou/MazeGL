@@ -134,18 +134,18 @@ world_core.prototype.update_world_state = function(){
 world_core.prototype.updatePlayers = function(new_coords){
     var cli = this.Clients[new_coords.userid];
     //new position otherwise position
-    var server_position = new_coords.position | cli.avatar_obj.position;
+    var server_position = new_coords.server_position | cli.avatar_obj.server_position;
 
     if(cli != undefined){
-        cli.avatar_obj.position.set(
-            new_coords.position.x,
-            new_coords.position.y,
-            new_coords.position.z);
+        cli.avatar_obj.server_position.set(
+            new_coords.server_position.x,
+            new_coords.server_position.y,
+            new_coords.server_position.z);
 
-        cli.last_position.set(
-            new_coords.position.x,
-            new_coords.position.y,
-            new_coords.position.z);
+        cli.last_server_position.set(
+            new_coords.server_position.x,
+            new_coords.server_position.y,
+            new_coords.server_position.z);
     }
     
 };

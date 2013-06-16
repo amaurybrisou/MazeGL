@@ -75,6 +75,10 @@ var WorldClientCore = {
             this.camera = this.getCamera();
         }
 
+        var client_name = this.client_name();
+        
+        this.avatar_obj.add(client_name);
+
         this.camera.reset(this);
         this.avatar_obj.add(this.camera);
        
@@ -87,6 +91,28 @@ var WorldClientCore = {
         this.avatar_obj.animate = function () {
             that.avatar_controls.update(window.clock.getDelta());
         };
+    },
+
+    client_name : function(){
+        var canvas1 = document.createElement('canvas');
+        var context1 = canvas1.getContext('2d');
+        context1.font = "Bold 30px Arial";
+        context1.fillStyle = "rgba(255,0,0,0.95)";
+        context1.fillText(username, 20, 50);
+        
+        // canvas contents will be used for a texture
+        var texture1 = new THREE.Texture(canvas1); 
+        texture1.needsUpdate = true;
+          
+        var material1 = new THREE.MeshBasicMaterial( {map: texture1, side:THREE.DoubleSide } );
+        material1.transparent = true;
+
+        var mesh = new THREE.Mesh(
+            new THREE.PlaneGeometry(5, 5),
+            material1
+          );
+        return mesh;
+
     },
 	client_update : function(){
             // animate
@@ -243,12 +269,8 @@ var WorldClientCore = {
 	}, //world_core.client_create_debug_gui
 
 	client_onping : function(data) {
-		console.log(data);
 	    this.net_ping = new Date().getTime() - parseFloat( data );
-		console.log(new Date().getTime());
-		console.log(parseFloat(data));
 	    this.net_latency = this.net_ping/2;
-		console.log(this.net_ping);
 	},
 
 };

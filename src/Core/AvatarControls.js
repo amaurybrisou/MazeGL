@@ -349,7 +349,22 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
         this.server_time = data.server_time;
         this.client_time = this.server_time - (this.net_offset/1000);
 
+        
+        
+        var temp = data.last_server_input.position;
+        data.last_server_input.position = new THREE.Vector3(
+                    temp.x,
+                    temp.y, 
+                    temp.z);
+
+        temp = data.last_server_input.rotation;
+        data.last_server_input.rotation = new THREE.Vector3(
+                    temp.x,
+                    temp.y, 
+                    temp.z);
+
         this.srv_pos_updates.push(data);
+        
         //Store 1sc of frames
         if(this.srv_pos_updates.length >= ( 60*this.buffer_size )) {
             this.srv_pos_updates.splice(0,1);
@@ -367,21 +382,23 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
         var latest_server_data = 
             this.srv_pos_updates[this.srv_pos_updates.length-1];
 
-        var my_last_input_on_server = this.last_input_seq || latest_server_data.last_server_input;
+        var my_last_input_on_server = this.last_input_seq;// latest_server_data.last_server_input || 
         
         var my_server_pos = latest_server_data.server_position || this.object.position;
+
 
         if(my_last_input_on_server) {
             //The last input sequence index in my local input list
             var lastinputseq_index = -1;
                 //Find this input in the list, and store the index
             for(var i = 0; i < this.inputs.length; ++i) {
+                // console.log(this.inputs[i]);
+                // console.log(my_last_input_on_server);
                 if(this.inputs[i] == my_last_input_on_server) {
                     lastinputseq_index = i;
                     break;
                 }
             }
-            
             //Now we can crop the list of any updates we have already processed
             if(lastinputseq_index != -1) {
                 //so we have now gotten an acknowledgement from the server this our inputs here have been accepted
@@ -393,7 +410,6 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
                 //The player is now located at the new server position, authoritive server
                 
                 this.change_position(my_server_pos);
-
 
                 this.last_input_seq = lastinputseq_index;
                 //Now we reapply all the inputs this we have locally this
@@ -418,13 +434,13 @@ var AvatarControls = function (object, screenSizeRatio, domElement) {
 
             this.t = new Date().getTime();
 
-            this.interpolate(this.object.position);
+            //this.interpolate(this.object.position);
 
             this.local_update(delta);
 
             var u_struct = {
                 'userid': this.object.userid,
-                'sentTime': this.currentTime,
+                'sentTime': this.t,
                 'rotation': this.object.rotation,
                 'position':  this.object.position,
                 'moveForward': this.moveForward,

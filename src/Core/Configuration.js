@@ -159,7 +159,7 @@ var Configuration = function(server){
         //NETWORK   SERVER CLOUD9
         // this.SERVER_ADDR =  '94.23.199.5';
         this.SERVER_PORT =  9999;
-        this.SERVER_ADDR =  '94.23.199.5';
+        this.SERVER_ADDR =  '127.0.0.1';
 
         this.FileDescriptor = Network.FileDescriptor(
             this.SERVER_ADDR,
