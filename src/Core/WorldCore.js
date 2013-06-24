@@ -54,7 +54,8 @@ var world_core = function(world_instance){
     //Store a flag if we are the server
     this.server = this.instance !== undefined;
 
-       
+    this._pdt = 0.0001; //The physics update delta time
+    this._pdte = new Date().getTime(); //The physics update last delta time
     //A local timer for precision on server and client
     this.local_time = 0.016; //The local timer
     this._dt = new Date().getTime(); //The local timer delta
@@ -62,7 +63,7 @@ var world_core = function(world_instance){
 
     //     //Start a physics loop, this is separate to the rendering
     //     //as this happens at a fixed frequency
-    // this.create_physics_simulation();
+    //this.create_physics_simulation();
 
     //Start a fast paced timer for measuring time easier
     this.create_timer();
@@ -74,7 +75,7 @@ var world_core = function(world_instance){
 
     if(!this.server){
 
-        this.cl_create_world();       
+        this.client_create_world();       
     } else { //if server
         this.server_time = 0;
         this.laststate = {};
@@ -134,18 +135,18 @@ world_core.prototype.update_world_state = function(){
 world_core.prototype.updatePlayers = function(new_coords){
     var cli = this.Clients[new_coords.userid];
     //new position otherwise position
-    var server_position = new_coords.server_position | cli.avatar_obj.server_position;
+    var position = new_coords.position || cli.avatar_obj.position;
 
     if(cli != undefined){
-        cli.avatar_obj.server_position.set(
-            new_coords.server_position.x,
-            new_coords.server_position.y,
-            new_coords.server_position.z);
+        cli.avatar_obj.position.set(
+            new_coords.position.x,
+            new_coords.position.y,
+            new_coords.position.z);
 
-        cli.last_server_position.set(
-            new_coords.server_position.x,
-            new_coords.server_position.y,
-            new_coords.server_position.z);
+        cli.last_position.set(
+            new_coords.position.x,
+            new_coords.position.y,
+            new_coords.position.z);
     }
     
 };
@@ -353,11 +354,6 @@ world_core.prototype.getCamera = function(){
     return s;
 };
 
-world_core.prototype.getColor = function(rgb_str){
-    return new window.THREE.Color(rgb_str);
-};
-
-
 world_core.prototype.getPlane = function(){
     var plane = new THREE.Mesh(
         this.PLANET_GEO,
@@ -369,10 +365,12 @@ world_core.prototype.getPlane = function(){
     return plane;
 };
 
-world_core.prototype.getAvatar = function(coords){
-    var x = coords.x || 0,
-        y = coords.y || 0,
-        z = coords.z || 0;
+world_core.prototype.getAvatar = function(){
+    
+    var x = 0,
+        y = 0,
+        z = 0;
+
 
     return new this.AVATAR_TYPE(
         x, y, z, this.AVATAR_MAT, this);

@@ -1,7 +1,7 @@
 //All those functions are loaded into the WorldCore at onload
 
 var WorldClientCore = {
-	cl_create_world : function(){
+	client_create_world : function(){
 		this.state_time = new Date().getTime();
 
         this.client_create_ping_timer();
@@ -73,9 +73,9 @@ var WorldClientCore = {
 
 	},
 
-    client_create_avatar : function(coords){
+    client_create_avatar : function(){
 
-        this.avatar_obj = this.getAvatar(this);
+        this.avatar_obj = this.getAvatar();
 
         if(typeof this.camera === 'undefined'){
             this.camera = this.getCamera();
@@ -90,7 +90,7 @@ var WorldClientCore = {
        
         // define controls
         this.avatar_controls =
-            new AvatarControls(this.avatar_obj, this.SCREEN_SIZE_RATIO, this.domElement);
+            new Controls(this.server, this.avatar_obj, this.SCREEN_SIZE_RATIO, this.domElement);
 
         var that = this;
 

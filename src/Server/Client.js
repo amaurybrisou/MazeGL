@@ -1,5 +1,7 @@
-var Utils = require('../Utils/Utils.js');
-var THREE = require('three');
+if(typeof global != 'undefined'){
+    var Utils = require('../Utils/Utils.js');
+    var THREE = require('three');
+}
 
 var Client = (function(){
 

@@ -168,22 +168,12 @@ var Configuration = function(server){
 
 
         this.debug = true;
-        this.show_help = false;             //Whether or not to draw the help text
-        this.naive_approach = false;        //Whether or not to use the naive approach
-        this.show_server_pos = false;       //Whether or not to show the server position
-        this.show_dest_pos = false;         //Whether or not to show the interpolation goal
-        this.client_predict = true;         //Whether or not the client is predicting input
-        this.input_seq = 0;                 //When predicting client inputs, we store the last input as a sequence number
-        this.client_smoothing = true;       //Whether or not the client side prediction tries to smooth things out
-        this.client_smooth = 25;            //amount of smoothing to apply to client update dest
-
+        
         this.net_latency = 0.001;           //the latency between the client and the server (ping/2)
         this.net_ping = 0.001;              //The round trip time from here to the server,and back
-        this.last_ping_time = 0.001;        //The time we last sent a ping
-        this.fake_lag = 0;                //If we are simulating lag, this applies only to the input client (not others)
-        this.fake_lag_time = 0;
 
-        this.net_offset = 100;              //100 ms latency between server and client interpolation for other clients
+
+        this.interp_value = 100;              //100 ms latency between server and client interpolation for other clients
         this.buffer_size = 2;               //The size of the server history to keep for rewinding/interpolating.
         this.target_time = 0.01;            //the time where we want to be in the server timeline
         this.oldest_tick = 0.01;            //the last time tick we have available in the buffer
@@ -197,8 +187,6 @@ var Configuration = function(server){
         this.fps_avg = 0;                   //The current average fps displayed in the debug UI
         this.fps_avg_acc = 0;               //The accumulation of the last avgcount fps samples
 
-        this.lit = 0;
-        this.llt = new Date().getTime();
     }
 
 

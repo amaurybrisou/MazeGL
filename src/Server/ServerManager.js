@@ -9,22 +9,13 @@ global.window = global.document = global;
 
 //Import shared game library code.
 require('../Core/WorldCore.js');
-var Client = require('./Client.js');
+var Client = require('../Core/Controls.js');
 
 mmo.log = function() {
     if(verbose) console.log.apply(this,arguments);
 };
 
-mmo.fake_latency = 0;
-mmo.local_time = 0;
-mmo._dt = new Date().getTime();
-mmo._dte = new Date().getTime();
 
-setInterval(function(){
-    mmo._dt = new Date().getTime() - mmo._dte;
-    mmo._dte = new Date().getTime();
-    mmo.local_time += mmo._dt/1000.0;
-}, 4);
 
 
 var Clients = [];
@@ -32,7 +23,7 @@ var Clients = [];
 
 mmo.AddClient = function(socket){
     var userid = UUID();
-    var client = new Client();
+    var client = new Client(true);
     Clients[userid] = { userid : userid, x:0, y:0, z:0 }; 
     return { 'userid' : userid, 'client' : client };
 };
