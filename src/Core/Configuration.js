@@ -10,8 +10,8 @@ if(typeof global != 'undefined'){
 var Configuration = function(server){
     //WINDOW
     this.SCREEN_SIZE_RATIO    = 100;
-    this.WIDTH                = window.innerWidth - this.SCREEN_SIZE_RATIO;
-    this.HEIGHT               = window.innerHeight - this.SCREEN_SIZE_RATIO;
+    this.WIDTH                = window.innerWidth ;//- this.SCREEN_SIZE_RATIO;
+    this.HEIGHT               = window.innerHeight ;//- this.SCREEN_SIZE_RATIO;
 
     //COLORS
     this.WHITE                    = 0xFFFFFF;

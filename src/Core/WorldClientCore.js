@@ -200,23 +200,23 @@ var WorldClientCore = {
             this.MAIN_LIGHT.lookAt(this.position);
 
             // HTML CONTENT
-            span.innerHTML = ''; // clear existing
+            // span.innerHTML = ''; // clear existing
 
-            var connection_status = Network.FileDescriptor.readyState === ( 1 || 2 || 0 )
-            ? "Connected" : "Disconnected";
-            text = 'time : ' + Math.round(this.MAIN_LIGHT.position.y / 1000) + 
-            '</br>cam coords : ' + this.camera.position.x + 
-            " " + this.camera.position.y + 
-            " " + this.camera.position.z; 
-            if(typeof this.avatar_obj != 'undefined' && 
-                this.avatar_obj.position != 'undefined'){
-                    text += '</br>mesh coords : ' + this.avatar_obj.position.x + 
-                " " + this.avatar_obj.position.y + 
-                " " + this.avatar_obj.position.z ;
-            }
-            text += "</br>Status : "+connection_status;
+            // var connection_status = Network.FileDescriptor.readyState === ( 1 || 2 || 0 )
+            // ? "Connected" : "Disconnected";
+            // text = 'time : ' + Math.round(this.MAIN_LIGHT.position.y / 1000) + 
+            // '</br>cam coords : ' + this.camera.position.x + 
+            // " " + this.camera.position.y + 
+            // " " + this.camera.position.z; 
+            // if(typeof this.avatar_obj != 'undefined' && 
+            //     this.avatar_obj.position != 'undefined'){
+            //         text += '</br>mesh coords : ' + this.avatar_obj.position.x + 
+            //     " " + this.avatar_obj.position.y + 
+            //     " " + this.avatar_obj.position.z ;
+            // }
+            // text += "</br>Status : "+connection_status;
 
-            span.innerHTML = text;
+            // span.innerHTML = text;
 
             this.Renderer.clear();
             this.Renderer.render(this, this.camera);
