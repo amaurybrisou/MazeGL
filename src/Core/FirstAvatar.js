@@ -1,6 +1,5 @@
 if(typeof global != 'undefined'){
     var THREE = require('three');
-    var Controls = require('./AvatarControls.js');
 }
 
 var FirstAvatar = function (x, y, z, mat, instance) {

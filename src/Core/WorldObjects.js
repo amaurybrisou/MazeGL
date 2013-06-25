@@ -101,8 +101,17 @@ var WorldObjects = {
         stone.castShadow = true;
 
         return stone;
-    }        
+    },
 
+    cube : function(x, y, z, mat){
+        var geo = new THREE.CubeGeometry(x, y, z);
+        var wall = new THREE.Mesh(
+            geo,
+            mat);
+        wall.castShadow = true;
+
+        return wall;
+    }
 
 };
     

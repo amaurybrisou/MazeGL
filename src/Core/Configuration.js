@@ -14,13 +14,14 @@ var Configuration = function(server){
     this.HEIGHT               = window.innerHeight - this.SCREEN_SIZE_RATIO;
 
     //COLORS
-    this.BLACK                    = 0xFFFFFF;
+    this.WHITE                    = 0xFFFFFF;
     this.RED                      = new THREE.Color("rgb(219,0,0)");
     this.BG_COLOR                 = new THREE.Color("rgb(246,246,246)");
     this.FLOOR_COLOR              = new THREE.Color("rgb(249,249,249)");
     this.LIGHT_COLOR              = new THREE.Color("rgb(249,249,249)");
     this.STONES_EDGES_COLOR       = new THREE.Color("rgb(33,33,33)");
     this.STONES_FACES_COLOR       = new THREE.Color("rgb(249,249,249)");
+    this.WALL_FACES_COLOR       = new THREE.Color("rgb(50,50,50)");
     this.SUN_COLOR                = new THREE.Color("rgb(33,33,33)");
     this.ORIGIN_COLOR             = new THREE.Color("rgb(66,66,66)");
     this.BC                       = 0;
@@ -31,7 +32,7 @@ var Configuration = function(server){
     this.AVATAR_COLOR             = new THREE.Color("rgb(33,33,33)");
 
     //WORLD ASPECT
-    this.WORLDSIZE            = 216000;
+    this.WORLDSIZE            = 2160;
     this.LIGHT_SPEED          = 100000;
     this.DAY_NIGHT_SPEED      = this.LIGHT_SPEED;
     this.ORIGIN_SIZE          = 0.2;
@@ -63,6 +64,9 @@ var Configuration = function(server){
 
     this.STONES_FACES_MAT = new Materials.fillStoneMat(
         this.STONES_FACES_COLOR); // color
+
+    this.WALL_FACES_MAT = new Materials.fillStoneMat(
+        this.WALL_FACES_COLOR); // color
     
     //sun mat
     this.SUN_MAT          = new Materials.Sun_mat(
@@ -144,7 +148,7 @@ var Configuration = function(server){
     if(!server){
         this.AVATAR_TYPE      = FirstAvatar;
         //CAMERA
-        this.VIEW_ANGLE       = 60;
+        this.VIEW_ANGLE       = 120;
         this.ASPECT           = this.WIDTH / this.HEIGHT;
         this.NEAR             = 0.1;
         this.FAR              = this.WORLDSIZE;

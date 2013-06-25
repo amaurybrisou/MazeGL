@@ -301,7 +301,32 @@ world_core.prototype.MountainBuilder = function(Xo, Zo, spread, decrease_factor)
     }
 };
 
+world_core.prototype.maze = function(complexity, density){
+    var wall,
+        height = 100,
+        shape = [((this.WORLDSIZE / 2 ) * +1), ((this.WORLDSIZE / 2 ) * +1)],
+        complexity = (complexity * ( 5 * (shape[0] + shape[1]))),
+        density = (density * (shape[0] / 2 * shape[1] / 2)),
+        depth = 10,
+        height = 30;
+    var mergedGeo = new window.THREE.Geometry();
 
+    for(var x = - this.WORLDSIZE / 2; x < this.WORLDSIZE / 2; x+=10){
+        for(var z = - this.WORLDSIZE / 2; z < this.WORLDSIZE / 2; z+=10 ){
+            var wall = WorldObjects.cube(1, height, 1, this.WALL_FACES_MAT);
+
+            wall.position.set(x, height / 2, z);
+            window.THREE.GeometryUtils.merge(mergedGeo, wall);
+
+        }
+    }
+
+    var walls = new window.THREE.Mesh(
+                mergedGeo,
+                this.WALL_FACES_MAT);
+    this.add(walls);
+    
+};
 
 
 

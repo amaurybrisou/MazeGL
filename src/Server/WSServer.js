@@ -48,16 +48,17 @@ var WSServer = (function(){
 		    //Useful to know when someone connects
 			mmo.log('A new player ' + userid + ' is connected on world '+world_id);
 
+			var ret_stack = [];
 			socket.on('cl_move', function(u_struct) {
-		            socket.get('client', function(error, cli){
-		                var ret_data = cli.client.update(u_struct);
-		              
-	                	socket.emit('cl_move_ack',ret_data);
-	                	socket.broadcast.emit('cl_update_player_positions',
-	                		{ 'userid': userid, 'position': cli.client.position });
-		                              
-		            });
+	            socket.get('client', function(error, cli){
+        			var ret_data = cli.client.update(u_struct);
+            		socket.emit('cl_move_ack',ret_data);
+            		socket.broadcast.emit('cl_update_player_positions',
+        				{ 'userid': userid, 'position': cli.client.position });
+            	});	
+                
 			});//socket.on message
+		    
 
 			socket.on('disconnect', function (socket) {
 

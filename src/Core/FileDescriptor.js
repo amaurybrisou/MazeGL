@@ -1,3 +1,4 @@
+
 if(typeof global != 'undefined'){
     var io = require('socket.io');
 }
@@ -65,7 +66,7 @@ var Network = {
                 });
 
                 socket.on('cl_move_ack', function(data){
-                    world.avatar_controls.push_remote_update(data);
+                    //world.avatar_controls.push_remote_update(data);
                 });
 
                 socket.move = function(u_struct){

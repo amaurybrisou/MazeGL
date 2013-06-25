@@ -33,7 +33,7 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 
    
    	this.movementSpeed = 40;
-    this.lookSpeed = 0.05;
+    this.lookSpeed = 0.10;
     this.noFly = false;
     this.lookVertical = false;
     this.autoForward = false;
@@ -223,7 +223,6 @@ var Controls = function(server, object, screenSizeRatio, domElement){
     	}
     	this.eulerOrder = "XYZ";
 
-	    this.recvTime;
 	    this.remote_time;
 
 	    this.latency;
@@ -318,18 +317,23 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 			    var TargetPosition = this.target;
 			    var position = this.position;
 
-			    TargetPosition.x = position.x + (100 * Math.sin(this.phi) * Math.cos(this.theta)).fixed(4);
-			    TargetPosition.y = position.y + (100 * Math.cos(this.phi)).fixed(4);
-			    TargetPosition.z = position.z + (100 * Math.sin(this.phi) * Math.sin(this.theta)).fixed(4);
+			    TargetPosition.x = position.x + (100 * Math.sin(this.phi) * Math.cos(this.theta));
+			    TargetPosition.y = position.y + (100 * Math.cos(this.phi));
+			    TargetPosition.z = position.z + (100 * Math.sin(this.phi) * Math.sin(this.theta));
 
 			};
 			
+			this.position.x = this.position.x.fixed(3);
+			this.position.y = this.position.y.fixed(3);
+			this.position.z = this.position.z.fixed(3);
+
 		    return { 'position' : this.position, 'time': this.remote_time };
 
 		} else {
 			//Client Side
 			if(this.onMouseMove || this.moveBackward ||
 	            this.moveLeft || this.moveRight ||
+
 	            this.moveForward || this.moveDown ||
 	            this.mouveUp || this.moveLeft ){
 
@@ -394,7 +398,6 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 
 
 Controls.prototype.cl_local_update = function(data){
-
 	var actualMoveSpeed = 0;
 		
 		if ( !this.freeze ) {
@@ -506,7 +509,6 @@ Controls.prototype.refresh_fps = function() {
 
 Controls.prototype.push_remote_update = function(data){
         this.remote_time = data.time;
-        this.client_time = this.remote - this.interp_value;
 
         this.srv_pos_updates.push(data);
         
@@ -550,13 +552,13 @@ Controls.prototype.interpolate = function(){
 	var latest_server_data = this.srv_pos_updates[this.srv_pos_updates.length-1];
 	
 	var cur_time = this.remote_time;
-	var cur_pos = latobject.est_server_data.position;
+	var cur_pos = latest_server_data.position;
 	var time = cur_time - this.interp_value;
-	
+	var p_pos;
+
 	for(var i = this.srv_pos_updates.length - 1; i > 0; i--){
 		p_time = this.srv_pos_updates[i].time;
-		console.log(p_time);
-		if(p_pos < (p_time - this.interp_value)){
+		if(p_pos < time){
 			p_pos = this.srv_pos_updates[i].position;
 			break;
 		}
@@ -574,15 +576,15 @@ Controls.prototype.interpolate = function(){
 
         vec.x = (p_pos.x + ((cur_pos.x - p_pos.x) /
                 (( cur_time - p_time ) *
-                    ( time - p_time)))).fixed(4);
+                    ( time - p_time))));
         
         vec.y = (p_pos.y + ((cur_pos.y - p_pos.y) /
                 (( cur_time - p_time ) *
-                    ( time - p_time)))).fixed(4);
+                    ( time - p_time))));
         
         vec.z = (p_pos.z + ((cur_pos.z - p_pos.z) /
                 (( cur_time - p_time ) *
-                    ( time - p_time)))).fixed(4);
+                    ( time - p_time))));
 
 		this.change_position(vec);
     }
@@ -596,7 +598,7 @@ Controls.prototype.process_net_prediction_correction = function(){
 	    var latest_server_data = 
 	        this.srv_pos_updates[this.srv_pos_updates.length-1];
 
-	    var my_last_input_on_server = this.last_input_seq;// latest_server_data.last_server_input || 
+	    var my_last_input_on_server = latest_server_data.last_server_input || this.last_input_seq;//  
 	    
 	    var my_server_pos = latest_server_data.position || this.object.position;
 
@@ -636,7 +638,9 @@ Controls.prototype.process_net_prediction_correction = function(){
 
 Controls.prototype.change_position = function( b ) {
 	
-    this.object.position.set(b.x.fixed(4), b.y.fixed(4), b.z.fixed(4));
+    this.object.position.set(b.x.fixed(3), b.y.fixed(3), b.z.fixed(3));
+    //console.log(this.object.position);
+
 };
 
 if(typeof global != 'undefined'){
