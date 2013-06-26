@@ -81,6 +81,17 @@ var Network = {
                     world.client_onping(t);
                 });
 
+
+                socket.get_world = function(){
+                    socket.emit('get_world');
+                };
+
+                socket.on('get_world_ack', function(data){
+                    world.maze(data);
+                })
+
+                
+
                 socket.on('close', function (e) {
                     if (!e.wasClean) {
                         console.log(e.code + " " + e.reason);

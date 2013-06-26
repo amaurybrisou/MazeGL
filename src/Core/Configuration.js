@@ -40,6 +40,8 @@ var Configuration = function(server){
     this.WORLD_TEXTURE_URL    = "textures/noise_blur.png";
     this.TEXTURE_SIZE         = 512;
 
+    //COllision obstavles
+    this.obstacles             = [];
     //WORLD OBJECTS
     //floor
     this.PLANET_FLOOR             = new THREE.PlaneGeometry(

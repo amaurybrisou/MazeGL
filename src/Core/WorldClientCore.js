@@ -63,7 +63,8 @@ var WorldClientCore = {
         //this.MountainBuilder(-100,-100,6);
 
         // arg : maze complexity 
-        this.maze(10000);
+        this.FileDescriptor.get_world();
+    
 
         // build fog
         this.fog = this.FOG;

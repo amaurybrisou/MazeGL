@@ -147,9 +147,7 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 	            /*Z*/
 	            this.moveForward = true;
 	            break;
-	        case 32:
-	            this.moveUp = true;
-	            break;
+	        
 	        case 37:
 	            /*left*/
 	        case 81:
@@ -338,7 +336,8 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 	            this.mouveUp || this.moveLeft ){
 
 	            //this.interpolate();
-        		
+        		this.object.collision();
+
 	            this.cl_local_update(data);
 
 	            var u_struct = {
