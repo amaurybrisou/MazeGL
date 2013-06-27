@@ -9,7 +9,6 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 
 	var that = this;
 	this.server = server;
-    this.object = object;	
 	this.target = new THREE.Vector3(0, 0, 0);
 
 	this.lat = 0;
@@ -52,6 +51,7 @@ var Controls = function(server, object, screenSizeRatio, domElement){
     this.interp_value = 100;
 
 	if(!this.server){
+	    this.object = object;	
 
 		this.domElement = (domElement !== undefined) ? domElement : document;
 
@@ -216,9 +216,8 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 	    };
 	} else {
 		//Server Side
-		for(var util in Utils){
-        	this[util] = Utils[util];
-    	}
+	    this.object = new THREE.Object3D();	
+
     	this.eulerOrder = "XYZ";
 
 	    this.remote_time;
@@ -280,24 +279,15 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 
 				actualMoveSpeed = this.delta * this.movementSpeed;
 
-	            if (this.moveForward || (this.autoForward &&
-	                    !this.moveBackward)){this.translateZ(-(actualMoveSpeed + this.autoSpeedFactor));
-	            } 
-	            if (this.moveBackward) {
-	                this.translateZ(actualMoveSpeed);
-	            }
-	            if (this.moveLeft){
-	             this.translateX(-actualMoveSpeed);
-	         	}
-		        if (this.moveRight){
-		            this.translateX(actualMoveSpeed);
-		        }
-		        if (this.moveUp){ 
-		            this.translateY(actualMoveSpeed);
-		        }
-		        if (this.moveDown) {
-		            this.position = this.translateY(-actualMoveSpeed);
-		    	}
+	            if ( this.moveForward || ( this.autoForward && !this.moveBackward ) ) 
+				this.object.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
+			if ( this.moveBackward ) this.object.translateZ( actualMoveSpeed );
+
+			if ( this.moveLeft ) this.object.translateX( - actualMoveSpeed );
+			if ( this.moveRight ) this.object.translateX( actualMoveSpeed );
+
+			if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
+			if ( this.moveDown ) this.object.translateY( - actualMoveSpeed );
 
 				var actualLookSpeed = this.delta * this.lookSpeed;
 
@@ -313,7 +303,7 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 			    this.theta = this.lon * Math.PI / 180;
 
 			    var TargetPosition = this.target;
-			    var position = this.position;
+			    var position = this.object.position;
 
 			    TargetPosition.x = position.x + (100 * Math.sin(this.phi) * Math.cos(this.theta));
 			    TargetPosition.y = position.y + (100 * Math.cos(this.phi));
