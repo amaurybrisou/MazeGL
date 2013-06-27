@@ -47,7 +47,7 @@ def serialize(m):
         myList.append(l)
     return myList
 
-maze = maze(75, 75)
+maze = maze(50, 50)
 
 myList = serialize( maze)
 print(myList)

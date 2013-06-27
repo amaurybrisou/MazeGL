@@ -24,11 +24,11 @@ var Controls = function(server, object, screenSizeRatio, domElement){
     this.moveUp = false;
     this.moveDown = false;
 
-	this.AvatarPosition = new THREE.Vector3(0,0,0);
-
     this.mouseX = 0;
     this.mouseY = 0;
     this.mouseWheel = 0;
+
+    this.direction = new THREE.Vector3(0, 0, 0);
 
    
    	this.movementSpeed = 40;
@@ -180,6 +180,7 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 	            else this.freeze = true;
 	            break;
 	        }
+	        this.setDirection();
 	    };
 
 	    this.onKeyUp = function (event) {
@@ -213,6 +214,7 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 	            this.moveDown = false;
 	            break;
 	        }
+	        this.setDirection();
 	    };
 	} else {
 		//Server Side
@@ -241,75 +243,9 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 	            this.latency = this.time - data.sentTime;
 	            //console.log(this.latency);
 	        }
-
-
-	        //retrieve request variables into 'this'
-	        for(key in data){
-	            if(key === "position" || key ===  "rotation"){
-	                this[key] = new THREE.Vector3(
-	                    data[key].x,
-	                    data[key].y, 
-	                    data[key].z);
-	            } else {
-	                this[key] = data[key];
-	            }
-	        }
-     
-	        var actualMoveSpeed = 0;
-
-	        if (!this.freeze) {
-
-	            if (this.heightSpeed) {
-	                var y = THREE.Math.clamp(
-	                    this.position.y,
-	                    this.heightMin,
-	                    this.heightMax);
-	                var heightDelta = y - this.heightMin;
-
-	                this.autoSpeedFactor = this.delta *
-	                (heightDelta * this.heightCoef);
-
-	            } else {
-	                this.autoSpeedFactor = 0.0;
-	            }
-
-	            if (this.jump) {
-	                this.jumper();
-	            }
-
-				actualMoveSpeed = this.delta * this.movementSpeed;
-
-	            if ( this.moveForward || ( this.autoForward && !this.moveBackward ) ) 
-				this.object.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
-			if ( this.moveBackward ) this.object.translateZ( actualMoveSpeed );
-
-			if ( this.moveLeft ) this.object.translateX( - actualMoveSpeed );
-			if ( this.moveRight ) this.object.translateX( actualMoveSpeed );
-
-			if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
-			if ( this.moveDown ) this.object.translateY( - actualMoveSpeed );
-
-				var actualLookSpeed = this.delta * this.lookSpeed;
-
-			    if (!this.activeLook) {
-			        actualLookSpeed = 0;
-			    }
-
-			    this.lon += this.mouseX * actualLookSpeed;
-			    if (this.lookVertical) this.lat += this.mouseY * actualLookSpeed;
-
-			    this.lat = Math.max(-85, Math.min(85, this.lat));
-			    this.phi = (90 - this.lat) * Math.PI / 180;
-			    this.theta = this.lon * Math.PI / 180;
-
-			    var TargetPosition = this.target;
-			    var position = this.object.position;
-
-			    TargetPosition.x = position.x + (100 * Math.sin(this.phi) * Math.cos(this.theta));
-			    TargetPosition.y = position.y + (100 * Math.cos(this.phi));
-			    TargetPosition.z = position.z + (100 * Math.sin(this.phi) * Math.sin(this.theta));
-
-			};
+        
+	        this.local_update();
+			
 			
 			this.position.x = this.position.x.fixed(3);
 			this.position.y = this.position.y.fixed(3);
@@ -321,14 +257,16 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 			//Client Side
 			if(this.onMouseMove || this.moveBackward ||
 	            this.moveLeft || this.moveRight ||
-
 	            this.moveForward || this.moveDown ||
 	            this.mouveUp || this.moveLeft ){
 
 	            //this.interpolate();
-        		this.object.collision();
 
-	            this.cl_local_update(data);
+        		//this.object.collision();
+
+        		
+    			this.local_update(data);
+				
 
 	            var u_struct = {
 	                'userid': this.object.userid,
@@ -384,93 +322,124 @@ var Controls = function(server, object, screenSizeRatio, domElement){
     return this;
 };
 
+Controls.prototype.setDirection =  function () {
+    'use strict';
+    // Either left or right, and either up or down (no jump or dive (on the Y axis), so far ...)
+    var x = this.moveLeft ? 1 : this.moveRight ? -1 : 0,
+        y = this.moveUp ? 1 : this.moveDown ? -1 : 0,
+        z = this.moveForward ? 1 : this.moveBackward ? -1 : 0;
+    this.direction.set(x, y, z);
+};
 
+Controls.prototype.local_update = function(data){
+	if(this.server){
+		//retrieve request variables into 'this'
+        for(key in data){
+            if(key === "position" || key ===  "rotation"){
+                this[key] = new THREE.Vector3(
+                    data[key].x,
+                    data[key].y, 
+                    data[key].z);
+            } else {
+                this[key] = data[key];
+            }
+        }
+        //replace data by delta for client/server code compatibility
+        data = this.delta;
+	}
 
-Controls.prototype.cl_local_update = function(data){
 	var actualMoveSpeed = 0;
-		
-		if ( !this.freeze ) {
-
-			if ( this.heightSpeed ) {
-
-				var y = THREE.Math.clamp( this.object.position.y, this.heightMin, this.heightMax );
-				var heightDelta = y - this.heightMin;
-
-				this.autoSpeedFactor = data * ( heightDelta * this.heightCoef );
-
-			} else {
-
-				this.autoSpeedFactor = 0.0;
-
-			}
-
-			actualMoveSpeed = data * this.movementSpeed;
-
-			if ( this.moveForward || ( this.autoForward && !this.moveBackward ) ) 
-				this.object.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
-			if ( this.moveBackward ) this.object.translateZ( actualMoveSpeed );
-
-			if ( this.moveLeft ) this.object.translateX( - actualMoveSpeed );
-			if ( this.moveRight ) this.object.translateX( actualMoveSpeed );
-
-			if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
-			if ( this.moveDown ) this.object.translateY( - actualMoveSpeed );
-
-			var actualLookSpeed = data * this.lookSpeed;
-
-			if ( !this.activeLook ) {
-
-				actualLookSpeed = 0;
-
-			}
-
-			this.lon += this.mouseX * actualLookSpeed;
-			if( this.lookVertical ) this.lat -= this.mouseY * actualLookSpeed;
-
-			this.lat = Math.max( - 85, Math.min( 85, this.lat ) );
-			this.phi = ( 90 - this.lat ) * Math.PI / 180;
-			this.theta = this.lon * Math.PI / 180;
-
-			var targetPosition = this.target,
-				position = this.object.position;
-
-			targetPosition.x = position.x + 100 * Math.sin( this.phi ) * Math.cos( this.theta );
-			targetPosition.y = position.y + 100 * Math.cos( this.phi );
-			targetPosition.z = position.z + 100 * Math.sin( this.phi ) * Math.sin( this.theta );
-
-		}
 	
+	var actualLookSpeed = data * this.lookSpeed;
+	if ( !this.activeLook ) {
 
-		var verticalLookRatio = 1;
+		actualLookSpeed = 0;
 
-		if ( this.constrainVertical ) {
+	}
+	//console.log(this.direction.x+"  "+this.direction.z);
+	if (!this.freeze) {
 
-			verticalLookRatio = Math.PI / ( this.verticalMax - this.verticalMin );
+
+		if ( this.heightSpeed ) {
+
+			var y = THREE.Math.clamp( this.object.position.y, this.heightMin, this.heightMax );
+			var heightDelta = y - this.heightMin;
+
+			this.autoSpeedFactor = data * ( heightDelta * this.heightCoef );
+
+		} else {
+
+			this.autoSpeedFactor = 0.0;
 
 		}
+
+		actualMoveSpeed = data * this.movementSpeed;
+
+		
+		
+		if ( this.moveForward || ( this.autoForward && !this.moveBackward ) )
+			this.object.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
+		if ( this.moveBackward ) this.object.translateZ( actualMoveSpeed );
+
+		if ( this.moveLeft ) this.object.translateX( - actualMoveSpeed );
+		if ( this.moveRight ) this.object.translateX( actualMoveSpeed );
+
+		if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
+		if ( this.moveDown ) this.object.translateY( - actualMoveSpeed );
+		
 
 		this.lon += this.mouseX * actualLookSpeed;
-		if( this.lookVertical ) this.lat -= this.mouseY * actualLookSpeed * verticalLookRatio;
+		if( this.lookVertical ) this.lat -= this.mouseY * actualLookSpeed;
 
-		this.lat = Math.max( - 85, Math.min( 85, this.lat ) );
+		this.lat = Math.max( -85, Math.min( 85, this.lat ));
 		this.phi = ( 90 - this.lat ) * Math.PI / 180;
-
 		this.theta = this.lon * Math.PI / 180;
-
-		if ( this.constrainVertical ) {
-
-			this.phi = THREE.Math.mapLinear( this.phi, 0, Math.PI, this.verticalMin, this.verticalMax );
-
-		}
 
 		var targetPosition = this.target,
 			position = this.object.position;
 
-		targetPosition.x = position.x + 100 * Math.sin( this.phi ) * Math.cos( this.theta );
+		var angle = 100 * Math.sin( this.phi ) * Math.cos( this.theta );
+		targetPosition.x = position.x + angle ;
 		targetPosition.y = position.y + 100 * Math.cos( this.phi );
-		targetPosition.z = position.z + 100 * Math.sin( this.phi ) * Math.sin( this.theta );
+		targetPosition.z = position.x + angle;
 
-		this.object.lookAt( targetPosition );
+	}
+	
+	//this.setDirection();
+
+	var verticalLookRatio = 1;
+
+	if ( this.constrainVertical ) {
+
+		verticalLookRatio = Math.PI / ( this.verticalMax - this.verticalMin );
+
+	}
+
+	this.lon += this.mouseX * actualLookSpeed;
+	if( this.lookVertical ) this.lat -= this.mouseY * actualLookSpeed * verticalLookRatio;
+
+	this.lat = Math.max( - 85, Math.min( 85, this.lat ) );
+	this.phi = ( 90 - this.lat ) * Math.PI / 180;
+
+	this.theta = this.lon * Math.PI / 180;
+
+	if ( this.constrainVertical ) {
+
+		this.phi = THREE.Math.mapLinear( this.phi, 0, Math.PI, this.verticalMin, this.verticalMax );
+
+	}
+
+	
+
+	var targetPosition = this.target,
+		position = this.object.position;
+
+	targetPosition.x = position.x + 100 * Math.sin( this.phi ) * Math.cos( this.theta );
+	targetPosition.y = position.y + 100 * Math.cos( this.phi );
+	targetPosition.z = position.z + 100 * Math.sin( this.phi ) * Math.sin( this.theta );
+
+	this.object.lookAt( targetPosition );
+	
 
     this.refresh_fps();
 };
@@ -498,6 +467,7 @@ Controls.prototype.refresh_fps = function() {
 
 Controls.prototype.push_remote_update = function(data){
         this.remote_time = data.time;
+        world._dt = data.time;
 
         this.srv_pos_updates.push(data);
         
@@ -587,9 +557,9 @@ Controls.prototype.process_net_prediction_correction = function(){
 	    var latest_server_data = 
 	        this.srv_pos_updates[this.srv_pos_updates.length-1];
 
-	    var my_last_input_on_server = latest_server_data.last_server_input || this.last_input_seq;//  
+	    var my_last_input_on_server = /* latest_server_data.last_server_input ||*/ this.last_input_seq;//  
 	    
-	    var my_server_pos = latest_server_data.position || this.object.position;
+	    var my_server_pos = /*latest_server_data.position ||*/ this.object.position;
 
 
 	    if(my_last_input_on_server) {

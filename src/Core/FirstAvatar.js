@@ -5,10 +5,8 @@ if(typeof global != 'undefined'){
 var FirstAvatar = function (x, y, z, mat, instance) {
         THREE.Mesh.call(this);
         
-        this.position.x = x;
-        this.position.y = y;
-        this.position.z = z;
-
+        this.position = new THREE.Vector3(x, y, z);
+        
         var geom = new THREE.Geometry();
 
         // create vertices
@@ -66,11 +64,12 @@ var FirstAvatar = function (x, y, z, mat, instance) {
 
 FirstAvatar.prototype = Object.create(THREE.Mesh.prototype);
 
+
 FirstAvatar.prototype.collision =  function () {
     'use strict';
     var collisions, i,
         // Maximum distance from the origin before we consider collision
-        distance = 32,
+        distance = 10,
         // Get the obstacles array from our world
         obstacles = world.obstacles;
     // For each ray
@@ -81,19 +80,24 @@ FirstAvatar.prototype.collision =  function () {
         collisions = this.caster.intersectObjects(obstacles);
         // And disable that direction if we do
         if (collisions.length > 0 && collisions[0].distance <= distance) {
-            
+           // console.log("ray z : "+this.caster.ray.direction.z+" ray x : "+this.caster.ray.direction.x);
             // Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
-            if ((i === 0 || i === 1 || i === 7) && this.caster.ray.direction.z === 1) {
-                this.caster.ray.direction.setZ(0);
-            } else if ((i === 3 || i === 4 || i === 5) && this.caster.ray.direction.z === -1) {
-                this.caster.ray.direction.setZ(0);
+            if ((i === 0 || i === 1 || i === 7) &&
+                0 < this.caster.ray.direction.z < 1) {
+                    world.avatar_controls.direction.setZ(0);
+            } else if ((i === 3 || i === 4 || i === 5) &&
+                0 > this.caster.ray.direction.z > -1) {
+                    world.avatar_controls.direction.setZ(0);
             }
-            if ((i === 1 || i === 2 || i === 3) && this.caster.ray.direction.x === 1) {
-                this.caster.ray.direction.setX(0);
-            } else if ((i === 5 || i === 6 || i === 7) && this.caster.ray.direction.x === -1) {
-                this.caster.ray.direction.setX(0);
+            if ((i === 1 || i === 2 || i === 3) &&
+                0 < this.caster.ray.direction.x < 1) {
+                    world.avatar_controls.direction.setX(0);
+            } else if ((i === 5 || i === 6 || i === 7) &&
+                0 > this.caster.ray.direction.x > -1) {
+                    world.avatar_controls.direction.setX(0);
             }
         }
+        //console.log(world.avatar_controls.direction);
     }
 };
 

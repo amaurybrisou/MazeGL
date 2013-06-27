@@ -58,27 +58,24 @@ var world_core = function(world_instance){
     this._pdte = new Date().getTime(); //The physics update last delta time
     //A local timer for precision on server and client
     this.local_time = 0.016; //The local timer
-    this._dt = new Date().getTime(); //The local timer delta
     this._dte = new Date().getTime(); //The local timer last frame time
+    this._dt = new Date().getTime(); //The local timer delta
 
     //     //Start a physics loop, this is separate to the rendering
     //     //as this happens at a fixed frequency
     //this.create_physics_simulation();
-
-    //Start a fast paced timer for measuring time easier
-    this.create_timer();
 
     var object = new Configuration(this.server);
     for (var key in object ){
         this[key] = object[key];
     }
 
-    if(!this.server){
-
+    if(!this.server ){
         this.client_create_world();       
     } else { //if server
+        //Start a fast paced timer for measuring time easier
+        this.create_timer();
         this.server_time = 0;
-        this.laststate = {};
     }
 }; //world.constructor
 
@@ -95,9 +92,9 @@ world_core.prototype.update = function(t){
     //Store the last frame time
     this.lastframetime = t;
 
-    if(!this.server) {
+    if(!this.server && typeof this.avatar_obj !== 'undefined') {
         this.client_update(this.dt);
-    } else {
+    } else if( this.Clients.length ) {
         this.server_update();
     }
 
@@ -156,9 +153,10 @@ world_core.prototype.addLocalPlayer = (function(){
     return function(userid){
         if(this.server){
             this.avatar_obj = new THREE.Object3D();
-            this.avatar_obj.position.set(0,0,0);
+            this.avatar_obj.position.set(this.WORLDSIZE,0,this.WORLDSIZE);
         } else {
-            this.client_create_avatar();
+            this.avatar_obj = this.client_create_avatar();
+        
         }
         this.avatar_obj.userid = userid;
         this.add(this.avatar_obj);
@@ -312,7 +310,7 @@ world_core.prototype.maze = function(maze){
     var maze = maze;
 
     var height = 10,
-        width = depth = this.WORLDSIZE / maze.length,
+        width = depth = this.WORLDSIZE*2 / maze.length,
         mergedGeo = new window.THREE.Geometry();
     for(var i = 0; i < maze.length; i++){
         for(j = 0; j < maze[i].length; j++){
@@ -320,17 +318,21 @@ world_core.prototype.maze = function(maze){
             if(maze[i][j]){
                 var wall = WorldObjects.cube(width, height, depth, this.WALL_FACES_MAT);
 
-                wall.position.set(i * width, height / 2, j * depth);
+                wall.position.set( this.WORLDSIZE  - i * width,
+                                    height / 2,
+                                    this.WORLDSIZE  - j * depth);
+
                 window.THREE.GeometryUtils.merge(mergedGeo, wall);
             }
         }
     }
-
     var walls = new window.THREE.Mesh(
                 mergedGeo,
                 this.WALL_FACES_MAT);
+
     this.add(walls);
     this.obstacles.push(walls);
+    this.avatar_obj.add(this.obstacles);
 };
 
 
@@ -343,26 +345,26 @@ world_core.prototype.getCamera = function(){
             this.NEAR,
             this.FAR);
     s.position.set(
-        this.CAM_POS_X,
-        this.CAM_POS_Y,
-        this.CAM_POS_Z
+        this.CAM_POS_X  ,
+        this.CAM_POS_Y ,
+        this.CAM_POS_Z 
     );
     
 
     
 
-    s.reset = function () {
+    s.reset = function (avatar_obj) {
         
         this.position.set(
-            that.avatar_obj.position.x,
-            that.avatar_obj.position.y,
-            that.avatar_obj.position.z);
+            avatar_obj.position.x,
+            avatar_obj.position.y,
+            avatar_obj.position.z);
 
             this.position.x += 0;
             this.position.y += that.AVATAR_SCALE * that.CAM_POS_RATIO / 4;
             this.position.z += that.AVATAR_SCALE * that.CAM_POS_RATIO;
 
-            this.lookAt(that.avatar_obj.position);
+            this.lookAt(avatar_obj.position);
 
     };
 
@@ -397,9 +399,9 @@ world_core.prototype.getPlane = function(){
 
 world_core.prototype.getAvatar = function(){
     
-    var x = 0,
+    var x = this.WORLDSIZE,
         y = 0,
-        z = 0;
+        z = this.WORLDSIZE;
 
 
     return new this.AVATAR_TYPE(

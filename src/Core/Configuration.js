@@ -32,7 +32,7 @@ var Configuration = function(server){
     this.AVATAR_COLOR             = new THREE.Color("rgb(33,33,33)");
 
     //WORLD ASPECT
-    this.WORLDSIZE            = 2160;
+    this.WORLDSIZE            = 1000;
     this.LIGHT_SPEED          = 100000;
     this.DAY_NIGHT_SPEED      = this.LIGHT_SPEED;
     this.ORIGIN_SIZE          = 0.2;
@@ -155,10 +155,10 @@ var Configuration = function(server){
         this.NEAR             = 0.1;
         this.FAR              = this.WORLDSIZE;
         this.CAM_ROT_SPEED    = 2000;
-        this.CAM_POS_X        = 50
+        this.CAM_POS_X        = -50;
         this.CAM_POS_Y        = 20;
-        this.CAM_POS_Z        = -10;
-        this.CAM_POS_RATIO    = 3;
+        this.CAM_POS_Z        = 10;
+        this.CAM_POS_RATIO    = 2;
         this.LOOK_VERTICAL    = true;
         this.FREEZE           = false;
 

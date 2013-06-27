@@ -79,10 +79,16 @@ var WSServer = (function(){
 				socket.volatile.emit('ping', new Date().getTime());
 			});
 
+			socket.on('sync_time', function(){
+			socket.get('client', function(error, cli){
+				socket.emit('sync_time_ack', cli.client.remote_time);
+			});
+			
 		});
 
-		
-		
+
+		});
+
 
 		io.on('close', function (e) {
             if (!e.wasClean) {

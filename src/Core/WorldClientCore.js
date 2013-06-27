@@ -2,8 +2,7 @@
 
 var WorldClientCore = {
 	client_create_world : function(){
-		this.state_time = new Date().getTime();
-
+		
         this.client_create_ping_timer();
 
         if(this.debug){
@@ -19,12 +18,6 @@ var WorldClientCore = {
 
         this.Renderer.setClearColor(this.BG_COLOR, 1.0);
         this.Renderer.clear();
-
-        this.camera = this.getCamera();
-        this.add(this.camera);
-        
-        this.camera.lookAt(this.position);
-        console.log("Camera Loaded ", "WorldBuilder");
     
         this.WORLD_TEXTURE = this.getWorldTexture();
         this.WORLD_TEXTURE.repeat.set(1024, 1024);
@@ -69,8 +62,6 @@ var WorldClientCore = {
         // build fog
         this.fog = this.FOG;
 
-        this.camera.lookAt(this.position);
-
         if(String(window.location).indexOf('debug') != -1) {
                 this.client_create_debug_gui();
         }
@@ -79,28 +70,29 @@ var WorldClientCore = {
 
     client_create_avatar : function(){
 
-        this.avatar_obj = this.getAvatar();
+        avatar_obj = this.getAvatar();
 
-        if(typeof this.camera === 'undefined'){
+        if(typeof this.camera == 'undefined'){
             this.camera = this.getCamera();
         }
-
         var client_name = this.client_name();
         
-        this.avatar_obj.add(client_name);
+        avatar_obj.add(client_name);
 
         this.camera.reset(this);
-        this.avatar_obj.add(this.camera);
+        avatar_obj.add(this.camera);
        
         // define controls
         this.avatar_controls =
-            new Controls(this.server, this.avatar_obj, this.SCREEN_SIZE_RATIO, this.domElement);
+            new Controls(this.server, avatar_obj, this.SCREEN_SIZE_RATIO, this.domElement);
 
         var that = this;
 
-        this.avatar_obj.animate = function () {
+        avatar_obj.animate = function () {
             that.avatar_controls.update(window.clock.getDelta());
         };
+
+        return avatar_obj;
     },
 
     client_name : function(){
@@ -248,7 +240,7 @@ var WorldClientCore = {
 	        //client and server and calculated roughly how our connection is doing
 
 	    setInterval(function(){
-
+            this._dt = world.FileDescriptor.sync_time();
 	        this.last_ping_time = new Date().getTime() - this.fake_lag;
 	        world.FileDescriptor.send_ping(this.last_ping_time);
 

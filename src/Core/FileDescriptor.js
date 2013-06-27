@@ -88,9 +88,15 @@ var Network = {
 
                 socket.on('get_world_ack', function(data){
                     world.maze(data);
-                })
+                });
 
-                
+                socket.sync_time = function(){
+                    socket.emit('sync_time');
+                };
+
+                socket.on('sync_time_ack', function(data){
+                    world._dt = data
+                })
 
                 socket.on('close', function (e) {
                     if (!e.wasClean) {
