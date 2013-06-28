@@ -377,12 +377,12 @@ Controls.prototype.local_update = function(data){
 
 		
 		
-		if ( this.moveForward || ( this.autoForward && !this.moveBackward ) )
+		if ( this.moveForward && this.direction.z || ( this.autoForward && !this.moveBackward ) )
 			this.object.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
-		if ( this.moveBackward ) this.object.translateZ( actualMoveSpeed );
+		if ( this.moveBackward && this.direction.z ) this.object.translateZ( actualMoveSpeed );
 
-		if ( this.moveLeft ) this.object.translateX( - actualMoveSpeed );
-		if ( this.moveRight ) this.object.translateX( actualMoveSpeed );
+		if ( this.moveLeft && this.direction.x ) this.object.translateX( - actualMoveSpeed );
+		if ( this.moveRight && this.direction.x ) this.object.translateX( actualMoveSpeed );
 
 		if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
 		if ( this.moveDown ) this.object.translateY( - actualMoveSpeed );
@@ -399,9 +399,9 @@ Controls.prototype.local_update = function(data){
 			position = this.object.position;
 
 		var angle = 100 * Math.sin( this.phi ) * Math.cos( this.theta );
-		targetPosition.x = position.x + angle ;
+		targetPosition.x = position.x + this.direction.x * angle ;
 		targetPosition.y = position.y + 100 * Math.cos( this.phi );
-		targetPosition.z = position.x + angle;
+		targetPosition.z = position.x + this.direction.z * angle;
 
 	}
 	
