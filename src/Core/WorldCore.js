@@ -71,7 +71,10 @@ var world_core = function(world_instance){
     }
 
     if(!this.server ){
-        this.client_create_world();       
+        this.client_create_world();
+        this.FileDescriptor = Network.FileDescriptor(
+            this.SERVER_ADDR,
+            this.SERVER_PORT);
     } else { //if server
         //Start a fast paced timer for measuring time easier
         this.create_timer();
@@ -96,6 +99,7 @@ world_core.prototype.update = function(t){
         this.client_update(this.dt);
     } else if( this.Clients.length ) {
         this.server_update();
+
     }
 
         //schedule the next update
@@ -153,13 +157,16 @@ world_core.prototype.addLocalPlayer = (function(){
     return function(userid){
         if(this.server){
             this.avatar_obj = new THREE.Object3D();
-            this.avatar_obj.position.set(this.WORLDSIZE,0,this.WORLDSIZE);
+            this.avatar_obj.position.set(this.AVATAR_POSITION.x,
+                                        this.AVATAR_POSITION.y,
+                                        this.AVATAR_POSITION.z);
         } else {
             this.avatar_obj = this.client_create_avatar();
-        
         }
         this.avatar_obj.userid = userid;
         this.add(this.avatar_obj);
+
+        this.FileDescriptor.get_world();
     };
 }());
 
@@ -307,28 +314,52 @@ world_core.prototype.MountainBuilder = function(Xo, Zo, spread, decrease_factor)
 };
 
 world_core.prototype.maze = function(maze){
+
     var maze = maze;
-
+    var len = maze.length;
     var height = 10,
-        width = depth = this.WORLDSIZE*2 / maze.length,
+        wall,
+        mat,
+        origin = true,
+        world_texture = THREE.ImageUtils.loadTexture( this.MAZE_CUBE_TEXTURE ),
+        width = depth = this.block_size = this.WORLDSIZE / ( len - 1),
         mergedGeo = new window.THREE.Geometry();
-    for(var i = 0; i < maze.length; i++){
+
+    world_texture.wrapS = world_texture.wrapT = THREE.RepeatWrapping;
+    world_texture.repeat.set(this.REP_HOR_MAZE_CUBE, this.REP_VERT_MAZE_CUBE);//hor repeat , vert
+
+    for(var i = 0; i < len; i++){
         for(j = 0; j < maze[i].length; j++){
-            if(i == 0 && j < 2) continue;
+            // if((i <= 1 && j <= 1) ||
+            //      (i >= len - 1 && j >= len - 1 )){
+            //     // mat = this.BEGIN_END_FACES_MAT;
+            //     // origin = true;
+            //     continue;
+            // } else {
+                //origin = false;
+                //mat = this.WALL_FACES_MAT;
+                mat = new THREE.MeshBasicMaterial( { color: this.MAZE_CUBE_COLOR || undefined, 
+                                                    map: world_texture } );
+            // }
             if(maze[i][j]){
-                var wall = WorldObjects.cube(width, height, depth, this.WALL_FACES_MAT);
-
-                wall.position.set( this.WORLDSIZE  - i * width,
+                wall = WorldObjects.cube(width, height, depth, mat);
+                wall.origin = origin;
+                wall.position.set( -this.WORLDSIZE / 2 +  i * width,
                                     height / 2,
-                                    this.WORLDSIZE  - j * depth);
+                                    -this.WORLDSIZE / 2 + j * depth);
 
-                window.THREE.GeometryUtils.merge(mergedGeo, wall);
+                if(!wall.origin){
+                    window.THREE.GeometryUtils.merge(mergedGeo, wall);
+                } else {
+                    this.add(wall);
+                    this.obstacles.push(wall);
+                }
             }
         }
     }
     var walls = new window.THREE.Mesh(
                 mergedGeo,
-                this.WALL_FACES_MAT);
+                mat);
 
     this.add(walls);
     this.obstacles.push(walls);
@@ -336,97 +367,6 @@ world_core.prototype.maze = function(maze){
 };
 
 
-
-world_core.prototype.getCamera = function(){
-    var that = this;
-    var s = new THREE.PerspectiveCamera(
-            this.VIEW_ANGLE,
-            this.ASPECT,
-            this.NEAR,
-            this.FAR);
-    s.position.set(
-        this.CAM_POS_X  ,
-        this.CAM_POS_Y ,
-        this.CAM_POS_Z 
-    );
-    
-
-    
-
-    s.reset = function (avatar_obj) {
-        
-        this.position.set(
-            avatar_obj.position.x,
-            avatar_obj.position.y,
-            avatar_obj.position.z);
-
-            this.position.x += 0;
-            this.position.y += that.AVATAR_SCALE * that.CAM_POS_RATIO / 4;
-            this.position.z += that.AVATAR_SCALE * that.CAM_POS_RATIO;
-
-            this.lookAt(avatar_obj.position);
-
-    };
-
-    s.animate = function () {
-
-        this.position.set(
-            that.avatar_obj.position.x,
-            that.avatar_obj.position.y,
-            that.avatar_obj.position.z);
-        this.lookAt(that.avatar_obj.position);
-        this.position.x = that.AVATAR_SCALE/2;
-        this.position.y = that.AVATAR_SCALE;
-        this.position.z = that.AVATAR_SCALE * 4;
-
-
-    };
-    
-    
-    return s;
-};
-
-world_core.prototype.getPlane = function(){
-    var plane = new THREE.Mesh(
-        this.PLANET_GEO,
-        this.PLANET_MAT);
- 
-    plane.rotation.x = this.PLANE_ROT_X;
-    plane.position.y = this.PLANE_ROT_Y;
-    plane.receiveShadow = this.PLANE_RECV_SHADOW;
-    return plane;
-};
-
-world_core.prototype.getAvatar = function(){
-    
-    var x = this.WORLDSIZE,
-        y = 0,
-        z = this.WORLDSIZE;
-
-
-    return new this.AVATAR_TYPE(
-        x, y, z, this.AVATAR_MAT, this);
-};
-
-world_core.prototype.getMainLight = function(){
-    
-    var s = new THREE.SpotLight(this.LIGHT_COLOR);
-    
-    s.castShadow = this.MAIN_LIGHT_CAST_SHADOW;
-    s.angle = this.MAIN_LIGHT_ANGLE;
-    s.exponent = this.MAIN_LIGHT_EXPONENT;
-    s.shadowBias = this.MAIN_LIGHT_SHADOWBIAS;
-    s.shadowCameraFar = this.MAIN_LIGHT_SHADOW_CAMERA_FAR;
-    s.shadowCameraFov = this.MAIN_LIGHT_SHADOW_CAMERA_FOV;
-    return s;
-};
-
-world_core.prototype.getWorldTexture = function(){
-    var s = THREE.ImageUtils.loadTexture(this.WORLD_TEXTURE_URL);
-    
-    s.wrapS = s.wrapT = THREE.RepeatWrapping;
-    return s;
-};  
 
 if( 'undefined' != typeof global ) {
     module.exports = global.world_core = world_core;

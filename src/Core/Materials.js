@@ -27,16 +27,23 @@ var Materials = {
         return OriginMaterialZ;
     },
 
-    Planet_Materials : function(FLOOR_COLOR){
-        var plane_mat = new THREE.MeshBasicMaterial({
-            color: FLOOR_COLOR,
-        })
-        return plane_mat;
+    Planet_Materials : function(FLOOR_COLOR, texture){
+        if(texture){
+            return new THREE.MeshBasicMaterial({
+                color: FLOOR_COLOR || undefined,
+                map: texture
+            });
+        } else {
+            return new THREE.MeshBasicMaterial({
+                color: FLOOR_COLOR
+                
+            });
+        }
     },
 
-    Planet_Geo : function(WORLDSIZE){
+    Planet_Geo : function(WORLDSIZE, h, w){
         return new THREE.PlaneGeometry(
-            WORLDSIZE, WORLDSIZE, 10, 10);
+            WORLDSIZE, WORLDSIZE, h, w);
     },
 
     fillStoneMat : function(stoneFaces_color){

@@ -7,7 +7,7 @@ var WorldClientCore = {
 
         if(this.debug){
             this.client_create_debug_gui();
-        }  
+        }
 
         span = document.getElementById('infos');
         text = document.createTextNode('');    
@@ -19,20 +19,19 @@ var WorldClientCore = {
         this.Renderer.setClearColor(this.BG_COLOR, 1.0);
         this.Renderer.clear();
     
-        this.WORLD_TEXTURE = this.getWorldTexture();
-        this.WORLD_TEXTURE.repeat.set(1024, 1024);
-        console.log("World_Texture Loaded ", "WorldBuilder");
-
-        // build floor
-        this.PLANE = this.getPlane();
-        this.add(this.PLANE);
+        var plane = WorldObjects.getPlane();
+        this.add(plane);
         console.log("Plane Loaded");
 
-        // build sun
-        this.add(this.SUN);
+        var sky = WorldObjects.getSky();
+        this.add(sky);
+
+        // // build sun
+        var sun = this.SUN = new WorldObjects.getSun(0, 100, 0, this.SUN_MAT, this.SUN_SIZE);
+        this.add(sun);
         console.log("Sun Loaded");
         
-        this.MAIN_LIGHT = this.getMainLight();
+        this.MAIN_LIGHT = WorldObjects.getMainLight();
         this.add(this.MAIN_LIGHT);
         console.log("Main Light Loaded ");
 
@@ -47,7 +46,7 @@ var WorldClientCore = {
 
         //Build Stones;
         //this.StoneBuilder();
-        console.log("Stones Loaded ");
+        // console.log("Stones Loaded ");
         
         //Build a mountain...
         //this.MountainBuilder(500,500,20,6);
@@ -56,9 +55,8 @@ var WorldClientCore = {
         //this.MountainBuilder(-100,-100,6);
 
         // arg : maze complexity 
-        this.FileDescriptor.get_world();
     
-
+        
         // build fog
         this.fog = this.FOG;
 
@@ -70,27 +68,41 @@ var WorldClientCore = {
 
     client_create_avatar : function(){
 
-        avatar_obj = this.getAvatar();
+        var avatar_obj =  new this.AVATAR_TYPE(this.AVATAR_MAT, this);
+        var x = this.AVATAR_POSITION.x,
+            y = this.AVATAR_POSITION.y,
+            z = this.AVATAR_POSITION.z;
+
+        avatar_obj.position.set(x, y, z);
 
         if(typeof this.camera == 'undefined'){
-            this.camera = this.getCamera();
+            this.camera = WorldObjects.getCamera();
         }
+
         var client_name = this.client_name();
-        
         avatar_obj.add(client_name);
 
-        this.camera.reset(this);
+        
+        // this.camera.position.z += 10;
+        // this.camera.position.y = 2.5;
+
         avatar_obj.add(this.camera);
-       
+        this.camera.reset(avatar_obj); 
+
+        console.log(this.camera);       
+
         // define controls
         this.avatar_controls =
             new Controls(this.server, avatar_obj, this.SCREEN_SIZE_RATIO, this.domElement);
 
         var that = this;
 
-        avatar_obj.animate = function () {
-            that.avatar_controls.update(window.clock.getDelta());
+        avatar_obj.animate = function (d) {
+            that.avatar_controls.update(d);
         };
+
+        avatar_obj.rayCaster();
+
 
         return avatar_obj;
     },
@@ -116,15 +128,13 @@ var WorldClientCore = {
         return mesh;
 
     },
-	client_update : function(){
+	client_update : function(d){
             // animate
             var t  = this.dt;
 
             if(typeof this.avatar_obj != 'undefined'){
-                this.avatar_obj.animate();
-            }
-            
-            //this.camera.animate(this);
+                this.avatar_obj.animate(d);
+            }        
 
             this.SUN.animate(t, this);
             
@@ -192,24 +202,24 @@ var WorldClientCore = {
 
             this.MAIN_LIGHT.lookAt(this.position);
 
-            // HTML CONTENT
-            // span.innerHTML = ''; // clear existing
+            //HTML CONTENT
+            span.innerHTML = ''; // clear existing
 
-            // var connection_status = Network.FileDescriptor.readyState === ( 1 || 2 || 0 )
-            // ? "Connected" : "Disconnected";
-            // text = 'time : ' + Math.round(this.MAIN_LIGHT.position.y / 1000) + 
-            // '</br>cam coords : ' + this.camera.position.x + 
-            // " " + this.camera.position.y + 
-            // " " + this.camera.position.z; 
-            // if(typeof this.avatar_obj != 'undefined' && 
-            //     this.avatar_obj.position != 'undefined'){
-            //         text += '</br>mesh coords : ' + this.avatar_obj.position.x + 
-            //     " " + this.avatar_obj.position.y + 
-            //     " " + this.avatar_obj.position.z ;
-            // }
-            // text += "</br>Status : "+connection_status;
+            var connection_status = Network.FileDescriptor.readyState === ( 1 || 2 || 0 )
+            ? "Connected" : "Disconnected";
+            text = 'time : ' + Math.round(this.MAIN_LIGHT.position.y / 1000) + 
+            '</br>cam coords : ' + this.camera.position.x + 
+            " " + this.camera.position.y + 
+            " " + this.camera.position.z; 
+            if(typeof this.avatar_obj != 'undefined' && 
+                this.avatar_obj.position != 'undefined'){
+                    text += '</br>mesh coords : ' + this.avatar_obj.position.x + 
+                " " + this.avatar_obj.position.y + 
+                " " + this.avatar_obj.position.z ;
+            }
+            text += "</br>Status : "+connection_status;
 
-            // span.innerHTML = text;
+            span.innerHTML = text;
 
             this.Renderer.clear();
             this.Renderer.render(this, this.camera);

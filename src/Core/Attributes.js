@@ -14,10 +14,11 @@ var Attributes = {
 
   Origin : function(ORIGIN_COLOR, ORIGIN_SIZE, WORLDSIZE){
 
-    var OriginMaterialX = Materials.Origin_MaterialsX( ORIGIN_COLOR, 0.5,0.,0.);
-    var OriginMaterialY = Materials.Origin_MaterialsY( ORIGIN_COLOR, 0.,0.5,0.);
-    var OriginMaterialZ = Materials.Origin_MaterialsZ( ORIGIN_COLOR, 0.,0.,0.5);
+    var OriginMaterialX = Materials.Origin_MaterialsX( 1,0.,0., ORIGIN_COLOR);
+    var OriginMaterialY = Materials.Origin_MaterialsY( 0.,1,0., ORIGIN_COLOR);
+    var OriginMaterialZ = Materials.Origin_MaterialsZ( 0.,0.,1, ORIGIN_COLOR);
 
+    //X
     var xOrigin = new THREE.Mesh(                               //MESH
     new THREE.CubeGeometry(
         WORLDSIZE,

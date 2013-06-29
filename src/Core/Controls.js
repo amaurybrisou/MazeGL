@@ -28,24 +28,19 @@ var Controls = function(server, object, screenSizeRatio, domElement){
     this.mouseY = 0;
     this.mouseWheel = 0;
 
-    this.direction = new THREE.Vector3(0, 0, 0);
+    this.direction = {
+    	r : true,
+    	l : true,
+    	f : true,
+    	b : true
+    }
 
-   
-   	this.movementSpeed = 40;
-    this.lookSpeed = 0.10;
-    this.noFly = false;
-    this.lookVertical = false;
-    this.autoForward = false;
-    this.activeLook = true;
-    this.heightSpeed = false;
-    this.heightCoef = 1.0;
-    this.heightMin = 0.0;
-    this.constrainVertical = true;
-    this.verticalMin = 0;
-    this.verticalMax = Math.PI;
-    this.autoSpeedFactor = 0.0;
-    this.freeze = false;
+   	this.direction = new THREE.Vector3(1,0,1);
 
+   	var conf =  new Configuration();
+   	for(var key in conf){
+   		this[key] = conf[key];
+   	}
 
 	this.time = new Date().getTime();
     this.interp_value = 100;
@@ -260,13 +255,15 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 	            this.moveForward || this.moveDown ||
 	            this.mouveUp || this.moveLeft ){
 
-	            //this.interpolate();
-
-        		//this.object.collision();
-
-        		
-    			this.local_update(data);
 				
+	            //this.interpolate();
+    	
+        		
+        		// console.log(this.angle2);
+        		// console.log(this.angle);
+        		
+    			this.object.collision(100 * Math.sin( this.phi ) * Math.sin( this.theta ));
+				this.local_update(data);			
 
 	            var u_struct = {
 	                'userid': this.object.userid,
@@ -288,6 +285,7 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 	            this.inputs.push(u_struct);
 
 	            world.FileDescriptor.move(u_struct);
+	            
 	            
 	        }
 		}
@@ -324,11 +322,12 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 
 Controls.prototype.setDirection =  function () {
     'use strict';
-    // Either left or right, and either up or down (no jump or dive (on the Y axis), so far ...)
-    var x = this.moveLeft ? 1 : this.moveRight ? -1 : 0,
-        y = this.moveUp ? 1 : this.moveDown ? -1 : 0,
-        z = this.moveForward ? 1 : this.moveBackward ? -1 : 0;
+
+    var x = this.moveLeft ? -1 : this.moveRight ? 1 : 0,
+        y = 1,
+        z = this.moveForward ? -1 : this.moveBackward ? 1 : 0;
     this.direction.set(x, y, z);
+
 };
 
 Controls.prototype.local_update = function(data){
@@ -357,10 +356,11 @@ Controls.prototype.local_update = function(data){
 
 	}
 	//console.log(this.direction.x+"  "+this.direction.z);
-	if (!this.freeze) {
+	if (!this.freeze /*&& (this.direction.z !== 0 || this.direction.z !== 0)*/) {
+		//console.log(this.direction);
 
-
-		if ( this.heightSpeed ) {
+		if ( this.heightSpeed && ( this.direction.x !== 0 
+								|| this.direction.z !== 0) ) {
 
 			var y = THREE.Math.clamp( this.object.position.y, this.heightMin, this.heightMax );
 			var heightDelta = y - this.heightMin;
@@ -374,19 +374,30 @@ Controls.prototype.local_update = function(data){
 		}
 
 		actualMoveSpeed = data * this.movementSpeed;
-
 		
-		
-		if ( this.moveForward && this.direction.z || ( this.autoForward && !this.moveBackward ) )
-			this.object.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
-		if ( this.moveBackward && this.direction.z ) this.object.translateZ( actualMoveSpeed );
-
-		if ( this.moveLeft && this.direction.x ) this.object.translateX( - actualMoveSpeed );
-		if ( this.moveRight && this.direction.x ) this.object.translateX( actualMoveSpeed );
+		if ( this.moveForward || ( this.autoForward && !this.moveBackward ))
+			this.object.translateZ( 
+				this.direction.z *  ((this.direction.x === 0) ? 4 : 
+					( actualMoveSpeed + this.autoSpeedFactor ))			
+			);
+		if ( this.moveBackward ) 
+			this.object.translateZ(
+				this.direction.z *  ((this.direction.x === 0) ? 4 : actualMoveSpeed)
+				);
+		if ( this.moveLeft ) 
+			this.object.translateX(
+				this.direction.x * ((this.direction.z === 0) ? 4 : actualMoveSpeed) );
+		if ( this.moveRight ) 
+			this.object.translateX(
+				this.direction.x * ((this.direction.z === 0) ? 4 : actualMoveSpeed) );
 
 		if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
-		if ( this.moveDown ) this.object.translateY( - actualMoveSpeed );
+		if ( this.moveDown ) this.object.translateY( -actualMoveSpeed );
 		
+		this.object.position.set(
+			this.object.position.x.fixed(1),
+			this.object.position.y.fixed(1),
+			this.object.position.z.fixed(1));
 
 		this.lon += this.mouseX * actualLookSpeed;
 		if( this.lookVertical ) this.lat -= this.mouseY * actualLookSpeed;
@@ -398,10 +409,9 @@ Controls.prototype.local_update = function(data){
 		var targetPosition = this.target,
 			position = this.object.position;
 
-		var angle = 100 * Math.sin( this.phi ) * Math.cos( this.theta );
-		targetPosition.x = position.x + this.direction.x * angle ;
+		targetPosition.x = position.x  + (100 * Math.sin( this.phi ) * Math.cos( this.theta ));
 		targetPosition.y = position.y + 100 * Math.cos( this.phi );
-		targetPosition.z = position.x + this.direction.z * angle;
+		targetPosition.z = position.x  + (100 * Math.sin( this.phi ) * Math.sin( this.theta ));
 
 	}
 	
@@ -439,7 +449,8 @@ Controls.prototype.local_update = function(data){
 	targetPosition.z = position.z + 100 * Math.sin( this.phi ) * Math.sin( this.theta );
 
 	this.object.lookAt( targetPosition );
-	
+	this.angle = 100 * Math.sin( this.phi ) * Math.cos( this.theta );
+	this.angle2 = 100 * Math.sin( this.phi ) * Math.sin( this.theta );
 
     this.refresh_fps();
 };

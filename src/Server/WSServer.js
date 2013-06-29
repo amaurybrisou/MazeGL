@@ -60,9 +60,9 @@ var WSServer = (function(){
                 
 			});//socket.on message
 		    
+		    var file = fs.readFileSync(__dirname + '/../Generator/maze.json', "utf8");
+			var world = JSON.parse(file);
 			socket.on('get_world', function(){
-				var file = fs.readFileSync(__dirname + '/../Generator/maze.json', "utf8");
-    			var world = JSON.parse(file);
     			socket.emit('get_world_ack', world);
 			});
 

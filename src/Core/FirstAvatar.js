@@ -2,10 +2,10 @@ if(typeof global != 'undefined'){
     var THREE = require('three');
 }
 
-var FirstAvatar = function (x, y, z, mat, instance) {
+var FirstAvatar = function ( mat, instance) {
         THREE.Mesh.call(this);
         
-        this.position = new THREE.Vector3(x, y, z);
+        this.position = new THREE.Vector3(0, 0, 0);
         
         var geom = new THREE.Geometry();
 
@@ -36,26 +36,16 @@ var FirstAvatar = function (x, y, z, mat, instance) {
         geom.faces.push(new THREE.Face3(0, 2, 3));
         geom.faces.push(new THREE.Face3(3, 2, 1));
 
-
+        if(world.debug){
+            var geom = new THREE.CubeGeometry(3,3,3);
+        }
         // set avatar mesh geometry
         this.setGeometry(geom);
 
         // // set avatar mesh material
         this.setMaterial(mat);
         
-        this.rays = [
-                new THREE.Vector3(0, 0, 1),
-                new THREE.Vector3(1, 0, 1),
-                new THREE.Vector3(1, 0, 0),
-                new THREE.Vector3(1, 0, -1),
-                new THREE.Vector3(0, 0, -1),
-                new THREE.Vector3(-1, 0, -1),
-                new THREE.Vector3(-1, 0, 0),
-                new THREE.Vector3(-1, 0, 1)
-        ];
-        // And the "RayCaster", able to test for intersections
-        this.caster = new THREE.Raycaster();
-    
+       
 
         return this;
     
@@ -64,41 +54,59 @@ var FirstAvatar = function (x, y, z, mat, instance) {
 
 FirstAvatar.prototype = Object.create(THREE.Mesh.prototype);
 
+FirstAvatar.prototype.rayCaster = function(){
+    this.caster = new THREE.Raycaster(this.position);
+}
 
-FirstAvatar.prototype.collision =  function () {
+FirstAvatar.prototype.collision =  function (angle) {
     'use strict';
+    this.rays = [
+                new THREE.Vector3(0, 0, 1),//0
+                new THREE.Vector3(1, 0, 1),
+                new THREE.Vector3(1, 0, 0), //2
+                new THREE.Vector3(1, 0, -1),
+                new THREE.Vector3(0, 0, -1),//4
+                new THREE.Vector3(-1, 0, -1),
+                new THREE.Vector3(-1, 0, 0),//6
+                new THREE.Vector3(-1, 0, 1)
+        ];
+
+   
+    //console.log(angle);
     var collisions, i,
         // Maximum distance from the origin before we consider collision
         distance = 10,
         // Get the obstacles array from our world
         obstacles = world.obstacles;
     // For each ray
+    var matrix_Y = new THREE.Matrix4().makeRotationAxis( new THREE.Vector3(0,1,0), angle );
     for (i = 0; i < this.rays.length; i += 1) {
+        
         // We reset the raycaster to this direction
+        //this.rays[i].applyMatrix4( matrix_Y );
+        
         this.caster.set(this.position, this.rays[i]);
         // Test if we intersect with any obstacle mesh
-        collisions = this.caster.intersectObjects(obstacles);
+        collisions = this.caster.intersectObjects(obstacles, true);
         // And disable that direction if we do
+        
+        var allowed_dir = world.avatar_controls.direction;
         if (collisions.length > 0 && collisions[0].distance <= distance) {
-           // console.log("ray z : "+this.caster.ray.direction.z+" ray x : "+this.caster.ray.direction.x);
-            // Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
-            if ((i === 0 || i === 1 || i === 7) &&
-                0 < this.caster.ray.direction.z < 1) {
-                    world.avatar_controls.direction.setZ(0);
-            } else if ((i === 3 || i === 4 || i === 5) &&
-                0 > this.caster.ray.direction.z > -1) {
-                    world.avatar_controls.direction.setZ(0);
+        
+            if ((i === 0 || i === 1 || i === 7) && world.avatar_controls.direction.z === -1) {
+                world.avatar_controls.direction.setZ(0);//front
+            } else if ((i === 3 || i === 4 || i === 5) && world.avatar_controls.direction.z === 1) {
+                world.avatar_controls.direction.setZ(0);//back
             }
-            if ((i === 1 || i === 2 || i === 3) &&
-                0 < this.caster.ray.direction.x < 1) {
-                    world.avatar_controls.direction.setX(0);
-            } else if ((i === 5 || i === 6 || i === 7) &&
-                0 > this.caster.ray.direction.x > -1) {
-                    world.avatar_controls.direction.setX(0);
+            if ((i === 1 || i === 2 || i === 3) && world.avatar_controls.direction.x === -1) {
+                world.avatar_controls.direction.setX(0);//leftq
+            } else if ((i === 5 || i === 6 || i === 7) && world.avatar_controls.direction.x === 1) {
+                world.avatar_controls.direction.setX(0);//right
             }
         }
         //console.log(world.avatar_controls.direction);
     }
+    //console.log(world.avatar_controls.direction);
 };
 
 if(typeof global != 'undefined'){

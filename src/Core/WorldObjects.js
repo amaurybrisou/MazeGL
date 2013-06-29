@@ -1,9 +1,13 @@
 if(typeof global != 'undefined'){
     var THREE = require('three');
+    var Materials = require('./Materials.js');
+    var Configuration = require('./Configuration.js');
 }
 
+
+
 var WorldObjects = {
-    Sun_obj : function(x, y, z, material, size){
+    getSun : function(x, y, z, material, size){
     
         THREE.Mesh.call(this,
                         new THREE.SphereGeometry(size,50,50),
@@ -104,6 +108,8 @@ var WorldObjects = {
     },
 
     cube : function(x, y, z, mat){
+        
+        //mat.wireframe = true;
         var geo = new THREE.CubeGeometry(x, y, z);
         var wall = new THREE.Mesh(
             geo,
@@ -111,12 +117,109 @@ var WorldObjects = {
         wall.castShadow = true;
 
         return wall;
+    },
+
+    getPlane : function(){
+        
+        var world_texture = undefined;
+        if(this.WORLD_TEXTURE_URL){
+            world_texture = THREE.ImageUtils.loadTexture(this.WORLD_TEXTURE_URL);
+            world_texture.wrapS = world_texture.wrapT = THREE.RepeatWrapping;
+            world_texture.repeat.set(this.WORLDSIZE /50,this.WORLDSIZE /50  );
+        }
+
+        var mat = new Materials.Planet_Materials(this.FLOOR_COLOR, world_texture );
+        var geom = new Materials.Planet_Geo(this.WORLDSIZE, 100, 100);
+        var plane = new THREE.Mesh( geom , mat);
+
+        plane.rotation.x = this.PLANE_ROT_X;
+        plane.position.y = this.PLANE_ROT_Y;
+        //plane.receiveShadow = this.PLANE_RECV_SHADOW;
+        plane.wireframe = true;
+        return plane;
+    },
+
+    getCamera : function(){
+        var that = this;
+        var s = new THREE.PerspectiveCamera(
+                this.VIEW_ANGLE,
+                this.ASPECT,
+                this.NEAR,
+                this.FAR);
+       
+
+        s.reset = function (avatar_obj) {
+            
+            this.position.x += 0;
+            this.position.y += that.AVATAR_SCALE * that.CAM_POS_RATIO / 4;
+            this.position.z += that.AVATAR_SCALE * that.CAM_POS_RATIO;
+            
+
+        };
+
+        s.animate = function (avatar_obj) {
+
+            this.position.set(
+                avatar_obj.position.x,
+                avatar_obj.position.y,
+                avatar_obj.position.z);
+            this.lookAt(avatar_obj.position);
+            this.position.x = that.AVATAR_SCALE/2;
+            this.position.y = that.AVATAR_SCALE;
+            this.position.z = that.AVATAR_SCALE * 4;
+
+
+        };
+        
+        
+        return s;
+    },
+
+    getMainLight : function(){
+        
+        var s = new THREE.SpotLight(this.LIGHT_COLOR);
+        
+        s.castShadow = this.MAIN_LIGHT_CAST_SHADOW;
+        s.angle = this.MAIN_LIGHT_ANGLE;
+        s.exponent = this.MAIN_LIGHT_EXPONENT;
+        s.shadowBias = this.MAIN_LIGHT_SHADOWBIAS;
+        s.shadowCameraFar = this.MAIN_LIGHT_SHADOW_CAMERA_FAR;
+        s.shadowCameraFov = this.MAIN_LIGHT_SHADOW_CAMERA_FOV;
+        return s;
+    },
+
+    getSky: function(){
+
+        var dimension = this.WORLDSIZE;
+        var skyGeometry = new THREE.CubeGeometry( dimension
+            , dimension
+            , dimension
+         );  
+        var materialArray = [];
+
+        var world_texture = THREE.ImageUtils.loadTexture(this.SKY_TEXTURE);
+        world_texture.wrapS = world_texture.wrapT = THREE.RepeatWrapping;
+        world_texture.repeat.set(1,1);
+
+        for (var i = 0; i < 6; i++)
+            materialArray.push( new THREE.MeshBasicMaterial({
+                map: world_texture,
+                side: THREE.BackSide
+            }));
+        var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+        var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+        return skyBox
     }
 
 };
-    
-WorldObjects.Sun_obj.prototype = Object.create(THREE.Mesh.prototype);
+
+WorldObjects.getSun.prototype = Object.create(THREE.Mesh.prototype);
 WorldObjects.Fog_obj.prototype = Object.create(THREE.FogExp2.prototype);
+
+var conf = new Configuration();
+for(var key in conf){
+   WorldObjects[key] = conf[key];
+}
 
 if(typeof global != 'undefined'){
     module.exports = global.WorldObjects = WorldObjects;

@@ -3,27 +3,28 @@ if(typeof global != 'undefined'){
     var FileDescriptor = require('./FileDescriptor.js');
     var FirstAvatar = require('./FirstAvatar.js');
     var FirstAvatar = require('./Attributes.js');
-    var WorldObjects = require('./WorldObjects.js');
 	var THREE = require('three');
 }
 
 var Configuration = function(server){
     //WINDOW
     this.SCREEN_SIZE_RATIO    = 100;
-    this.WIDTH                = window.innerWidth ;//- this.SCREEN_SIZE_RATIO;
-    this.HEIGHT               = window.innerHeight ;//- this.SCREEN_SIZE_RATIO;
+    this.WIDTH                = window.innerWidth - this.SCREEN_SIZE_RATIO;
+    this.HEIGHT               = window.innerHeight - this.SCREEN_SIZE_RATIO;
 
     //COLORS
     this.WHITE                    = 0xFFFFFF;
     this.RED                      = new THREE.Color("rgb(219,0,0)");
     this.BG_COLOR                 = new THREE.Color("rgb(246,246,246)");
-    this.FLOOR_COLOR              = new THREE.Color("rgb(249,249,249)");
+    // this.FLOOR_COLOR              = new THREE.Color("rgb(100,223,97)");
     this.LIGHT_COLOR              = new THREE.Color("rgb(249,249,249)");
     this.STONES_EDGES_COLOR       = new THREE.Color("rgb(33,33,33)");
     this.STONES_FACES_COLOR       = new THREE.Color("rgb(249,249,249)");
-    this.WALL_FACES_COLOR       = new THREE.Color("rgb(50,50,50)");
+    this.WALL_FACES_COLOR         = new THREE.Color("rgb(110,27,93)");
+    this.BEGIN_END_FACES_COLOR    = new THREE.Color("rgb(00,220,00)");
     this.SUN_COLOR                = new THREE.Color("rgb(33,33,33)");
     this.ORIGIN_COLOR             = new THREE.Color("rgb(66,66,66)");
+    // this.MAZE_CUBE_COLOR          = new THREE.Color("rgb(0,21,255)");
     this.BC                       = 0;
     this.SC                       = 0;
     this.SEC                      = 0;
@@ -32,22 +33,27 @@ var Configuration = function(server){
     this.AVATAR_COLOR             = new THREE.Color("rgb(33,33,33)");
 
     //WORLD ASPECT
-    this.WORLDSIZE            = 1000;
+    this.WORLDSIZE            = 4096;
     this.LIGHT_SPEED          = 100000;
     this.DAY_NIGHT_SPEED      = this.LIGHT_SPEED;
     this.ORIGIN_SIZE          = 0.2;
     this.SUN_SIZE             = this.WORLDSIZE/10;
-    this.WORLD_TEXTURE_URL    = "textures/noise_blur.png";
+    
+    this.WORLD_TEXTURE_URL    = "textures/mur-fissure.png";
+    this.SKY_TEXTURE          = "textures/immeuble-verre.png";
+    this.MAZE_CUBE_TEXTURE    = "textures/vitre-cassee-nb.png";
+    
+    this.REP_HOR_MAZE_CUBE       = 16;
+    this.REP_VERT_MAZE_CUBE      = 1;
+
+    this.REP_HOR_FLOOR         = this.WORLDSIZE / 10;
+    this.REP_VERT_FLOOR         = this.WORLDSIZE / 10;
+
     this.TEXTURE_SIZE         = 512;
 
     //COllision obstavles
     this.obstacles             = [];
     //WORLD OBJECTS
-    //floor
-    this.PLANET_FLOOR             = new THREE.PlaneGeometry(
-    	this.WORLDSIZE, this.WORLDSIZE, 10, 10);
-    this.PLANE_ROT_X              = (-Math.PI/2);
-    this.PLANE_ROT_Y              = 0;
     //stones
     this.NB_STONES                = 1000;
     this.STONES_SIZE_RATIO        = 100;
@@ -68,7 +74,11 @@ var Configuration = function(server){
         this.STONES_FACES_COLOR); // color
 
     this.WALL_FACES_MAT = new Materials.fillStoneMat(
+
         this.WALL_FACES_COLOR); // color
+
+    this.BEGIN_END_FACES_MAT = new Materials.fillStoneMat(
+        this.BEGIN_END_FACES_COLOR); // color
     
     //sun mat
     this.SUN_MAT          = new Materials.Sun_mat(
@@ -77,12 +87,13 @@ var Configuration = function(server){
     this.AVATAR_MAT       = new Materials.Avatar_mat(
         this.AVATAR_COLOR);
 
-    this.PLANET_GEO = new Materials.Planet_Geo(this.WORLDSIZE);
+    //floor
+    this.PLANE_RECV_SHADOW = true;
+    this.PLANET_GEO = new Materials.Planet_Geo(this.WORLDSIZE, 100, 100);
     this.PLANET_MAT = new Materials.Planet_Materials(this.FLOOR_COLOR);
+    this.PLANE_ROT_X              = -(Math.PI/2);
+    this.PLANE_ROT_Y              = 0;
 
-    //sun
-    this.SUN              = new WorldObjects.Sun_obj(
-        0, 100, 0, this.SUN_MAT, this.SUN_SIZE);
 
     this.WORLD_ORIGIN = Attributes.Origin(
             this.ORIGIN_COLOR,
@@ -101,7 +112,7 @@ var Configuration = function(server){
     this.MAIN_LIGHT_SHADOWBIAS        = 2;
     this.AMBIENT_LIGHT                = 0xeeeeee;
     
-
+    this.BLOCK_SIZE = this.WORLDSIZE / 35;
     
     this.AVATAR_MODEL_PATH               = null; // "Models/daemon2.obj";
     this.AVATAR_SCALE                    = 5;
@@ -112,6 +123,11 @@ var Configuration = function(server){
     this.AVATAR_NO_FLY                   = true;
     this.AVATAR_TRANS_VIEW_INCREMENT     = 40;
     this.AVATAR_ROT_VIEW_INCREMENT       = 0.09;
+    this.AVATAR_POSITION = { 
+        x : this.WORLDSIZE / 2  - (this.BLOCK_SIZE ),
+        y : 0,
+        z : this.WORLDSIZE / 2 - (this.BLOCK_SIZE)
+    };
 
 
 
@@ -131,20 +147,7 @@ var Configuration = function(server){
 
     this.eulerOrder = "XYZ";
 
-    this.movementSpeed = 40;
-    this.lookSpeed = 0.05;
-    this.noFly = false;
-    this.lookVertical = false;
-    this.autoForward = false;
-    this.activeLook = true;
-    this.heightSpeed = false;
-    this.heightCoef = 1.0;
-    this.heightMin = 0.0;
-    this.constrainVertical = true;
-    this.verticalMin = 0;
-    this.verticalMax = Math.PI;
-    this.autoSpeedFactor = 0.0;
-    this.freeze = false;
+    
 
     //Client specific initialisation
     if(!server){
@@ -153,12 +156,12 @@ var Configuration = function(server){
         this.VIEW_ANGLE       = 120;
         this.ASPECT           = this.WIDTH / this.HEIGHT;
         this.NEAR             = 0.1;
-        this.FAR              = this.WORLDSIZE;
+        this.FAR              = this.WORLDSIZE * 3;
         this.CAM_ROT_SPEED    = 2000;
         this.CAM_POS_X        = -50;
         this.CAM_POS_Y        = 20;
-        this.CAM_POS_Z        = 10;
-        this.CAM_POS_RATIO    = 2;
+        this.CAM_POS_Z        = -10;
+        this.CAM_POS_RATIO    = 5;
         this.LOOK_VERTICAL    = true;
         this.FREEZE           = false;
 
@@ -168,12 +171,10 @@ var Configuration = function(server){
         this.SERVER_PORT =  9999;
         this.SERVER_ADDR =  '127.0.0.1';
 
-        this.FileDescriptor = Network.FileDescriptor(
-            this.SERVER_ADDR,
-            this.SERVER_PORT);
+        
 
 
-        this.debug = true;
+        this.debug = false;
         
         this.net_latency = 0.001;           //the latency between the client and the server (ping/2)
         this.net_ping = 0.001;              //The round trip time from here to the server,and back
@@ -195,8 +196,24 @@ var Configuration = function(server){
 
     }
 
-
+   
+    this.movementSpeed = this.WORLDSIZE * 0.01;
+    this.lookSpeed = 0.1;
+    this.noFly = true;
+    this.lookVertical = false;
+    this.autoForward = false;
+    this.activeLook = true;
+    this.heightSpeed = true;
+    this.heightCoef = 1.0;
+    this.heightMin = 0.0;
+    this.constrainVertical = true;
+    this.verticalMin = 0;
+    this.verticalMax = Math.PI;
+    this.autoSpeedFactor = 0.0;
+    this.freeze = false;
+    
 };
+
 
 
 if(typeof global != 'undefined'){
