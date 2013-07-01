@@ -72,7 +72,7 @@ FirstAvatar.prototype.rayCaster = function(){
 
 FirstAvatar.prototype.collision =  function (thisV) {
     
-    console.log("collision test ("+world.avatar_controls.direction.x+","+world.avatar_controls.direction.z+")");
+    //console.log("collision test ("+world.avatar_controls.direction.x+","+world.avatar_controls.direction.z+")");
     
     
     //console.log(angle);
@@ -90,7 +90,8 @@ FirstAvatar.prototype.collision =  function (thisV) {
     // var matrix_Y = new THREE.Matrix4().makeRotationAxis( new THREE.Vector3(0,1,0), angle );
     var dir = zero_dir =  new THREE.Vector3();
     dir.subVectors(thisV, this.lastV );
-    
+    var rot = this.rotation.y / Math.abs(this.rotation.y);
+    console.log(rot);
     for (i = 0; i < this.rays.length; i += 1) {
         
         // if(zero_dir !== dir){
@@ -102,27 +103,30 @@ FirstAvatar.prototype.collision =  function (thisV) {
         collisions = this.caster.intersectObjects(obstacles);
 
         if (collisions.length > 0 && collisions[0].distance <= distance) {
-            if ((i === 0 || i === 1 || i === 7) && world.avatar_controls.direction.x === -1) {
-                console.log("front "+i);
-                collide = true;
-
-                world.avatar_controls.direction.setX(0);//front
+            if ((i === 0 || i === 1 || i === 7) && 
+                (world.avatar_controls.direction.x === -1 * rot)) {
+                    console.log("front "+i);
+                    collide = true;
+                    world.avatar_controls.direction.setX(0);//front
                 
-            } else if ((i === 3 || i === 4 || i === 5) && world.avatar_controls.direction.x === 1) {
+            } else if ((i === 3 || i === 4 || i === 5) && 
+                (world.avatar_controls.direction.x === 1 * rot)) {
                 
-                collide = true;
-                console.log("back "+i);
-                world.avatar_controls.direction.setX(0);//back
+                    collide = true;
+                    console.log("back "+i);
+                    world.avatar_controls.direction.setX(0);//back
             }
-            if ((i === 1 || i === 2 || i === 3) && world.avatar_controls.direction.z === 1) {
-                console.log("left "+i);
-                collide = true;
+            if ((i === 1 || i === 2 || i === 3) && 
+                (world.avatar_controls.direction.z === 1 * rot)){
+                    console.log("left "+i);
+                    collide = true;
 
                 world.avatar_controls.direction.setZ(0);//right
-            } else if ((i === 5 || i === 6 || i === 7) && world.avatar_controls.direction.z === -1) {
-                console.log("right "+i);
-                collide = true;
-                world.avatar_controls.direction.setZ(0);//leftq
+            } else if ((i === 5 || i === 6 || i === 7) &&
+                (world.avatar_controls.direction.z === -1 * rot)) {
+                    console.log("right "+i);
+                    collide = true;
+                    world.avatar_controls.direction.setZ(0);//leftq
             
             }
         }
@@ -130,7 +134,6 @@ FirstAvatar.prototype.collision =  function (thisV) {
     }
     this.lastV = thisV.clone();
     if(debug){
-        console.log(collide);
         if(collide){
             this.material.color.setHex( 0x00aa00 );
         } else {
