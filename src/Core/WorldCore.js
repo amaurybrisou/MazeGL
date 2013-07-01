@@ -78,7 +78,7 @@ var world_core = function(world_instance){
     } else { //if server
         //Start a fast paced timer for measuring time easier
         this.create_timer();
-        this.server_time = 0;
+        this.server_time = new Date().getTime();
     }
 }; //world.constructor
 
@@ -347,6 +347,22 @@ world_core.prototype.maze = function(maze){
                 wall.position.set( -this.WORLDSIZE / 2 +  i * width,
                                     height / 2,
                                     -this.WORLDSIZE / 2 + j * depth);
+                
+
+                // if(this.debug){
+                //     var boundingSphere = wall.geometry.boundingSphere.clone();
+                //     // compute overall bbox
+                //     console.log(boundingSphere);
+                //     var sphere = new THREE.Mesh(
+                //         new THREE.SphereGeometry(boundingSphere.radius, 5, 5),
+                //          new THREE.MeshBasicMaterial({
+                //                 color: 0x000000,
+                //                 wireframe : true
+                //     }));
+                //     sphere.overdraw = true;
+                    
+                //     wall.add (sphere);
+                // }
 
                 if(!wall.origin){
                     window.THREE.GeometryUtils.merge(mergedGeo, wall);
@@ -364,6 +380,7 @@ world_core.prototype.maze = function(maze){
     this.add(walls);
     this.obstacles.push(walls);
     this.avatar_obj.add(this.obstacles);
+
 };
 
 

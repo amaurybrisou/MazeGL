@@ -124,9 +124,9 @@ var Configuration = function(server){
     this.AVATAR_TRANS_VIEW_INCREMENT     = 40;
     this.AVATAR_ROT_VIEW_INCREMENT       = 0.09;
     this.AVATAR_POSITION = { 
-        x : this.WORLDSIZE / 2  - (this.BLOCK_SIZE ),
+        x : (this.WORLDSIZE / 2  - (this.BLOCK_SIZE )),
         y : 0,
-        z : this.WORLDSIZE / 2 - (this.BLOCK_SIZE)
+        z : (this.WORLDSIZE / 2 - (this.BLOCK_SIZE))
     };
 
 
@@ -156,7 +156,7 @@ var Configuration = function(server){
         this.VIEW_ANGLE       = 120;
         this.ASPECT           = this.WIDTH / this.HEIGHT;
         this.NEAR             = 0.1;
-        this.FAR              = this.WORLDSIZE * 3;
+        this.FAR              = this.WORLDSIZE * 5;
         this.CAM_ROT_SPEED    = 2000;
         this.CAM_POS_X        = -50;
         this.CAM_POS_Y        = 20;
@@ -174,7 +174,7 @@ var Configuration = function(server){
         
 
 
-        this.debug = false;
+        this.debug = true;
         
         this.net_latency = 0.001;           //the latency between the client and the server (ping/2)
         this.net_ping = 0.001;              //The round trip time from here to the server,and back

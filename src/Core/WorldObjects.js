@@ -125,7 +125,7 @@ var WorldObjects = {
         if(this.WORLD_TEXTURE_URL){
             world_texture = THREE.ImageUtils.loadTexture(this.WORLD_TEXTURE_URL);
             world_texture.wrapS = world_texture.wrapT = THREE.RepeatWrapping;
-            world_texture.repeat.set(this.WORLDSIZE /50,this.WORLDSIZE /50  );
+            world_texture.repeat.set(this.REP_HOR_FLOOR,this.REP_VERT_FLOOR  );
         }
 
         var mat = new Materials.Planet_Materials(this.FLOOR_COLOR, world_texture );
@@ -141,38 +141,22 @@ var WorldObjects = {
 
     getCamera : function(){
         var that = this;
-        var s = new THREE.PerspectiveCamera(
+        var cam = new THREE.PerspectiveCamera(
                 this.VIEW_ANGLE,
                 this.ASPECT,
                 this.NEAR,
                 this.FAR);
        
 
-        s.reset = function (avatar_obj) {
-            
-            this.position.x += 0;
+        cam.reset = function (avatar_obj) {
+
+            this.position.x -= that.AVATAR_SCALE * that.CAM_POS_RATIO;
             this.position.y += that.AVATAR_SCALE * that.CAM_POS_RATIO / 4;
-            this.position.z += that.AVATAR_SCALE * that.CAM_POS_RATIO;
-            
+            this.position.z += 0;
 
+            this.lookAt(new THREE.Vector3(0,0,0));
         };
-
-        s.animate = function (avatar_obj) {
-
-            this.position.set(
-                avatar_obj.position.x,
-                avatar_obj.position.y,
-                avatar_obj.position.z);
-            this.lookAt(avatar_obj.position);
-            this.position.x = that.AVATAR_SCALE/2;
-            this.position.y = that.AVATAR_SCALE;
-            this.position.z = that.AVATAR_SCALE * 4;
-
-
-        };
-        
-        
-        return s;
+        return cam;
     },
 
     getMainLight : function(){

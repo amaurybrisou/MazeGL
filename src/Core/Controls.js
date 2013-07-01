@@ -28,14 +28,9 @@ var Controls = function(server, object, screenSizeRatio, domElement){
     this.mouseY = 0;
     this.mouseWheel = 0;
 
-    this.direction = {
-    	r : true,
-    	l : true,
-    	f : true,
-    	b : true
-    }
+    this.last_angle = 0;
 
-   	this.direction = new THREE.Vector3(1,0,1);
+   	this.direction = new THREE.Vector3();
 
    	var conf =  new Configuration();
    	for(var key in conf){
@@ -226,8 +221,10 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 	    this.position = new THREE.Vector3(0,0,0);
 	}
 
+
 	// data = input_seq server side and delta client side
 	this.update = function (data){
+		'use strict';
 
         if(this.server){
         	//Server Side
@@ -241,29 +238,27 @@ var Controls = function(server, object, screenSizeRatio, domElement){
         
 	        this.local_update();
 			
-			
-			this.position.x = this.position.x.fixed(3);
-			this.position.y = this.position.y.fixed(3);
-			this.position.z = this.position.z.fixed(3);
+			this.position.x = this.position.x.fixed(1);
+			this.position.y = this.position.y.fixed(1);
+			this.position.z = this.position.z.fixed(1);
 
 		    return { 'position' : this.position, 'time': this.remote_time };
 
 		} else {
 			//Client Side
-			if(this.onMouseMove || this.moveBackward ||
-	            this.moveLeft || this.moveRight ||
-	            this.moveForward || this.moveDown ||
-	            this.mouveUp || this.moveLeft ){
+			// if(this.onMouseMove || this.moveBackward ||
+	  //           this.moveLeft || this.moveRight ||
+	  //           this.moveForward || this.moveDown ||
+	  //           this.mouveUp || this.moveLeft ){
 
 				
 	            //this.interpolate();
     	
-        		
-        		// console.log(this.angle2);
-        		// console.log(this.angle);
-        		
-    			this.object.collision(100 * Math.sin( this.phi ) * Math.sin( this.theta ));
-				this.local_update(data);			
+		        this.object.collision(this.object.position);
+		        //this.object.collision( );
+				//console.log("(x,z) before local update : ("+this.direction.x+","+this.direction.z+")");
+	            this.local_update(data);
+	            
 
 	            var u_struct = {
 	                'userid': this.object.userid,
@@ -286,8 +281,9 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 
 	            world.FileDescriptor.move(u_struct);
 	            
-	            
-	        }
+	            			
+
+	        // }
 		}
     }
     
@@ -321,16 +317,16 @@ var Controls = function(server, object, screenSizeRatio, domElement){
 };
 
 Controls.prototype.setDirection =  function () {
-    'use strict';
 
-    var x = this.moveLeft ? -1 : this.moveRight ? 1 : 0,
+    var z = this.moveRight ? 1 : this.moveLeft ? -1 : 0,
         y = 1,
-        z = this.moveForward ? -1 : this.moveBackward ? 1 : 0;
+        x = this.moveForward ? 1 : this.moveBackward ? -1 : 0;
+    
     this.direction.set(x, y, z);
-
 };
 
 Controls.prototype.local_update = function(data){
+
 	if(this.server){
 		//retrieve request variables into 'this'
         for(key in data){
@@ -355,12 +351,10 @@ Controls.prototype.local_update = function(data){
 		actualLookSpeed = 0;
 
 	}
-	//console.log(this.direction.x+"  "+this.direction.z);
-	if (!this.freeze /*&& (this.direction.z !== 0 || this.direction.z !== 0)*/) {
-		//console.log(this.direction);
 
-		if ( this.heightSpeed && ( this.direction.x !== 0 
-								|| this.direction.z !== 0) ) {
+	if (!this.freeze && (this.direction.z !== 0 || this.direction.x !== 0)) {
+
+		if ( this.heightSpeed) {
 
 			var y = THREE.Math.clamp( this.object.position.y, this.heightMin, this.heightMax );
 			var heightDelta = y - this.heightMin;
@@ -374,22 +368,20 @@ Controls.prototype.local_update = function(data){
 		}
 
 		actualMoveSpeed = data * this.movementSpeed;
-		
+		var dep = 0;
 		if ( this.moveForward || ( this.autoForward && !this.moveBackward ))
-			this.object.translateZ( 
-				this.direction.z *  ((this.direction.x === 0) ? 4 : 
-					( actualMoveSpeed + this.autoSpeedFactor ))			
-			);
+			dep = this.direction.x * (actualMoveSpeed + this.autoSpeedFactor);
+			this.object.translateX(dep);
 		if ( this.moveBackward ) 
-			this.object.translateZ(
-				this.direction.z *  ((this.direction.x === 0) ? 4 : actualMoveSpeed)
+			this.object.translateX(
+				this.direction.x *  actualMoveSpeed 
 				);
 		if ( this.moveLeft ) 
-			this.object.translateX(
-				this.direction.x * ((this.direction.z === 0) ? 4 : actualMoveSpeed) );
+			this.object.translateZ(
+				this.direction.z *  actualMoveSpeed );
 		if ( this.moveRight ) 
-			this.object.translateX(
-				this.direction.x * ((this.direction.z === 0) ? 4 : actualMoveSpeed) );
+			this.object.translateZ(
+				this.direction.z * actualMoveSpeed  );
 
 		if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
 		if ( this.moveDown ) this.object.translateY( -actualMoveSpeed );

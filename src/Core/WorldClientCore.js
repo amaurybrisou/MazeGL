@@ -82,14 +82,14 @@ var WorldClientCore = {
         var client_name = this.client_name();
         avatar_obj.add(client_name);
 
-        
-        // this.camera.position.z += 10;
-        // this.camera.position.y = 2.5;
-
-        avatar_obj.add(this.camera);
         this.camera.reset(avatar_obj); 
+        avatar_obj.add(this.camera);
+        
+        var axis = new THREE.Vector3( 0, 1, 0 );
+        var angle = -Math.PI / 10;
+        var matrix = new THREE.Matrix4().makeRotationAxis( axis, angle );
 
-        console.log(this.camera);       
+        avatar_obj.rotation.applyMatrix4( matrix );
 
         // define controls
         this.avatar_controls =
@@ -103,6 +103,19 @@ var WorldClientCore = {
 
         avatar_obj.rayCaster();
 
+        if(world.debug){
+            var boundingSphere = avatar_obj.geometry.boundingSphere.clone();
+            // compute overall bbox
+            sphere = new THREE.Mesh(
+                new THREE.SphereGeometry(boundingSphere.radius, 10, 10),
+                 new THREE.MeshBasicMaterial({
+                        color: 0x000000,
+                        wireframe : true
+            }));
+            sphere.overdraw = true;
+
+            avatar_obj.add(sphere);
+        }
 
         return avatar_obj;
     },
@@ -210,14 +223,23 @@ var WorldClientCore = {
             text = 'time : ' + Math.round(this.MAIN_LIGHT.position.y / 1000) + 
             '</br>cam coords : ' + this.camera.position.x + 
             " " + this.camera.position.y + 
-            " " + this.camera.position.z; 
+            " " + this.camera.position.z +
+            '</br>cam rot coords : ' + this.camera.rotation.x + 
+            " " + this.camera.rotation.y + 
+            " " + this.camera.rotation.z; ; 
             if(typeof this.avatar_obj != 'undefined' && 
                 this.avatar_obj.position != 'undefined'){
                     text += '</br>mesh coords : ' + this.avatar_obj.position.x + 
                 " " + this.avatar_obj.position.y + 
-                " " + this.avatar_obj.position.z ;
+                " " + this.avatar_obj.position.z;
+                if(this.avatar_obj.rotation != 'undefined'){
+                        text += '</br>mesh rot coords : ' + 
+                        (this.avatar_obj.rotation.x * 100).fixed(2) + 
+                    " " + (this.avatar_obj.rotation.y * 100).fixed(2) + 
+                    " " + (this.avatar_obj.rotation.z * 100).fixed(2);
+                }
             }
-            text += "</br>Status : "+connection_status;
+            //text += "</br>Status : "+connection_status;
 
             span.innerHTML = text;
 
