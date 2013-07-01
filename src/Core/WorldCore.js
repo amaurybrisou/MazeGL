@@ -144,17 +144,17 @@ world_core.prototype.updatePlayers = function(new_coords){
             new_coords.position.y,
             new_coords.position.z);
 
-        cli.last_position.set(
-            new_coords.position.x,
-            new_coords.position.y,
-            new_coords.position.z);
+        // cli.last_position.set(
+        //     new_coords.position.x,
+        //     new_coords.position.y,
+        //     new_coords.position.z);
     }
     
 };
 
 world_core.prototype.addLocalPlayer = (function(){
     // build avatar
-    return function(userid){
+    return function(userid, position){
         if(this.server){
             this.avatar_obj = new THREE.Object3D();
             this.avatar_obj.position.set(this.AVATAR_POSITION.x,
@@ -173,21 +173,24 @@ world_core.prototype.addLocalPlayer = (function(){
 world_core.prototype.addOtherPlayer = (function(){
     var avatar_obj;
     // build avatar
-    return function(coords){
+    return function(data){
         if(this.server){
             avatar_obj = new THREE.Object3D();
             
-            avatar_obj.position.set(coords.x, coords.y, coords.z);
+            avatar_obj.position.set(
+                data.position.x,
+                data.position.y,
+                data.position.z);
         } else {
-            avatar_obj = this.getAvatar(coords);
+            avatar_obj = this.getAvatar(data.position);
 
         }
-        avatar_obj.userid = coords.userid;
+        avatar_obj.userid = data.userid;
 
         this.add(avatar_obj);
 
         this.Clients[avatar_obj.userid] = 
-            { "avatar_obj" : avatar_obj, 'last_position' : coords };
+            { "avatar_obj" : avatar_obj, 'last_position' : data.position };
     };
 }());
 
@@ -388,3 +391,19 @@ world_core.prototype.maze = function(maze){
 if( 'undefined' != typeof global ) {
     module.exports = global.world_core = world_core;
 }
+
+
+world_core.prototype.getAvatar = function(){
+    
+    var x = this.AVATAR_POSITION.x,
+        y = this.AVATAR_POSITION.y,
+        z = this.AVATAR_POSITION.z;
+
+
+    var avatar_obj =  new this.AVATAR_TYPE(
+        this.AVATAR_MAT, this);
+
+    avatar_obj.position.set(x, y, z);
+
+    return avatar_obj;
+};

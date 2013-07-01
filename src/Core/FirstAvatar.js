@@ -2,7 +2,7 @@ if(typeof global != 'undefined'){
     var THREE = require('three');
 }
 
-var FirstAvatar = function ( mat, instance) {
+var FirstAvatar = function (mat, instance) {
         THREE.Mesh.call(this);
         
         this.position = new THREE.Vector3(0, 0, 0);
@@ -91,7 +91,7 @@ FirstAvatar.prototype.collision =  function (thisV) {
     var dir = zero_dir =  new THREE.Vector3();
     dir.subVectors(thisV, this.lastV );
     var rot = this.rotation.y / Math.abs(this.rotation.y);
-    console.log(rot);
+    //console.log(rot);
     for (i = 0; i < this.rays.length; i += 1) {
         
         // if(zero_dir !== dir){

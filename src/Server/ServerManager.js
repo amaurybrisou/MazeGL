@@ -1,3 +1,4 @@
+
 var mmo = module.exports = { worlds : {}, worlds_count:0 };
 var UUID = require('node-uuid');
 
@@ -21,10 +22,11 @@ mmo.log = function() {
 var Clients = [];
 
 
-mmo.AddClient = function(socket){
+mmo.AddClient = function(world_id){
     var userid = UUID();
     var client = new Client(true);
-    Clients[userid] = { userid : userid, x:0, y:0, z:0 }; 
+    Clients[userid] = { 'userid' : userid,
+                        'position': this.worlds[world_id].AVATAR_POSITION }; 
     return { 'userid' : userid, 'client' : client };
 };
 

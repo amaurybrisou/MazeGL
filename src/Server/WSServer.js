@@ -1,3 +1,4 @@
+
 var sio = require('socket.io');
 var fs = require('fs');
 
@@ -22,7 +23,7 @@ var WSServer = (function(){
 	    		//get Already Connected Clients
 			var c = mmo.getClients(userid);
 
-			var client_infos = mmo.AddClient();
+			var client_infos = mmo.AddClient(world_id);
 			var userid = client_infos.userid;
 			var client = client_infos.client;
 
@@ -35,10 +36,11 @@ var WSServer = (function(){
 		        function(){
 		            socket.emit('onconnected', { userid : userid });
     				//Tell new Client to create his avatar
-	            	socket.emit('cl_create_avatar', { 'userid': userid });
+	            	socket.emit('cl_create_avatar', { 'userid': userid,
+	            		'position': client.position });
     			    // Tell everyone that new client has just logon
             		socket.broadcast.emit('cl_client_connect',
-		        		{ userid: userid, x : 0, y : 0, z : 0});
+		        		{ 'userid': userid, 'position': client.position});
 		        }
 		    );
 		    
