@@ -78,7 +78,13 @@ var WSServer = (function(){
 			}); //socket.on disconnect
 
 			socket.on('ping', function(){
-				socket.volatile.emit('ping', new Date().getTime());
+				
+				setTimeout(function(f){
+					var t  = new Date().getTime();
+					console.log(t);
+					socket.volatile.emit('ping', t);	
+				}, 1000);
+				
 			});
 
 			socket.on('sync_time', function(){

@@ -81,8 +81,7 @@ var world_core = function(world_instance){
         //Start a fast paced timer for measuring time easier
         //Physics.init(this);
 
-        this.create_timer();
-        this.server_time = new Date().getTime();
+        //this.create_timer();
     }
 }; //world.constructor
 
@@ -235,13 +234,13 @@ world_core.prototype.clear = function(){
 
 
 
-world_core.prototype.create_timer = function(){
-    setInterval(function(){
-        this._dt = new Date().getTime() - this._dte;
-        this._dte = new Date().getTime();
-        this.local_time += this._dt/1000.0;
-    }.bind(this), 4);
-};
+// world_core.prototype.create_timer = function(){
+//     setInterval(function(){
+//         this._dt = new Date().getTime() - this._dte;
+//         this._dte = new Date().getTime();
+//         this.local_time += this._dt/1000.0;
+//     }.bind(this), 4);
+// };
 
 world_core.prototype.create_physics_simulation = function() {
 
