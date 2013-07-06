@@ -80,7 +80,7 @@ var WSServer = (function(){
 			setInterval(function(f){
 				var t  = new Date().getTime();
 				console.log(t);
-				socket.volatile.emit('ping', t);	
+				socket.emit('ping', t);	
 			}.bind(this), 1000);
 
 			socket.on('sync_time', function(){

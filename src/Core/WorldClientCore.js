@@ -361,14 +361,16 @@ var WorldClientCore = {
 
 
 	client_onping : function(data){
-        console.log("last "+this.last_server_time);
-        console.log("current  "+this.server_time);
+        this.last_local_time = this.local_time;
+        this.local_time =  new Date().getTime();
+        this.client_time = this.local_time - this.interp_value ;
+
+        this.net_latency = this.local_time - this.last_local_time - 1000;
+        this.net_ping = this.net_latency / 2;
+
         this.last_server_time = this.server_time;
         this.server_time = parseFloat(data);
 
-	    this.net_latency = this.server_time - this.last_server_time - 1000;
-        this.client_time = this.server_time - this.interp_value ;
-	    this.net_ping = this.net_latency * 2;    
 	},
 
 };
