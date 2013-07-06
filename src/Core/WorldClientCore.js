@@ -374,7 +374,7 @@ var WorldClientCore = {
 	}, //world_core.client_create_debug_gui
 
 	client_onping : function(data) {
-	    this.net_ping = this.server_time - parseFloat( data );
+	    this.net_ping = parseFloat( data ) - this.server_time;
         this.server_time = parseFloat(data);
         this.client_time = parseFloat(data) - this.interp_value;
 	    this.net_latency = this.net_ping/2;
