@@ -376,20 +376,13 @@ var WorldClientCore = {
 
     
 	client_onping : function(data){
-        this.times.push(parseFloat(data.last_local_client_time));
-        for(var i = this.times.length - 1; i >= 0 ; i-=1){
-            if(this.times[i] == this.last_local_time){
-                this.local_time =  new Date().getTime();
-                this.client_time = this.local_time - this.interp_value ;
-
-                this.net_latency = this.local_time - this.last_local_time;
-                this.net_ping = this.net_latency / 2;
-                this.times.slice(0,i);
-                break;
-            }
-        }
         
+        this.local_time =  new Date().getTime();
+        this.client_time = this.local_time - this.interp_value ;
 
+        this.net_latency = this.local_time - this.last_local_time;
+        this.net_ping = this.net_latency / 2;
+      
         this.last_server_time = this.server_time;
         this.server_time = parseFloat(parseFloat(data.server_time));
 

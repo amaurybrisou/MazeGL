@@ -74,12 +74,10 @@ var Network = {
                 };
 
                 socket.send_ping = function(t){
-                    socket.emit('ping', t);
+                    socket.emit('ping', t, function(data){
+                        world.client_onping(data);
+                    });
                 };
-
-                socket.on('ping', function(t){
-                    world.client_onping(t);
-                });
 
 
                 socket.get_world = function(){
