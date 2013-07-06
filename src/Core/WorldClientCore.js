@@ -373,11 +373,13 @@ var WorldClientCore = {
     
     },
 
-	client_onping : function(data) {
-	    this.net_ping = parseFloat( data ) - this.server_time - 1000;
+	client_onping : function(data){
+        this.last_server_time = this.server_time;
         this.server_time = parseFloat(data);
-        this.client_time = parseFloat(data) - this.interp_value;
-	    this.net_latency = this.net_ping/2;
+
+	    this.net_ping = this.server_time - this.last_server_time - 1000;
+        this.client_time = this.server_time - this.interp_value ;
+	    this.net_latency = this.net_ping/2;    
 	},
 
 };
