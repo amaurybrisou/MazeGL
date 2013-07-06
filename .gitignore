@@ -1,1 +1,5 @@
-.c9revisions
+src/node_modules/*
+*.c9
+src/Generator/pyplot
+src/Generator/numpy
+src/Generator/build
