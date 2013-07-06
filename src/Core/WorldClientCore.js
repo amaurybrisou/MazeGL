@@ -3,6 +3,7 @@
 var WorldClientCore = {
 	client_create_world : function(){
 		
+        this.client_create_ping_timer();
 
         if(this.debug){
             this.client_create_debug_gui();
@@ -359,13 +360,25 @@ var WorldClientCore = {
 
 	}, //world_core.client_create_debug_gui
 
+    client_create_ping_timer : function() {
+
+            //Set a ping timer to 1 second, to maintain the ping/latency between
+            //client and server and calculated roughly how our connection is doing
+
+        setInterval(function(){
+            //this.server_time = world.FileDescriptor.sync_time();
+            this.last_local_time = new Date().getTime();
+            world.FileDescriptor.send_ping();
+
+        }.bind(this), 1000);
+    
+    },
 
 	client_onping : function(data){
-        this.last_local_time = this.local_time;
         this.local_time =  new Date().getTime();
         this.client_time = this.local_time - this.interp_value ;
 
-        this.net_latency = this.local_time - this.last_local_time - 1000;
+        this.net_latency = this.local_time - this.last_local_time;
         this.net_ping = this.net_latency / 2;
 
         this.last_server_time = this.server_time;

@@ -77,11 +77,9 @@ var WSServer = (function(){
 		        console.log("Client removed "+userid+" from world "+world_id);
 			}); //socket.on disconnect
 
-			setInterval(function(f){
-				var t  = new Date().getTime();
-				console.log(t);
-				socket.emit('ping', t);	
-			}.bind(this), 1000);
+			socket.on('ping', function(){
+				socket.emit('ping', new Date().getTime());
+			});
 
 			socket.on('sync_time', function(){
 				socket.get('client', function(error, cli){
