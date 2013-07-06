@@ -128,6 +128,7 @@ var Configuration = function(server){
         y : 10,
         z : (this.WORLDSIZE / 2 - (this.BLOCK_SIZE))
     };
+    this.SPEED_FACTOR = 10000;
 
 
 

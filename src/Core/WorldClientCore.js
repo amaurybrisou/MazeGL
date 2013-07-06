@@ -146,7 +146,7 @@ var WorldClientCore = {
 
             if(typeof this.avatar_obj != 'undefined'){
                 Physics.update(this.dt, this.avatar_obj);
-                this.avatar_obj.animate(t *10000 );
+                this.avatar_obj.animate(t * this.SPEED_FACTOR );
             }        
 
             this.SUN.animate(t, this);
@@ -314,19 +314,47 @@ var WorldClientCore = {
 	    this.gui = new dat.GUI();
 
         this.profile = this.c_world.doProfiling;
-	    var _debugsettings = this.gui.addFolder('Informations');
+        this.gravity_x = this.c_world.gravity.x;
+        this.gravity_y = this.c_world.gravity.y;
+        this.gravity_z = this.c_world.gravity.z;
+        this.speed = this.SPEED_FACTOR;
 
-            _debugsettings.add(this, 'fps_avg').listen();
-            _debugsettings.add(this, 'local_time').listen();
+	    var _network = this.gui.addFolder('Informations');
 
-	        _debugsettings.add(this, 'net_latency').step(0.001).listen();
-	        _debugsettings.add(this, 'net_ping').step(0.001).listen();
+            _network.add(this, 'local_time').listen();
+
+	        _network.add(this, 'net_latency').step(0.001).listen();
+	        _network.add(this, 'net_ping').step(0.001).listen();
 	        
-	        _debugsettings.add(this, 'server_time').step(0.001).listen();
-	        _debugsettings.add(this, 'client_time').step(0.001).listen();
+	        _network.add(this, 'server_time').step(0.001).listen();
+	        _network.add(this, 'client_time').step(0.001).listen();
 
-            _debugsettings.add(this, 'stop_update').listen();
-            _debugsettings.add(this, 'profile').onChange(function(profiling){
+        var min = -100, max = 100; 
+        var _world = this.gui.addFolder('World');
+            _world.add(this, 'gravity_x', min, max).step(1).onChange(function(gx){
+            if(!isNaN(gx))
+                that.c_world.gravity.set(gx,that.gravity_y,that.gravity_z);
+            });
+            _world.add(this, 'gravity_y', min, max).step(1).onChange(function(gy){
+            if(!isNaN(gy))
+                console.log(gy);
+                that.c_world.gravity.set(that.gravity_x, gy,that.gravity_z);
+            });
+            _world.add(this, 'gravity_z', min, max).step(1).onChange(function(gz){
+            if(!isNaN(gz))
+                that.c_world.gravity.set(that.gravity_x,that.gravity_y,gz);
+            });
+            _world.add(this, 'speed', 0, this.speed * 10).step(10).onChange(function(s){
+            if(!isNaN(s))
+                that.SPEED_FACTOR = s;
+            });
+
+        var _render = this.gui.addFolder('Render');
+            _render.add(this, 'fps_avg').listen();
+            _render.add(this, 'stop_update').listen();
+
+        var _debug = this.gui.addFolder('Debug');
+            _debug.add(this, 'profile').onChange(function(profiling){
                 if(profiling){
                     that.c_world.doProfiling = true;
                     smoothie.start();
@@ -338,7 +366,7 @@ var WorldClientCore = {
                 }
             });
 
-            _debugsettings.open();
+            _network.open();
 
 
 
