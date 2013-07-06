@@ -57,12 +57,8 @@ var world_core = function(world_instance){
     //Store a flag if we are the server
     this.server = this.instance !== undefined;
 
-    this._pdt = 0.0001; //The physics update delta time
-    this._pdte = new Date().getTime(); //The physics update last delta time
-    //A local timer for precision on server and client
     this.local_time = 0.016; //The local timer
-    this._dte = new Date().getTime(); //The local timer last frame time
-    this._dt = new Date().getTime(); //The local timer delta
+    this.server_time = new Date().getTime();
 
     //     //Start a physics loop, this is separate to the rendering
     //     //as this happens at a fixed frequency
@@ -104,8 +100,7 @@ world_core.prototype.update = function(t){
     this.lastframetime = t;
 
     if(!this.server && typeof this.avatar_obj !== 'undefined') {
-        Physics.update(this.dt, this.avatar_obj);
-        this.client_update(this.dt);
+        this.client_update();
 
     } else if( this.Clients.length ) {
         this.server_update();
@@ -117,7 +112,7 @@ world_core.prototype.update = function(t){
 };
 
 world_core.prototype.server_update = function(){
-        this.server_time = this.local_time;
+        this.server_time = new Date().getTime();
         this.update_world_state();
         mmo.send_server_update(this.laststate, this.instance.id);
 };
@@ -341,6 +336,8 @@ world_core.prototype.maze = function(maze){
     world_texture.wrapS = world_texture.wrapT = THREE.RepeatWrapping;
     world_texture.repeat.set(this.REP_HOR_MAZE_CUBE, this.REP_VERT_MAZE_CUBE);//hor repeat , vert
 
+    var cubeShape = new CANNON.Box(new CANNON.Vec3(width/2, height, depth/2));
+
     for(var i = 0; i < len; i++){
         for(j = 0; j < maze[i].length; j++){
             // if((i <= 1 && j <= 1) ||
@@ -359,25 +356,13 @@ world_core.prototype.maze = function(maze){
                 wall.position.set( -this.WORLDSIZE / 2 +  i * width,
                                      height / 2,
                                      -this.WORLDSIZE / 2 + j * depth);
-                Physics.addStone(width, height, depth,
+                Physics.mergeBox(cubeShape,
                     -this.WORLDSIZE / 2 +  i * width,
                     height / 2,
                     -this.WORLDSIZE / 2 + j * depth);
 
-
-                // if(this.debug){
-                //     var boundingSphere = wall.geometry.boundingSphere.clone();
-                //     // compute overall bbox
-                //     console.log(boundingSphere);
-                //     var sphere = new THREE.Mesh(
-                //         new THREE.SphereGeometry(boundingSphere.radius, 5, 5),
-                //          new THREE.MeshBasicMaterial({
-                //                 color: 0x000000,
-                //                 wireframe : true
-                //     }));
-                //     sphere.overdraw = true;
-                    
-                //     wall.add (sphere);
+                // if(i % 100 == 0){
+                //     Physics.addBox();
                 // }
 
                 if(!wall.origin){
@@ -388,6 +373,7 @@ world_core.prototype.maze = function(maze){
             }
         }
     }
+    Physics.addBox();
     var walls = new window.THREE.Mesh(
                 mergedGeo,
                 mat);

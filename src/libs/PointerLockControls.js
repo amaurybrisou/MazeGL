@@ -89,7 +89,7 @@
     pitchObject.add( camera );
 
     var yawObject = new THREE.Object3D();
-    yawObject.position.y = 2;
+    yawObject.position.y = 5;
     yawObject.add( pitchObject );
 
     var quat = new THREE.Quaternion();
@@ -98,7 +98,6 @@
     var moveBackward = false;
     var moveLeft = false;
     var moveRight = false;
-
     var canJump = false;
 
     cannonBody.addEventListener("collide",function(e){
@@ -118,7 +117,7 @@
 
         yawObject.rotation.y -= movementX * 0.002;
 
-        pitchObject.rotation.x -= movementY * 0.002;
+        pitchObject.rotation.x -= (pitchObject.rotation.x - (movementY * 0.002) > 0) ? 0 : movementY * 0.002;
 
         pitchObject.rotation.x = Math.max( - PI_2, Math.min( PI_2, pitchObject.rotation.x ) );
     };
@@ -132,8 +131,9 @@
                 moveForward = true;
                 break;
 
-            case 37: // left
             case 65: // a
+                moveForward = ( moveForward === false) ? true : false;
+            case 37: // left
             case 81:
                 moveLeft = true; break;
 
@@ -200,7 +200,6 @@
     this.getDirection = function(targetVec){
         targetVec.set(0,0,-1);
         targetVec.applyQuaternion(quat);
-        //quat.multiplyVector3(targetVec);
     }
 
     // Moves the camera to the Cannon.js object position and adds velocity to the object if the run key is down
@@ -229,7 +228,6 @@
         // Convert velocity to world coordinates
         quat.setFromEuler({x:yawObject.rotation.x, y:yawObject.rotation.y, z:0},"XYZ");
         inputVelocity.applyQuaternion(quat);
-        //quat.multiplyVector3(inputVelocity);
 
         // Add to the object
         velocity.x += inputVelocity.x;

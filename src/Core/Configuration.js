@@ -112,7 +112,7 @@ var Configuration = function(server){
     this.MAIN_LIGHT_SHADOWBIAS        = 2;
     this.AMBIENT_LIGHT                = 0xeeeeee;
     
-    this.BLOCK_SIZE = this.WORLDSIZE / 35;
+    this.BLOCK_SIZE = this.WORLDSIZE / 10;
     
     this.AVATAR_MODEL_PATH               = null; // "Models/daemon2.obj";
     this.AVATAR_SCALE                    = 5;
@@ -155,10 +155,10 @@ var Configuration = function(server){
 
         this.AVATAR_TYPE      = FirstAvatar;
         //CAMERA
-        this.VIEW_ANGLE       = 120;
+        this.VIEW_ANGLE       = 60;
         this.ASPECT           = this.WIDTH / this.HEIGHT;
-        this.NEAR             = 0.1;
-        this.FAR              = this.WORLDSIZE * 5;
+        this.NEAR             = 5;
+        this.FAR              = this.WORLDSIZE ;
         this.CAM_ROT_SPEED    = 2000;
         this.CAM_POS_X        = -50;
         this.CAM_POS_Y        = 20;
@@ -176,7 +176,7 @@ var Configuration = function(server){
         
 
 
-        this.debug = false;
+        this.debug = true;
         
         this.net_latency = 0.001;           //the latency between the client and the server (ping/2)
         this.net_ping = 0.001;              //The round trip time from here to the server,and back

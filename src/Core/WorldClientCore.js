@@ -62,7 +62,8 @@ var WorldClientCore = {
         // build fog
         this.fog = this.FOG;
 
-        if(String(window.location).indexOf('debug') != -1) {
+        if(String(window.location).indexOf('debug') != -1 && 
+            typeof this.avatar_obj != 'undefined') {
                 this.client_create_debug_gui();
         }
 
@@ -82,22 +83,11 @@ var WorldClientCore = {
         }
 
         
-        // var client_name = this.client_name();
-        // avatar_obj.add(client_name);
+        var client_name = this.client_name();
+        avatar_obj.add(client_name);
 
         this.camera.reset(avatar_obj); 
-        // avatar_obj.add(this.camera);
-        
-        // var axis = new THREE.Vector3( 0, 1, 0 );
-        // var angle = -Math.PI / 10;
-        // var matrix = new THREE.Matrix4().makeRotationAxis( axis, angle );
-
-        // avatar_obj.rotation.applyMatrix4( matrix );
-
-        // define controls
-        // this.avatar_controls =
-        //     new Controls(this.server, avatar_obj, this.SCREEN_SIZE_RATIO, this.domElement);
-        //Controls(false, avatar_obj, this.SCREEN_SIZE_RATIO, this.domElement);
+      
         this.avatar_controls = new PointerLockControls( this.camera , this.sphereBody, this.domElement);
 
         this.add(this.avatar_controls.getObject());
@@ -148,13 +138,15 @@ var WorldClientCore = {
         return mesh;
 
     },
-	client_update : function(d){
+	client_update : function() {
+            
+
             // animate
             var t  = this.dt;
 
             if(typeof this.avatar_obj != 'undefined'){
-                
-                this.avatar_obj.animate(d *10000 );
+                Physics.update(this.dt, this.avatar_obj);
+                this.avatar_obj.animate(t *10000 );
             }        
 
             this.SUN.animate(t, this);
@@ -226,30 +218,7 @@ var WorldClientCore = {
             //HTML CONTENT
             span.innerHTML = ''; // clear existing
 
-            var connection_status = Network.FileDescriptor.readyState === ( 1 || 2 || 0 )
-            ? "Connected" : "Disconnected";
-            text = 'time : ' + Math.round(this.MAIN_LIGHT.position.y / 1000) + 
-            '</br>cam coords : ' + this.camera.position.x + 
-            " " + this.camera.position.y + 
-            " " + this.camera.position.z +
-            '</br>cam rot coords : ' + this.camera.rotation.x + 
-            " " + this.camera.rotation.y + 
-            " " + this.camera.rotation.z; ; 
-            if(typeof this.avatar_obj != 'undefined' && 
-                this.avatar_obj.position != 'undefined'){
-                    text += '</br>mesh coords : ' + this.avatar_obj.position.x + 
-                " " + this.avatar_obj.position.y + 
-                " " + this.avatar_obj.position.z;
-                if(this.avatar_obj.rotation != 'undefined'){
-                        text += '</br>mesh rot coords : ' + 
-                        (this.avatar_obj.rotation.x * 100).fixed(2) + 
-                    " " + (this.avatar_obj.rotation.y * 100).fixed(2) + 
-                    " " + (this.avatar_obj.rotation.z * 100).fixed(2);
-                }
-            }
-            //text += "</br>Status : "+connection_status;
-
-            span.innerHTML = text;
+            
 
             //this.Renderer.clear();
             this.Renderer.render(this, this.camera);
@@ -287,10 +256,64 @@ var WorldClientCore = {
 	    }.bind(this), 1000);
     
 	},
+
 	client_create_debug_gui : function() {
+
+        // Smoothie (test)
+        smoothieCanvas = document.createElement("canvas");
+        smoothieCanvas.style.position = 'absolute';
+        smoothieCanvas.style.top = '0px';
+        smoothieCanvas.style.zIndex = 100;
+        document.getElementById("canvasCont").appendChild( smoothieCanvas );
+        smoothie = new SmoothieChart({
+            maxDataSetLength:100,
+            millisPerPixel:10,
+            grid: {
+                strokeStyle:'rgb(125, 125, 125)',
+                fillStyle:'rgb(0, 0, 0)',
+                lineWidth: 1,
+                millisPerLine: 250,
+                verticalSections: 6
+            },
+            labels: {
+                fillStyle:'rgb(180, 180, 180)'
+            }
+        });
+        smoothie.streamTo(smoothieCanvas);
+        // Create time series for each profile label
+        var lines = {};
+        var colors = [[255, 0, 0],[0, 255, 0],[0, 0, 255],[255,255,0],[255,0,255],[0,255,255]];
+        var i=0;
+        for(var label in this.c_world.profile){
+            var c = colors[i%colors.length];
+            lines[label] = new TimeSeries({
+                label : label,
+                fillStyle : "rgb("+c[0]+","+c[1]+","+c[2]+")"
+            });
+            i++;
+        }
+        // Add a random value to each line every second
+        var that = this;
+        this.c_world.addEventListener("postStep",function(evt) {
+            for(var label in that.c_world.profile)
+                lines[label].append(that.c_world.time * 1000, that.c_world.profile[label]);
+        });
+        // Add to SmoothieChart
+        var i=0;
+        for(var label in this.c_world.profile){
+            var c = colors[i%colors.length];
+            smoothie.addTimeSeries(lines[label],{
+                strokeStyle : "rgb("+c[0]+","+c[1]+","+c[2]+")",
+                fillStyle:"rgba("+c[0]+","+c[1]+","+c[2]+",0.3)",
+                lineWidth:1
+            });
+            i++;
+        }
+
 
 	    this.gui = new dat.GUI();
 
+        this.profile = this.c_world.doProfiling;
 	    var _debugsettings = this.gui.addFolder('Informations');
 
             _debugsettings.add(this, 'fps_avg').listen();
@@ -303,6 +326,18 @@ var WorldClientCore = {
 	        _debugsettings.add(this, 'client_time').step(0.001).listen();
 
             _debugsettings.add(this, 'stop_update').listen();
+            _debugsettings.add(this, 'profile').onChange(function(profiling){
+                if(profiling){
+                    that.c_world.doProfiling = true;
+                    smoothie.start();
+                    smoothieCanvas.style.display = "block";
+                } else {
+                    that.c_world.doProfiling = false;
+                    smoothie.stop();
+                    smoothieCanvas.style.display = "none";
+                }
+            });
+
             _debugsettings.open();
 
 
@@ -312,6 +347,8 @@ var WorldClientCore = {
 
 	client_onping : function(data) {
 	    this.net_ping = new Date().getTime() - parseFloat( data );
+        this.server_time = parseFloat(data);
+        this.client_time = parseFloat(data) - this.interp_value;
 	    this.net_latency = this.net_ping/2;
 	},
 

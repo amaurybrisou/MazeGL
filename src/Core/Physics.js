@@ -11,6 +11,17 @@ var Physics = {
           
           world.gravity.set(0,-20,0);
           world.broadphase = new CANNON.NaiveBroadphase();
+          world.broadphase.useBoundingBoxes = true;
+
+          var solver = new CANNON.GSSolver();
+          solver.iterations = 10;
+          world.defaultContactMaterial.contactEquationStiffness = 1e7;
+          world.defaultContactMaterial.contactEquationRegularizationTime = 5;
+          solver.tolerance = 0.01;
+          world.doProfiling = true;
+
+          world.solver = new CANNON.SplitSolver(solver);
+          
 
           var physicsMaterial = new CANNON.Material("slipperyMaterial");
           var physicsContactMaterial = 
@@ -26,16 +37,16 @@ var Physics = {
           // Create a sphere
           var mass = 5, radius = instance.AVATAR_SCALE;
           sphereShape = new CANNON.Sphere(radius);
-          sphereBody = new CANNON.RigidBody(mass,sphereShape,physicsMaterial);
-          
+          var sphereBody = new CANNON.RigidBody(mass,sphereShape,physicsMaterial);
+
           sphereBody.position.x = instance.AVATAR_POSITION.x,
           sphereBody.position.y = instance.AVATAR_POSITION.y,
           sphereBody.position.z = instance.AVATAR_POSITION.z;
           sphereBody.linearDamping = 0.9;
           sphereBody.angularDamping = 0.99;
 
-
           world.add(sphereBody);
+
 
           // Create a plane
           var groundShape = new CANNON.Plane();
@@ -44,9 +55,14 @@ var Physics = {
           world.add(groundBody);
 
           this.sphereBody = sphereBody;
-          instance.sphereBody = sphereBody;
           this.avatar_obj = instance.avatar_obj;
-          this.world = world;
+          this.world = world; 
+          this.compoundShapes = [];
+          this.compoundShape = new CANNON.Compound();
+
+
+          instance.c_world = world;
+          instance.sphereBody = sphereBody;
           
      },
 
@@ -59,24 +75,23 @@ var Physics = {
           // console.log(this.sphereBody.position);
           this.sphereBody.position.copy(obj.position);
           this.sphereBody.quaternion.copy(obj.quaternion);
+
   
       },
 
-     addStone : function(w, h, d, x, y, z){
-          var mass = 0;
-          var physicsMaterial = new CANNON.Material("slipperyMaterial");
-
+     getBox : function(w, h, d ){
           var cubeShape = new CANNON.Box(new CANNON.Vec3(w/2, h, d/2));
-          cube = new CANNON.RigidBody(mass,cubeShape,physicsMaterial);
-          cube.linearDamping = 0.9;
-          cube.aabbmin.set(w+10, h+10, d+10);
+          return cubeShape
+     },
 
-          //console.log("w : "+w+" h : "+h+" d : "+d+" x : "+x+" y : "+y+" z : "+z);
+     mergeBox : function(cubeShape, x, y, z){
+          this.compoundShape.addChild(cubeShape, new CANNON.Vec3( x, y, z ));
+     },
+
+     addBox : function(){
+          cube = new CANNON.RigidBody(0,this.compoundShape);
           this.world.add(cube);
-
-          cube.position.x = x,
-          //cube.position.y = y,
-          cube.position.z = z;
+          this.compoundShape = new CANNON.Compound();
 
      }
 }
