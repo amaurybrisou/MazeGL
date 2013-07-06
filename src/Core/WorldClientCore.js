@@ -379,9 +379,9 @@ var WorldClientCore = {
         this.last_server_time = this.server_time;
         this.server_time = parseFloat(data);
 
-	    this.net_ping = this.server_time - this.last_server_time - 1000;
+	    this.net_latency = this.server_time - this.last_server_time - 1000;
         this.client_time = this.server_time - this.interp_value ;
-	    this.net_latency = this.net_ping/2;    
+	    this.net_ping = this.net_latency * 2;    
 	},
 
 };
