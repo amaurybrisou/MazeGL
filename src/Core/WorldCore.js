@@ -60,6 +60,7 @@ var world_core = function(world_instance){
     this.local_time = 0.016; //The local timer
     this.server_time = new Date().getTime();
     this.local_time = new Date().getTime();
+    this.times = [];
 
     //     //Start a physics loop, this is separate to the rendering
     //     //as this happens at a fixed frequency
