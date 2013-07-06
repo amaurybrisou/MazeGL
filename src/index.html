@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+
+        <title>Stones</title>
+
+        <link rel="stylesheet" href="css/main.css" type="text/css" media="screen" />
+
+        <script type="text/javascript" src="libs/three.js"></script>
+        <script type="text/javascript" src="libs/cannon.js"></script>
+        <script type="text/javascript" src="libs/PointerLockControls.js"></script>
+
+
+
+        <script type="text/javascript" src="libs/dat.gui.min.js"></script>
+        <script type="text/javascript" src="libs/ColladaLoader.js"></script>
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+        <script type="text/javascript" src="libs/THREEx.KeyboardState.js"></script>
+        
+
+        <!-- Load First Level Namespaces -->
+
+        <script type="text/javascript" src="Core/Attributes.js"></script>
+        <script type="text/javascript" src="Core/Materials.js"></script>
+        <script type="text/javascript" src="Core/Physics.js"></script>
+
+        <script type="text/javascript" src="Core/WorldClientCore.js"></script>
+
+        <script type="text/javascript" src="Core/Configuration.js"></script>
+
+        <script type="text/javascript" src="Core/WorldCore.js"></script>
+
+        <!-- Load Network Support in order to obtain some configurations from the server -->
+        <script type="text/javascript" src="Core/FileDescriptor.js"></script>
+
+        <!-- Load Second Level Namespaces -->
+        <script type="text/javascript" src="Core/Controls.js"></script>
+        <script type="text/javascript" src="Core/Shaders.js"></script>
+        <script type="text/javascript" src="Core/WorldObjects.js"></script>
+        <script type="text/javascript" src="Core/FirstAvatar.js"></script>
+
+        <script type="text/javascript" src="Core/Renderer.js"></script>
+         
+        <script type="text/javascript" src="Core/init.js"></script>
+
+        <script type="text/javascript">setTimeout(function(){
+            init()
+        },200);</script>
+    </head>
+
+    <body>
+        <!-- <div id="connections_infos">
+                <form action="javascript:init()">
+                    username : <input id="username" type="text" name="username"><br>
+                <input type="submit" value="Submit">
+            </form>     
+        </div> -->
+        <div id="canvasCont">
+        </div>
+        
+
+        <div id="infos">
+            time :
+        </div>
+
+
+        <!-- STONE SHADER -->
+        <script id="stonevertexshader" type="x-shader/x-vertex">
+            uniform float amplitude;
+            attribute float displacement;
+            varying vec3 vNormal;
+
+            void main() {
+
+                // set the vNormal value with the attribute value passed in by Three.js
+                vNormal = normal;
+
+                vec3 newPosition = position + normal * vec3(displacement*amplitude);
+
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition,1.0);
+            }
+
+        </script>
+
+        <script id="stonefragmentshader" type="x-shader/x-vertex">
+            uniform float lightPosX;
+            uniform float lightPosY;
+            uniform float lightPosZ;
+            uniform float lightColor;
+            uniform float darkness;
+            varying vec3 vNormal;
+
+            void main() {
+                // calc the dot product and clamp
+                // 0 -> 1 rather than -1 -> 1
+                vec3 light = vec3(lightPosX,lightPosY,lightPosZ);
+
+                // ensure it's normalized
+                light = normalize(light);
+
+                // calculate the dot product of
+                // the light to the vertex normal
+                float dProd = max(darkness, dot(vNormal, light)*lightColor);
+
+                // feed into our frag colour
+                gl_FragColor = vec4(dProd, dProd, dProd, 1.0);
+            }
+
+        </script>
+
+
+    </body>
+
+</html>
