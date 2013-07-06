@@ -3,7 +3,6 @@
 var WorldClientCore = {
 	client_create_world : function(){
 		
-        this.client_create_ping_timer();
 
         if(this.debug){
             this.client_create_debug_gui();
@@ -360,18 +359,6 @@ var WorldClientCore = {
 
 	}, //world_core.client_create_debug_gui
 
-    client_create_ping_timer : function() {
-
-            //Set a ping timer to 1 second, to maintain the ping/latency between
-            //client and server and calculated roughly how our connection is doing
-
-        setInterval(function(){
-            //this.server_time = world.FileDescriptor.sync_time();
-            world.FileDescriptor.send_ping();
-
-        }.bind(this), 1000);
-    
-    },
 
 	client_onping : function(data){
         console.log("last "+this.last_server_time);
