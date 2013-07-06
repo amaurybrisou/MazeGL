@@ -11,7 +11,7 @@ var Configuration = function(server){
     this.WIDTH                = window.innerWidth - this.SCREEN_SIZE_RATIO;
     this.HEIGHT               = window.innerHeight - this.SCREEN_SIZE_RATIO;
 
-    this.domElement             = document.getElementById("canvasCont");
+    
     //COLORS
     this.WHITE                    = 0xFFFFFF;
     this.RED                      = new THREE.Color("rgb(219,0,0)");
@@ -39,11 +39,11 @@ var Configuration = function(server){
     this.ORIGIN_SIZE          = 0.2;
     this.SUN_SIZE             = this.WORLDSIZE/10;
     
-    this.WORLD_TEXTURE_URL    = "textures/mur-fissure.png";
+    this.WORLD_TEXTURE_URL    = "textures/tapis1.png";
     this.SKY_TEXTURE          = "textures/immeuble-verre.png";
     this.MAZE_CUBE_TEXTURE    = "textures/vitre-cassee-nb.png";
     
-    this.REP_HOR_MAZE_CUBE       = 16;
+    this.REP_HOR_MAZE_CUBE       = 2;
     this.REP_VERT_MAZE_CUBE      = 1;
 
     this.REP_HOR_FLOOR         = this.WORLDSIZE / 10;
@@ -151,6 +151,8 @@ var Configuration = function(server){
 
     //Client specific initialisation
     if(!server){
+
+
         this.AVATAR_TYPE      = FirstAvatar;
         //CAMERA
         this.VIEW_ANGLE       = 120;
@@ -196,21 +198,6 @@ var Configuration = function(server){
 
     }
 
-   
-    this.movementSpeed = this.WORLDSIZE * 0.01;
-    this.lookSpeed = 0.1;
-    this.noFly = true;
-    this.lookVertical = false;
-    this.autoForward = false;
-    this.activeLook = true;
-    this.heightSpeed = true;
-    this.heightCoef = 1.0;
-    this.heightMin = 0.0;
-    this.constrainVertical = true;
-    this.verticalMin = 0;
-    this.verticalMax = Math.PI;
-    this.autoSpeedFactor = 0.0;
-    this.freeze = false;
     
 };
 

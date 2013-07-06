@@ -32,6 +32,8 @@ var Physics = {
           sphereBody.position.y = instance.AVATAR_POSITION.y,
           sphereBody.position.z = instance.AVATAR_POSITION.z;
           sphereBody.linearDamping = 0.9;
+          sphereBody.angularDamping = 0.99;
+
 
           world.add(sphereBody);
 
@@ -69,7 +71,7 @@ var Physics = {
           cube.linearDamping = 0.9;
           cube.aabbmin.set(w+10, h+10, d+10);
 
-          console.log("w : "+w+" h : "+h+" d : "+d+" x : "+x+" y : "+y+" z : "+z);
+          //console.log("w : "+w+" h : "+h+" d : "+d+" x : "+x+" y : "+y+" z : "+z);
           this.world.add(cube);
 
           cube.position.x = x,

@@ -14,7 +14,9 @@ var WorldClientCore = {
         
         this.Renderer = RENDERER(this);
 
-        document.getElementById('canvasCont').appendChild(this.Renderer.domElement);
+        this.domElement = document.getElementById("canvasCont");
+
+        this.domElement.appendChild(this.Renderer.domElement);
 
         this.Renderer.setClearColor(this.BG_COLOR, 1.0);
         this.Renderer.clear();
