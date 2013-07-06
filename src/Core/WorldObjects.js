@@ -146,16 +146,18 @@ var WorldObjects = {
                 this.ASPECT,
                 this.NEAR,
                 this.FAR);
-       
+
 
         cam.reset = function (avatar_obj) {
 
-            this.position.x -= that.AVATAR_SCALE * that.CAM_POS_RATIO;
-            this.position.y += that.AVATAR_SCALE * that.CAM_POS_RATIO / 4;
-            this.position.z += 0;
+            this.position.x += 0;//
+            this.position.y += 0;//that.AVATAR_SCALE * that.CAM_POS_RATIO / 4;
+            this.position.z += that.AVATAR_SCALE * that.CAM_POS_RATIO;
+        
 
             this.lookAt(new THREE.Vector3(0,0,0));
         };
+
         return cam;
     },
 

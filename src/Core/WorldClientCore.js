@@ -79,29 +79,34 @@ var WorldClientCore = {
             this.camera = WorldObjects.getCamera();
         }
 
-        var client_name = this.client_name();
-        avatar_obj.add(client_name);
+        
+        // var client_name = this.client_name();
+        // avatar_obj.add(client_name);
 
         this.camera.reset(avatar_obj); 
-        avatar_obj.add(this.camera);
+        // avatar_obj.add(this.camera);
         
-        var axis = new THREE.Vector3( 0, 1, 0 );
-        var angle = -Math.PI / 10;
-        var matrix = new THREE.Matrix4().makeRotationAxis( axis, angle );
+        // var axis = new THREE.Vector3( 0, 1, 0 );
+        // var angle = -Math.PI / 10;
+        // var matrix = new THREE.Matrix4().makeRotationAxis( axis, angle );
 
-        avatar_obj.rotation.applyMatrix4( matrix );
+        // avatar_obj.rotation.applyMatrix4( matrix );
 
         // define controls
-        this.avatar_controls =
-            new Controls(this.server, avatar_obj, this.SCREEN_SIZE_RATIO, this.domElement);
+        // this.avatar_controls =
+        //     new Controls(this.server, avatar_obj, this.SCREEN_SIZE_RATIO, this.domElement);
+        //Controls(false, avatar_obj, this.SCREEN_SIZE_RATIO, this.domElement);
+        this.avatar_controls = new PointerLockControls( this.camera , this.sphereBody, this.domElement);
+
+        this.add(this.avatar_controls.getObject());
+
 
         var that = this;
-
         avatar_obj.animate = function (d) {
             that.avatar_controls.update(d);
         };
 
-        avatar_obj.rayCaster();
+        //avatar_obj.rayCaster();
 
         if(world.debug){
             var boundingSphere = avatar_obj.geometry.boundingSphere.clone();
@@ -146,7 +151,8 @@ var WorldClientCore = {
             var t  = this.dt;
 
             if(typeof this.avatar_obj != 'undefined'){
-                this.avatar_obj.animate(d);
+                
+                this.avatar_obj.animate(d *10000 );
             }        
 
             this.SUN.animate(t, this);
@@ -243,7 +249,7 @@ var WorldClientCore = {
 
             span.innerHTML = text;
 
-            this.Renderer.clear();
+            //this.Renderer.clear();
             this.Renderer.render(this, this.camera);
 
             this.client_refresh_fps();

@@ -2,10 +2,13 @@ if(typeof global != 'undefined'){
     var THREE = require('three');
 }
 
+
 var FirstAvatar = function ( mat, instance) {
         THREE.Mesh.call(this);
         
-        this.position = new THREE.Vector3(0, 0, 0);
+        this.useQuaternion = true;
+
+        this.position = new THREE.Vector3(0, 10, 0);
         
         var geom = new THREE.Geometry();
 

@@ -53,6 +53,8 @@ var WorldUtils = {
 	    plane.position.y = this.PLANE_ROT_Y;
 	    plane.receiveShadow = this.PLANE_RECV_SHADOW;
 	    
+        plane.useQuaternion = true;
+
 	    return plane;
 	},
 

@@ -1,9 +1,12 @@
 if(typeof global != 'undefined'){
+    var Physics = require('./Physics.js');
 	var FileDescriptor = require('./FileDescriptor.js');
     var WorldObjects = require('./WorldObjects.js');
     var Configuration = require("./Configuration.js");
     var WorldClientCore = require('./WorldClientCore.js');
-	var THREE = require('three');
+    var THREE = require('three');
+    
+
 }
 
 var frame_time = 60/1000; // run the local game at 16ms/ 60hz
@@ -71,12 +74,17 @@ var world_core = function(world_instance){
     }
 
     if(!this.server ){
+        Physics.init(this);
         this.client_create_world();
+        
+
         this.FileDescriptor = Network.FileDescriptor(
             this.SERVER_ADDR,
             this.SERVER_PORT);
     } else { //if server
         //Start a fast paced timer for measuring time easier
+        //Physics.init(this);
+
         this.create_timer();
         this.server_time = new Date().getTime();
     }
@@ -96,7 +104,9 @@ world_core.prototype.update = function(t){
     this.lastframetime = t;
 
     if(!this.server && typeof this.avatar_obj !== 'undefined') {
+        Physics.update(this.dt, this.avatar_obj);
         this.client_update(this.dt);
+
     } else if( this.Clients.length ) {
         this.server_update();
 
@@ -317,7 +327,7 @@ world_core.prototype.maze = function(maze){
 
     var maze = maze;
     var len = maze.length;
-    var height = 10,
+    var height = 100,
         wall,
         mat,
         origin = true,
@@ -338,16 +348,19 @@ world_core.prototype.maze = function(maze){
             // } else {
                 //origin = false;
                 //mat = this.WALL_FACES_MAT;
-                mat = new THREE.MeshBasicMaterial( { color: this.MAZE_CUBE_COLOR || undefined, 
-                                                    map: world_texture } );
+                mat = new THREE.MeshBasicMaterial( { map: world_texture } );
             // }
             if(maze[i][j]){
                 wall = WorldObjects.cube(width, height, depth, mat);
                 wall.origin = origin;
                 wall.position.set( -this.WORLDSIZE / 2 +  i * width,
-                                    height / 2,
-                                    -this.WORLDSIZE / 2 + j * depth);
-                
+                                     height / 2,
+                                     -this.WORLDSIZE / 2 + j * depth);
+                Physics.addStone(width, height, depth,
+                    -this.WORLDSIZE / 2 +  i * width,
+                    height / 2,
+                    -this.WORLDSIZE / 2 + j * depth);
+
 
                 // if(this.debug){
                 //     var boundingSphere = wall.geometry.boundingSphere.clone();
@@ -368,7 +381,6 @@ world_core.prototype.maze = function(maze){
                     window.THREE.GeometryUtils.merge(mergedGeo, wall);
                 } else {
                     this.add(wall);
-                    this.obstacles.push(wall);
                 }
             }
         }
@@ -378,9 +390,6 @@ world_core.prototype.maze = function(maze){
                 mat);
 
     this.add(walls);
-    this.obstacles.push(walls);
-    this.avatar_obj.add(this.obstacles);
-
 };
 
 

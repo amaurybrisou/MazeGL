@@ -30,12 +30,12 @@ var Materials = {
     Planet_Materials : function(FLOOR_COLOR, texture){
         if(texture){
             return new THREE.MeshBasicMaterial({
-                color: FLOOR_COLOR || undefined,
+                //color: FLOOR_COLOR || undefined,
                 map: texture
             });
         } else {
             return new THREE.MeshBasicMaterial({
-                color: FLOOR_COLOR
+                //color: FLOOR_COLOR
                 
             });
         }
@@ -54,7 +54,7 @@ var Materials = {
 
     strokeStoneMat : function(stoneEdges_color, edgesWidth){
         return new THREE.MeshBasicMaterial({
-            color: stoneEdges_color,
+            //color: stoneEdges_color,
             wireframe: true,
             wireframeLinewidth: edgesWidth
         });

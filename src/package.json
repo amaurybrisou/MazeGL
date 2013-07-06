@@ -11,29 +11,27 @@
     "main": "init.js",
     "scripts": {
       "test": "mocha test/*.js"
-    },
-    "dependencies": {
-     "three" : "",
-     "socket.io": "",
-     "socket.io-client": "",
-     "express": "",
-     "node-uuid": "",
-     "connect-assetmanager": "",
-     "connect-assetmanager-handlers": ""
-     },
-
-     "devDependencies": {
-       "mocha": "",
+      },
+      "dependencies": {
        "three" : "",
        "socket.io": "",
        "socket.io-client": "",
        "express": "",
        "node-uuid": "",
-       "connect-assetmanager": "",
-       "connect-assetmanager-handlers": ""
+       "cannon": ""
        },
-       "optionalDependencies": {},
-       "engines": {
-        "node": "*"
+
+       "devDependencies": {
+         "mocha": "",
+         "three" : "",
+         "socket.io": "",
+         "socket.io-client": "",
+         "express": "",
+         "node-uuid": "",
+         "cannon": ""
+         },
+         "optionalDependencies": {},
+         "engines": {
+          "node": "*"
+        }
       }
-}

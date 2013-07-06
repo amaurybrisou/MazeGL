@@ -4,6 +4,7 @@ var RENDERER = function(world){
 
     renderer.shadowMapCullFace = THREE.CullFaceBack;
     renderer.shadowMapEnabled = true;
+	renderer.shadowMapSoft = true;
 
     return renderer;
 }

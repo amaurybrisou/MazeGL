@@ -1,7 +1,6 @@
 if(typeof global != 'undefined'){
     var Materials = require('./Materials.js');
     var FileDescriptor = require('./FileDescriptor.js');
-    var FirstAvatar = require('./FirstAvatar.js');
     var FirstAvatar = require('./Attributes.js');
 	var THREE = require('three');
 }
@@ -12,11 +11,12 @@ var Configuration = function(server){
     this.WIDTH                = window.innerWidth - this.SCREEN_SIZE_RATIO;
     this.HEIGHT               = window.innerHeight - this.SCREEN_SIZE_RATIO;
 
+    this.domElement             = document.getElementById("canvasCont");
     //COLORS
     this.WHITE                    = 0xFFFFFF;
     this.RED                      = new THREE.Color("rgb(219,0,0)");
     this.BG_COLOR                 = new THREE.Color("rgb(246,246,246)");
-    // this.FLOOR_COLOR              = new THREE.Color("rgb(100,223,97)");
+    //this.FLOOR_COLOR              = new THREE.Color("rgb(0,0,0)");
     this.LIGHT_COLOR              = new THREE.Color("rgb(249,249,249)");
     this.STONES_EDGES_COLOR       = new THREE.Color("rgb(33,33,33)");
     this.STONES_FACES_COLOR       = new THREE.Color("rgb(249,249,249)");
@@ -125,7 +125,7 @@ var Configuration = function(server){
     this.AVATAR_ROT_VIEW_INCREMENT       = 0.09;
     this.AVATAR_POSITION = { 
         x : (this.WORLDSIZE / 2  - (this.BLOCK_SIZE )),
-        y : 0,
+        y : 10,
         z : (this.WORLDSIZE / 2 - (this.BLOCK_SIZE))
     };
 
@@ -174,7 +174,7 @@ var Configuration = function(server){
         
 
 
-        this.debug = true;
+        this.debug = false;
         
         this.net_latency = 0.001;           //the latency between the client and the server (ping/2)
         this.net_ping = 0.001;              //The round trip time from here to the server,and back
