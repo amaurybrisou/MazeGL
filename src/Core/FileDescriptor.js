@@ -73,8 +73,8 @@ var Network = {
                     socket.emit('cl_move', u_struct);
                 };
 
-                socket.send_ping = function(ping_time){
-                    socket.emit('ping', ping_time);
+                socket.send_ping = function(){
+                    socket.emit('ping');
                 };
 
                 socket.on('ping', function(t){

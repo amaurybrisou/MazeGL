@@ -243,20 +243,7 @@ var WorldClientCore = {
 	    } //reached 10 frames
 
 	},
-	client_create_ping_timer : function() {
-
-	        //Set a ping timer to 1 second, to maintain the ping/latency between
-	        //client and server and calculated roughly how our connection is doing
-
-	    setInterval(function(){
-            this._dt = world.FileDescriptor.sync_time();
-	        this.last_ping_time = new Date().getTime() - this.fake_lag;
-	        world.FileDescriptor.send_ping(this.last_ping_time);
-
-	    }.bind(this), 1000);
-    
-	},
-
+	
 	client_create_debug_gui : function() {
 
         // Smoothie (test)
@@ -373,8 +360,21 @@ var WorldClientCore = {
 
 	}, //world_core.client_create_debug_gui
 
+    client_create_ping_timer : function() {
+
+            //Set a ping timer to 1 second, to maintain the ping/latency between
+            //client and server and calculated roughly how our connection is doing
+
+        setInterval(function(){
+            //this.server_time = world.FileDescriptor.sync_time();
+            world.FileDescriptor.send_ping();
+
+        }.bind(this), 1000);
+    
+    },
+
 	client_onping : function(data) {
-	    this.net_ping = parseFloat( data ) - this.server_time;
+	    this.net_ping = parseFloat( data ) - this.server_time - 1000;
         this.server_time = parseFloat(data);
         this.client_time = parseFloat(data) - this.interp_value;
 	    this.net_latency = this.net_ping/2;

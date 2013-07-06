@@ -82,8 +82,8 @@ var WSServer = (function(){
 			});
 
 			socket.on('sync_time', function(){
-			socket.get('client', function(error, cli){
-				socket.emit('sync_time_ack', cli.client.remote_time);
+				socket.get('client', function(error, cli){
+					socket.emit('sync_time_ack', cli.client.remote_time);
 			});
 			
 		});
