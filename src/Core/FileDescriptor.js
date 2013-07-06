@@ -25,13 +25,13 @@ var Network = {
 
                 socket.on('cl_create_avatar', function (data) {
                     console.log("Creating Player "+data.userid);
-                    world.addLocalPlayer(data.userid);
+                    world.addLocalPlayer(data.userid, data.position);
                     console.log("Player Created");
                 });
 
-                socket.on('cl_client_connect', function (coords) {
+                socket.on('cl_client_connect', function (data) {
                     console.log("Adding Remote Player");
-                    world.addOtherPlayer(coords);
+                    world.addOtherPlayer(data);
                     console.log("New Remote Player Added");
 
                 });
