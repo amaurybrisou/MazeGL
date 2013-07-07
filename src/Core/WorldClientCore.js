@@ -2,7 +2,31 @@
 
 var WorldClientCore = {
 	client_create_world : function(){
-		
+        conf(['WORLD_ORIGIN', 
+              'DARKNESS',
+              'BG_COLOR',
+              'SUN_MAT',
+              'SUN_SIZE',
+              'SC',
+              'BC',
+              'SEC',
+              'DAY_NIGHT_SPEED',
+              'PLANET_MAT',
+              'STONES_FACES_MAT',
+              'STONES_EDGES_MAT',
+              'FOG',
+              'debug',
+              'SPEED_FACTOR',
+              'net_latency',
+              'net_ping',
+              'client_time',
+              'fps_avg',
+              'fps_avg_count',
+              'fps_avg_acc',
+              'dt',
+              'fps',
+              'interp_value'], this);
+
         this.client_create_ping_timer();
 
         if(this.debug){
@@ -23,7 +47,6 @@ var WorldClientCore = {
     
         var plane = WorldObjects.getPlane();
         this.add(plane);
-        console.log("Plane Loaded");
 
         var sky = WorldObjects.getSky();
         this.add(sky);
@@ -31,47 +54,29 @@ var WorldClientCore = {
         // // build sun
         var sun = this.SUN = new WorldObjects.getSun(0, 100, 0, this.SUN_MAT, this.SUN_SIZE);
         this.add(sun);
-        console.log("Sun Loaded");
         
         this.MAIN_LIGHT = WorldObjects.getMainLight();
         this.add(this.MAIN_LIGHT);
-        console.log("Main Light Loaded ");
 
         this.AMBIENT_LIGHT = new THREE.AmbientLight();
         this.add(this.AMBIENT_LIGHT);
-        console.log("Ambient Light Loaded ");
 
         for (var i = 0; i < this.WORLD_ORIGIN.length; i++) {
            this.add(this.WORLD_ORIGIN[i]);
         }
-        console.log("Origin Loaded ");
 
-        //Build Stones;
-        //this.StoneBuilder();
-        // console.log("Stones Loaded ");
-        
-        //Build a mountain...
-        //this.MountainBuilder(500,500,20,6);
-
-        //And another one ...
-        //this.MountainBuilder(-100,-100,6);
-
-        // arg : maze complexity 
-    
-        
         // build fog
         this.fog = this.FOG;
 
-        if(String(window.location).indexOf('debug') != -1 && 
-            typeof this.avatar_obj != 'undefined') {
-                this.client_create_debug_gui();
-        }
+      
 
 	},
 
     client_create_avatar : function(){
+        conf(['AVATAR_TYPE', 
+              'AVATAR_POSITION', 'AVATAR_MAT'], this);
 
-        var avatar_obj =  new this.AVATAR_TYPE(this.AVATAR_MAT, this);
+        var avatar_obj =  new this.AVATAR_TYPE(this.AVATAR_MAT);
         var x = this.AVATAR_POSITION.x,
             y = this.AVATAR_POSITION.y,
             z = this.AVATAR_POSITION.z;
@@ -88,7 +93,10 @@ var WorldClientCore = {
 
         this.camera.reset(avatar_obj); 
       
-        this.avatar_controls = new PointerLockControls( this.camera , this.sphereBody, this.domElement);
+        this.avatar_controls = new PointerLockControls( 
+            this.camera,
+            this.sphereBody,
+            this.domElement);
 
         this.add(this.avatar_controls.getObject());
 
@@ -215,8 +223,6 @@ var WorldClientCore = {
 
             this.MAIN_LIGHT.lookAt(this.position);
 
-            //HTML CONTENT
-            span.innerHTML = ''; // clear existing
 
             
 
@@ -245,6 +251,7 @@ var WorldClientCore = {
 	},
 	
 	client_create_debug_gui : function() {
+       
 
         // Smoothie (test)
         smoothieCanvas = document.createElement("canvas");

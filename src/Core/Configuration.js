@@ -5,7 +5,7 @@ if(typeof global != 'undefined'){
 	var THREE = require('three');
 }
 
-var Configuration = function(server){
+var Configuration = (function(server){
     //WINDOW
     this.SCREEN_SIZE_RATIO    = 100;
     this.WIDTH                = window.innerWidth - this.SCREEN_SIZE_RATIO;
@@ -30,7 +30,7 @@ var Configuration = function(server){
     this.SEC                      = 0;
     this.DARKNESS                 = 0.17;
     this.LIGHTNESS                = 0.9;
-    this.AVATAR_COLOR             = new THREE.Color("rgb(33,33,33)");
+    this.AVATAR_COLOR             = new THREE.Color("rgb(33,255,33)");
 
     //WORLD ASPECT
     this.WORLDSIZE            = 4096;
@@ -51,8 +51,6 @@ var Configuration = function(server){
 
     this.TEXTURE_SIZE         = 512;
 
-    //COllision obstavles
-    this.obstacles             = [];
     //WORLD OBJECTS
     //stones
     this.NB_STONES                = 1000;
@@ -112,7 +110,7 @@ var Configuration = function(server){
     this.MAIN_LIGHT_SHADOWBIAS        = 2;
     this.AMBIENT_LIGHT                = 0xeeeeee;
     
-    this.BLOCK_SIZE = this.WORLDSIZE / 10;
+    this.BLOCK_SIZE = this.WORLDSIZE / 50;
     
     this.AVATAR_MODEL_PATH               = null; // "Models/daemon2.obj";
     this.AVATAR_SCALE                    = 5;
@@ -188,6 +186,7 @@ var Configuration = function(server){
         this.target_time = 0.01;            //the time where we want to be in the server timeline
         this.oldest_tick = 0.01;            //the last time tick we have available in the buffer
 
+
         this.client_time = 0.01;            //Our local 'clock' based on server time - client interpolation(net_offset).
         this.server_time = 0.01;            //The time the server reported it was at, last we heard from it
         
@@ -199,11 +198,15 @@ var Configuration = function(server){
 
     }
 
+    return (function(confs, caller){
+        for(var key in confs){
+            caller[confs[key]] = this[confs[key]];
+        }   
+    });
     
-};
-
-
+    
+});
 
 if(typeof global != 'undefined'){
-	module.exports = global.Configuration = Configuration;
+	module.exports = global.Configuration = Configuration(true);
 }

@@ -1,7 +1,6 @@
 if(typeof global != 'undefined'){
     var THREE = require('three');
     var Materials = require('./Materials.js');
-    var Configuration = require('./Configuration.js');
 }
 
 
@@ -13,13 +12,19 @@ var WorldObjects = {
                         new THREE.SphereGeometry(size,50,50),
                         material );
 
+
+        var that = this;
+        conf(['DAY_NIGHT_SPEED',
+              'WORLDSIZE',
+              'FAR'], this);
+
         this.position.x = x;
         this.position.y = y;
         this.position.z = z;
         
-        this.animate = function(t, instance){
-            this.position.x = Math.sin(t/instance.DAY_NIGHT_SPEED)*instance.WORLDSIZE/1.8;
-            this.position.y = Math.cos(t/instance.DAY_NIGHT_SPEED)*instance.FAR/4;
+        this.animate = function(t){
+            this.position.x = Math.sin(t/that.DAY_NIGHT_SPEED)*that.WORLDSIZE/1.8;
+            this.position.y = Math.cos(t/that.DAY_NIGHT_SPEED)*that.FAR/4;
         }
 
     },
@@ -120,6 +125,13 @@ var WorldObjects = {
     },
 
     getPlane : function(){
+        conf(['WORLD_TEXTURE_URL',
+              'REP_VERT_FLOOR',
+              'REP_HOR_FLOOR',
+              'FLOOR_COLOR',
+              'WORLDSIZE',
+              'PLANE_ROT_X',
+              'PLANE_ROT_Y'], this);
         
         var world_texture = undefined;
         if(this.WORLD_TEXTURE_URL){
@@ -141,6 +153,13 @@ var WorldObjects = {
 
     getCamera : function(){
         var that = this;
+        conf(['VIEW_ANGLE',
+              'ASPECT',
+              'NEAR',
+              'FAR',
+              'AVATAR_SCALE',
+              'CAM_POS_RATIO'], this);
+
         var cam = new THREE.PerspectiveCamera(
                 this.VIEW_ANGLE,
                 this.ASPECT,
@@ -155,14 +174,21 @@ var WorldObjects = {
             this.position.z += that.AVATAR_SCALE * that.CAM_POS_RATIO;
         
 
-            this.lookAt(new THREE.Vector3(0,0,0));
+            this.lookAt(new THREE.Vector3(0,0,0));  
         };
 
         return cam;
     },
 
     getMainLight : function(){
-        
+        conf(['LIGHT_COLOR',
+              'MAIN_LIGHT_CAST_SHADOW',
+              'MAIN_LIGHT_ANGLE',
+              'MAIN_LIGHT_EXPONENT',
+              'MAIN_LIGHT_SHADOWBIAS',
+              'MAIN_LIGHT_SHADOW_CAMERA_FAR',
+              'MAIN_LIGHT_SHADOW_CAMERA_FOV'], this);
+
         var s = new THREE.SpotLight(this.LIGHT_COLOR);
         
         s.castShadow = this.MAIN_LIGHT_CAST_SHADOW;
@@ -175,6 +201,7 @@ var WorldObjects = {
     },
 
     getSky: function(){
+        conf(['WORLDSIZE', 'SKY_TEXTURE'], this);
 
         var dimension = this.WORLDSIZE;
         var skyGeometry = new THREE.CubeGeometry( dimension
@@ -202,10 +229,6 @@ var WorldObjects = {
 WorldObjects.getSun.prototype = Object.create(THREE.Mesh.prototype);
 WorldObjects.Fog_obj.prototype = Object.create(THREE.FogExp2.prototype);
 
-var conf = new Configuration();
-for(var key in conf){
-   WorldObjects[key] = conf[key];
-}
 
 if(typeof global != 'undefined'){
     module.exports = global.WorldObjects = WorldObjects;

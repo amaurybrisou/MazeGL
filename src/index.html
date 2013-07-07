@@ -12,20 +12,14 @@
 
         <script type="text/javascript" src="libs/three.js"></script>
         <script type="text/javascript" src="libs/cannon.js"></script>
-        <script type="text/javascript" src="libs/PointerLockControls.js"></script>
-
-        <script type="text/javascript" src="libs/smoothie.js"></script>
-
-
-
         <script type="text/javascript" src="libs/dat.gui.min.js"></script>
         <script type="text/javascript" src="libs/ColladaLoader.js"></script>
         <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-
-        <script type="text/javascript" src="libs/THREEx.KeyboardState.js"></script>
+        <script type="text/javascript" src="libs/smoothie.js"></script>
         
 
         <!-- Load First Level Namespaces -->
+        <script type="text/javascript" src="Core/PointerLockControls.js"></script>
 
         <script type="text/javascript" src="Core/Attributes.js"></script>
         <script type="text/javascript" src="Core/Materials.js"></script>
@@ -41,7 +35,6 @@
         <script type="text/javascript" src="Core/FileDescriptor.js"></script>
 
         <!-- Load Second Level Namespaces -->
-        <script type="text/javascript" src="Core/Controls.js"></script>
         <script type="text/javascript" src="Core/Shaders.js"></script>
         <script type="text/javascript" src="Core/WorldObjects.js"></script>
         <script type="text/javascript" src="Core/FirstAvatar.js"></script>
@@ -50,24 +43,12 @@
          
         <script type="text/javascript" src="Core/init.js"></script>
 
-        <script type="text/javascript">setTimeout(function(){
-            init()
-        },200);</script>
+        
     </head>
 
     <body>
-        <!-- <div id="connections_infos">
-                <form action="javascript:init()">
-                    username : <input id="username" type="text" name="username"><br>
-                <input type="submit" value="Submit">
-            </form>     
-        </div> -->
         <div id="canvasCont">
-        </div>
-        
-
-        <div id="infos">
-            time :
+            
         </div>
 
 

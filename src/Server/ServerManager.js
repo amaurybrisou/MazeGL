@@ -10,7 +10,9 @@ global.window = global.document = global;
 
 //Import shared game library code.
 require('../Core/WorldCore.js');
-var Client = require('../Core/Controls.js');
+var Client = function(){
+    
+}; //require('../Core/FirstAvatar.js');
 
 mmo.log = function() {
     if(verbose) console.log.apply(this,arguments);

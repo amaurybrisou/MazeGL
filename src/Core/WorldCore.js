@@ -2,11 +2,8 @@ if(typeof global != 'undefined'){
     var Physics = require('./Physics.js');
 	var FileDescriptor = require('./FileDescriptor.js');
     var WorldObjects = require('./WorldObjects.js');
-    var Configuration = require("./Configuration.js");
     var WorldClientCore = require('./WorldClientCore.js');
     var THREE = require('three');
-    
-
 }
 
 var frame_time = 60/1000; // run the local game at 16ms/ 60hz
@@ -47,9 +44,7 @@ var world_core = function(world_instance){
 
     var that = this;
 
-    for(var key in WorldClientCore){
-        this[key] = WorldClientCore[key];
-    }
+    
 
     this.Clients = [];
     //Store the instance, if any
@@ -59,23 +54,23 @@ var world_core = function(world_instance){
 
     this.local_time = 0.016; //The local timer
     this.server_time = new Date().getTime();
-    this.local_time = new Date().getTime();
     this.times = [];
 
     //     //Start a physics loop, this is separate to the rendering
     //     //as this happens at a fixed frequency
     //this.create_physics_simulation();
 
-    var object = new Configuration(this.server);
-    for (var key in object ){
-        this[key] = object[key];
-    }
+    
 
     if(!this.server ){
+        for(var key in WorldClientCore){
+            this[key] = WorldClientCore[key];
+        }
+        
         Physics.init(this);
         this.client_create_world();
         
-
+        conf(['SERVER_ADDR', 'SERVER_PORT'], this);
         this.FileDescriptor = Network.FileDescriptor(
             this.SERVER_ADDR,
             this.SERVER_PORT);
@@ -323,10 +318,13 @@ world_core.prototype.MountainBuilder = function(Xo, Zo, spread, decrease_factor)
 };
 
 world_core.prototype.maze = function(maze){
-
+    conf(['MAZE_CUBE_TEXTURE',
+          'WORLDSIZE',
+          'REP_VERT_MAZE_CUBE',
+          'REP_HOR_MAZE_CUBE'], this);
     var maze = maze;
     var len = maze.length;
-    var height = 100,
+    var height = 30,
         wall,
         mat,
         origin = true,
@@ -390,7 +388,9 @@ if( 'undefined' != typeof global ) {
 
 
 world_core.prototype.getAvatar = function(){
-    
+    conf(['AVATAR_POSITION',
+          'AVATAR_TYPE',
+          'AVATAR_MAT'], this);
     var x = this.AVATAR_POSITION.x,
         y = this.AVATAR_POSITION.y,
         z = this.AVATAR_POSITION.z;
