@@ -9,14 +9,17 @@
         <title>Stones</title>
 
         <link rel="stylesheet" href="css/main.css" type="text/css" media="screen" />
-
+        <script type="text/javascript">
+            debug = window.location.search.indexOf('debug');
+            USE_TRANSFERABLE = true;
+        </script>
         <script type="text/javascript" src="libs/three.js"></script>
         <script type="text/javascript" src="libs/cannon.js"></script>
         <script type="text/javascript" src="libs/dat.gui.min.js"></script>
+        <script type="text/javascript" src="libs/WW.js"></script>
         <script type="text/javascript" src="libs/ColladaLoader.js"></script>
         <script type="text/javascript" src="/socket.io/socket.io.js"></script>
         <script type="text/javascript" src="libs/smoothie.js"></script>
-        
 
         <!-- Load First Level Namespaces -->
         <script type="text/javascript" src="Core/PointerLockControls.js"></script>

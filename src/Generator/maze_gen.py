@@ -36,7 +36,7 @@ def maze(width=81, height=51, complexity=.75, density=.75):
                     x, y = x_, y_
     return Z
  
-pyplot.figure(figsize=(10, 5))
+#pyplot.figure(figsize=(10, 5))
 
 def serialize(m):
     myList = list()
@@ -47,12 +47,18 @@ def serialize(m):
         myList.append(l)
     return myList
 
-maze = maze(40 , 40, 0.75, 0.75)
+maze_floors = list();
 
-myList = serialize( maze)
-print(myList)
+dim = 10;
+for i in range(dim):
+    maze_floor = maze(dim, dim, 0.75, 0.75)
+    myList = serialize( maze_floor)
+    maze_floors.append(myList);
+
+
 with open('maze.json', 'w') as outfile:
-  json.dump(myList, outfile)
+  json.dump(maze_floors, outfile)
+
 
 
 

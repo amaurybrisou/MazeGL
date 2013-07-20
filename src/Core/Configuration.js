@@ -42,6 +42,8 @@ var Configuration = (function(server){
     this.WORLD_TEXTURE_URL    = "textures/tapis1.png";
     this.SKY_TEXTURE          = "textures/immeuble-verre.png";
     this.MAZE_CUBE_TEXTURE    = "textures/vitre-cassee-nb.png";
+    this.AVATAR_TEXTURE       = "textures/gravier2.png";
+
     
     this.REP_HOR_MAZE_CUBE       = 2;
     this.REP_VERT_MAZE_CUBE      = 1;
@@ -110,7 +112,7 @@ var Configuration = (function(server){
     this.MAIN_LIGHT_SHADOWBIAS        = 2;
     this.AMBIENT_LIGHT                = 0xeeeeee;
     
-    this.BLOCK_SIZE = this.WORLDSIZE / 50;
+    this.BLOCK_SIZE = this.WORLDSIZE / 10;
     
     this.AVATAR_MODEL_PATH               = null; // "Models/daemon2.obj";
     this.AVATAR_SCALE                    = 5;
@@ -126,25 +128,8 @@ var Configuration = (function(server){
         y : 10,
         z : (this.WORLDSIZE / 2 - (this.BLOCK_SIZE))
     };
-    this.SPEED_FACTOR = 10000;
+    this.SPEED_FACTOR = 20000;
 
-
-
-    this.lat = 0;
-    this.lon = 0;
-    this.phi = 0;
-    this.theta = 0;
-
-    this.moveForward = false;
-    this.moveBackward = false;
-    this.moveLeft = false;
-    this.moveRight = false;
-    this.mouseDragOn = false;
-    this.mouseX = 0;
-    this.mouseY = 0;
-    this.mouseWheel = 0;
-
-    this.eulerOrder = "XYZ";
 
     
 
@@ -157,7 +142,7 @@ var Configuration = (function(server){
         this.VIEW_ANGLE       = 60;
         this.ASPECT           = this.WIDTH / this.HEIGHT;
         this.NEAR             = 5;
-        this.FAR              = this.WORLDSIZE ;
+        this.FAR              = this.WORLDSIZE * 2;
         this.CAM_ROT_SPEED    = 2000;
         this.CAM_POS_X        = -50;
         this.CAM_POS_Y        = 20;
@@ -170,12 +155,15 @@ var Configuration = (function(server){
         //NETWORK   SERVER CLOUD9
         // this.SERVER_ADDR =  '94.23.199.5';
         this.SERVER_PORT =  9999;
-        this.SERVER_ADDR =  '127.0.0.1';
-
+        //this.SERVER_ADDR =  '127.0.0.1';
+        this.SERVER_ADDR = '78.249.168.136';
         
 
 
         this.debug = true;
+        this.boundingSphere = false;
+        this.square = false;
+        this.sphere = true;
         
         this.net_latency = 0.001;           //the latency between the client and the server (ping/2)
         this.net_ping = 0.001;              //The round trip time from here to the server,and back

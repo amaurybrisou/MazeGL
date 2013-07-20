@@ -168,10 +168,11 @@ var WorldObjects = {
 
 
         cam.reset = function (avatar_obj) {
+            //this.position.copy(avatar_obj.position);
 
             this.position.x += 0;//
             this.position.y += 0;//that.AVATAR_SCALE * that.CAM_POS_RATIO / 4;
-            this.position.z += that.AVATAR_SCALE * that.CAM_POS_RATIO;
+            this.position.z += that.AVATAR_SCALE * that.CAM_POS_RATIO * 2  ;
         
 
             this.lookAt(new THREE.Vector3(0,0,0));  

@@ -67,13 +67,16 @@ var world_core = function(world_instance){
             this[key] = WorldClientCore[key];
         }
         
-        Physics.init(this);
-        this.client_create_world();
+        physics = new Physics();
         
+        this.client_create_world();
+
         conf(['SERVER_ADDR', 'SERVER_PORT'], this);
         this.FileDescriptor = Network.FileDescriptor(
             this.SERVER_ADDR,
             this.SERVER_PORT);
+        physics.init();
+        
     } else { //if server
         //Start a fast paced timer for measuring time easier
         //Physics.init(this);
@@ -95,7 +98,8 @@ world_core.prototype.update = function(t){
     //Store the last frame time
     this.lastframetime = t;
 
-    if(!this.server && typeof this.avatar_obj !== 'undefined') {
+    if(!this.server && this.avatar_obj) {
+        
         this.client_update();
 
     } else if( this.Clients.length ) {
@@ -323,56 +327,58 @@ world_core.prototype.maze = function(maze){
           'REP_VERT_MAZE_CUBE',
           'REP_HOR_MAZE_CUBE'], this);
     var maze = maze;
-    var len = maze.length;
-    var height = 30,
+    var len = maze[0].length;
+    var default_height = 30,
+        height,
         wall,
         mat,
         origin = true,
         world_texture = THREE.ImageUtils.loadTexture( this.MAZE_CUBE_TEXTURE ),
-        width = depth = this.block_size = this.WORLDSIZE / ( len - 1),
+        width = depth = default_height = this.block_size = this.WORLDSIZE / ( len - 1),
         mergedGeo = new window.THREE.Geometry();
 
     world_texture.wrapS = world_texture.wrapT = THREE.RepeatWrapping;
     world_texture.repeat.set(this.REP_HOR_MAZE_CUBE, this.REP_VERT_MAZE_CUBE);//hor repeat , vert
 
-    var cubeShape = new CANNON.Box(new CANNON.Vec3(width/2, height, depth/2));
-
-    for(var i = 0; i < len; i++){
-        for(j = 0; j < maze[i].length; j++){
-            // if((i <= 1 && j <= 1) ||
-            //      (i >= len - 1 && j >= len - 1 )){
-            //     // mat = this.BEGIN_END_FACES_MAT;
-            //     // origin = true;
-            //     continue;
-            // } else {
-                //origin = false;
-                //mat = this.WALL_FACES_MAT;
-                mat = new THREE.MeshBasicMaterial( { map: world_texture } );
-            // }
-            if(maze[i][j]){
-                wall = WorldObjects.cube(width, height, depth, mat);
-                wall.origin = origin;
-                wall.position.set( -this.WORLDSIZE / 2 +  i * width,
-                                     height / 2,
-                                     -this.WORLDSIZE / 2 + j * depth);
-                Physics.mergeBox(cubeShape,
-                    -this.WORLDSIZE / 2 +  i * width,
-                    height / 2,
-                    -this.WORLDSIZE / 2 + j * depth);
-
-                // if(i % 100 == 0){
-                //     Physics.addBox();
+    var cubeShape = new CANNON.Box(new CANNON.Vec3());
+    for(var floor = 0; floor < maze.length; floor++){
+        height = (floor + 1) * default_height;
+        for(var i = 0; i < len; i++){
+            for(j = 0; j < maze[floor][i].length; j++){
+                // if((i <= 1 && j <= 1) ||
+                //      (i >= len - 1 && j >= len - 1 )){
+                //     // mat = this.BEGIN_END_FACES_MAT;
+                //     // origin = true;
+                //     continue;
+                // } else {
+                    //origin = false;
+                    //mat = this.WALL_FACES_MAT; map: world_texture
+                mat = new THREE.MeshBasicMaterial( { color: 0xf09900, wireframe: true } );
                 // }
-
-                if(!wall.origin){
-                    window.THREE.GeometryUtils.merge(mergedGeo, wall);
-                } else {
-                    this.add(wall);
+                if(maze[floor][i][j]){
+                    wall = WorldObjects.cube(width, default_height, depth, mat);
+                    wall.origin = origin;
+                    wall.position.set( -this.WORLDSIZE / 2 +  i * width,
+                                         height/2,
+                                         -this.WORLDSIZE / 2 + j * depth);
+                    physics.wall(
+                        width / 2,
+                        default_height / 2 ,
+                        depth / 2,
+                        -this.WORLDSIZE / 2 +  i * width,
+                        floor * default_height,
+                        -this.WORLDSIZE / 2 + j * depth
+                    );
+                    if(!wall.origin){
+                        window.THREE.GeometryUtils.merge(mergedGeo, wall);
+                    } else {
+                        this.add(wall);
+                    }
                 }
             }
         }
     }
-    Physics.addBox();
+    physics.addWall();
     var walls = new window.THREE.Mesh(
                 mergedGeo,
                 mat);

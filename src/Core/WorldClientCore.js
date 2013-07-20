@@ -16,6 +16,7 @@ var WorldClientCore = {
               'STONES_EDGES_MAT',
               'FOG',
               'debug',
+              'boundingSphere',
               'SPEED_FACTOR',
               'net_latency',
               'net_ping',
@@ -68,7 +69,7 @@ var WorldClientCore = {
         // build fog
         this.fog = this.FOG;
 
-      
+        
 
 	},
 
@@ -81,7 +82,14 @@ var WorldClientCore = {
             y = this.AVATAR_POSITION.y,
             z = this.AVATAR_POSITION.z;
 
-        avatar_obj.position.set(x, y, z);
+        avatar_obj.position.x = x;
+        avatar_obj.position.y = y;
+        avatar_obj.position.z = z;
+
+        avatar_obj.velocity = {};
+        avatar_obj.velocity.x = 0;
+        avatar_obj.velocity.y = 0;
+        avatar_obj.velocity.z = 0;
 
         if(typeof this.camera == 'undefined'){
             this.camera = WorldObjects.getCamera();
@@ -91,15 +99,15 @@ var WorldClientCore = {
         var client_name = this.client_name();
         avatar_obj.add(client_name);
 
-        this.camera.reset(avatar_obj); 
-      
+        this.camera.reset(avatar_obj);
+        this.avatar_obj = avatar_obj;
+
         this.avatar_controls = new PointerLockControls( 
             this.camera,
-            this.sphereBody,
+            this.avatar_obj,
             this.domElement);
 
         this.add(this.avatar_controls.getObject());
-
 
         var that = this;
         avatar_obj.animate = function (d) {
@@ -108,19 +116,7 @@ var WorldClientCore = {
 
         //avatar_obj.rayCaster();
 
-        if(world.debug){
-            var boundingSphere = avatar_obj.geometry.boundingSphere.clone();
-            // compute overall bbox
-            sphere = new THREE.Mesh(
-                new THREE.SphereGeometry(boundingSphere.radius, 10, 10),
-                 new THREE.MeshBasicMaterial({
-                        color: 0x000000,
-                        wireframe : true
-            }));
-            sphere.overdraw = true;
-
-            avatar_obj.add(sphere);
-        }
+        
 
         return avatar_obj;
     },
@@ -152,9 +148,10 @@ var WorldClientCore = {
             // animate
             var t  = this.dt;
 
-            if(typeof this.avatar_obj != 'undefined'){
-                Physics.update(this.dt, this.avatar_obj);
-                this.avatar_obj.animate(t * this.SPEED_FACTOR );
+            var that = this;
+            if(this.avatar_obj && this.avatar_controls){
+                
+                this.avatar_obj.animate(t * this.SPEED_FACTOR);
             }        
 
             this.SUN.animate(t, this);
@@ -253,65 +250,66 @@ var WorldClientCore = {
 	client_create_debug_gui : function() {
        
 
-        // Smoothie (test)
-        smoothieCanvas = document.createElement("canvas");
-        smoothieCanvas.style.position = 'absolute';
-        smoothieCanvas.style.top = '0px';
-        smoothieCanvas.style.zIndex = 100;
-        document.getElementById("canvasCont").appendChild( smoothieCanvas );
-        smoothie = new SmoothieChart({
-            maxDataSetLength:100,
-            millisPerPixel:10,
-            grid: {
-                strokeStyle:'rgb(125, 125, 125)',
-                fillStyle:'rgb(0, 0, 0)',
-                lineWidth: 1,
-                millisPerLine: 250,
-                verticalSections: 6
-            },
-            labels: {
-                fillStyle:'rgb(180, 180, 180)'
-            }
-        });
-        smoothie.streamTo(smoothieCanvas);
-        // Create time series for each profile label
-        var lines = {};
-        var colors = [[255, 0, 0],[0, 255, 0],[0, 0, 255],[255,255,0],[255,0,255],[0,255,255]];
-        var i=0;
-        for(var label in this.c_world.profile){
-            var c = colors[i%colors.length];
-            lines[label] = new TimeSeries({
-                label : label,
-                fillStyle : "rgb("+c[0]+","+c[1]+","+c[2]+")"
-            });
-            i++;
-        }
-        // Add a random value to each line every second
-        var that = this;
-        this.c_world.addEventListener("postStep",function(evt) {
-            for(var label in that.c_world.profile)
-                lines[label].append(that.c_world.time * 1000, that.c_world.profile[label]);
-        });
-        // Add to SmoothieChart
-        var i=0;
-        for(var label in this.c_world.profile){
-            var c = colors[i%colors.length];
-            smoothie.addTimeSeries(lines[label],{
-                strokeStyle : "rgb("+c[0]+","+c[1]+","+c[2]+")",
-                fillStyle:"rgba("+c[0]+","+c[1]+","+c[2]+",0.3)",
-                lineWidth:1
-            });
-            i++;
-        }
+        // // Smoothie (test)
+        // smoothieCanvas = document.createElement("canvas");
+        // smoothieCanvas.style.position = 'absolute';
+        // smoothieCanvas.style.top = '0px';
+        // smoothieCanvas.style.zIndex = 100;
+        // document.getElementById("canvasCont").appendChild( smoothieCanvas );
+        // smoothie = new SmoothieChart({
+        //     maxDataSetLength:100,
+        //     millisPerPixel:10,
+        //     grid: {
+        //         strokeStyle:'rgb(125, 125, 125)',
+        //         fillStyle:'rgb(0, 0, 0)',
+        //         lineWidth: 1,
+        //         millisPerLine: 250,
+        //         verticalSections: 6
+        //     },
+        //     labels: {
+        //         fillStyle:'rgb(180, 180, 180)'
+        //     }
+        // });
+        // smoothie.streamTo(smoothieCanvas);
+        // // Create time series for each profile label
+        // var lines = {};
+        // var colors = [[255, 0, 0],[0, 255, 0],[0, 0, 255],[255,255,0],[255,0,255],[0,255,255]];
+        // var i=0;
+        // for(var label in this.c_world.profile){
+        //     var c = colors[i%colors.length];
+        //     lines[label] = new TimeSeries({
+        //         label : label,
+        //         fillStyle : "rgb("+c[0]+","+c[1]+","+c[2]+")"
+        //     });
+        //     i++;
+        // }
+        // // Add a random value to each line every second
+         var that = this;
+        // this.c_world.addEventListener("postStep",function(evt) {
+        //     for(var label in that.c_world.profile)
+        //         lines[label].append(that.c_world.time * 1000, that.c_world.profile[label]);
+        // });
+        // // Add to SmoothieChart
+        // var i=0;
+        // for(var label in this.c_world.profile){
+        //     var c = colors[i%colors.length];
+        //     smoothie.addTimeSeries(lines[label],{
+        //         strokeStyle : "rgb("+c[0]+","+c[1]+","+c[2]+")",
+        //         fillStyle:"rgba("+c[0]+","+c[1]+","+c[2]+",0.3)",
+        //         lineWidth:1
+        //     });
+        //     i++;
+        // }
 
 
 	    this.gui = new dat.GUI();
 
-        this.profile = this.c_world.doProfiling;
-        this.gravity_x = this.c_world.gravity.x;
-        this.gravity_y = this.c_world.gravity.y;
-        this.gravity_z = this.c_world.gravity.z;
+      //  this.profile = this.c_world.doProfiling;
+        this.gravity_x = 0;
+        this.gravity_y = -50;
+        this.gravity_z = 0;
         this.speed = this.SPEED_FACTOR;
+
 
 	    var _network = this.gui.addFolder('Informations');
 
@@ -327,38 +325,45 @@ var WorldClientCore = {
         var _world = this.gui.addFolder('World');
             _world.add(this, 'gravity_x', min, max).step(1).onChange(function(gx){
             if(!isNaN(gx))
-                that.c_world.gravity.set(gx,that.gravity_y,that.gravity_z);
+                physics.change_gravity(gx,that.gravity_y,that.gravity_z);
             });
             _world.add(this, 'gravity_y', min, max).step(1).onChange(function(gy){
             if(!isNaN(gy))
                 console.log(gy);
-                that.c_world.gravity.set(that.gravity_x, gy,that.gravity_z);
+                physics.change_gravity(that.gravity_x, gy,that.gravity_z);
             });
             _world.add(this, 'gravity_z', min, max).step(1).onChange(function(gz){
             if(!isNaN(gz))
-                that.c_world.gravity.set(that.gravity_x,that.gravity_y,gz);
+                physics.change_gravity(that.gravity_x,that.gravity_y,gz);
             });
             _world.add(this, 'speed', 0, this.speed * 10).step(10).onChange(function(s){
             if(!isNaN(s))
                 that.SPEED_FACTOR = s;
             });
 
+        var _avatar = this.gui.addFolder('Avatar');
+            _avatar.add(this, 'boundingSphere').onChange(function(s){
+                that.boundingSphere != that.boundingSphere;
+                that.avatar_obj.boundingSphere(that.boundingSphere);
+                console.log(that.boundingSphere);
+            });
+
         var _render = this.gui.addFolder('Render');
             _render.add(this, 'fps_avg').listen();
             _render.add(this, 'stop_update').listen();
 
-        var _debug = this.gui.addFolder('Debug');
-            _debug.add(this, 'profile').onChange(function(profiling){
-                if(profiling){
-                    that.c_world.doProfiling = true;
-                    smoothie.start();
-                    smoothieCanvas.style.display = "block";
-                } else {
-                    that.c_world.doProfiling = false;
-                    smoothie.stop();
-                    smoothieCanvas.style.display = "none";
-                }
-            });
+        // var _debug = this.gui.addFolder('Debug');
+        //     _debug.add(this, 'profile').onChange(function(profiling){
+        //         if(profiling){
+        //             that.c_world.doProfiling = true;
+        //             smoothie.start();
+        //             smoothieCanvas.style.display = "block";
+        //         } else {
+        //             that.c_world.doProfiling = false;
+        //             smoothie.stop();
+        //             smoothieCanvas.style.display = "none";
+        //         }
+        //     });
 
             _network.open();
 

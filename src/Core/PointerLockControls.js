@@ -2,7 +2,7 @@
  * @author mrdoob / http://mrdoob.com/
  * @author schteppe / https://github.com/schteppe
  */
- var PointerLockControls = function ( camera, cannonBody, domElement) {
+ var PointerLockControls = function ( camera, avarar_obj, domElement) {
 
     var scope = this;
     var element = domElement;
@@ -82,15 +82,17 @@
 
     var eyeYPos = 2; // eyes are 2 meters above the ground
     var velocityFactor = 0.2;
-    var jumpVelocity = 50;
+    var jumpVelocity = 40;
     
 
     var pitchObject = new THREE.Object3D();
     pitchObject.add( camera );
 
     var yawObject = new THREE.Object3D();
-    yawObject.position.y = 5;
-    yawObject.add( pitchObject );
+    
+    yawObject.position.copy(avarar_obj.position);
+    
+    yawObject.add(pitchObject);
 
     var quat = new THREE.Quaternion();
 
@@ -100,11 +102,17 @@
     var moveRight = false;
     var canJump = false;
 
-    cannonBody.addEventListener("collide",function(e){
+    this.jump = function(){
         canJump = true;
-    });
+    };
 
-    var velocity = cannonBody.velocity;
+    var velocity = avarar_obj.velocity;
+
+    this.setVelocity = function(v){      
+        velocity.x = v.x;
+        velocity.y = v.y;
+        velocity.z = v.z;
+    };
 
     var PI_2 = Math.PI / 2;
 
@@ -233,7 +241,8 @@
         velocity.x += inputVelocity.x;
         velocity.z += inputVelocity.z;
 
-        cannonBody.position.copy(yawObject.position);
+        yawObject.position.copy(avarar_obj.position);
+
     };
 
 };

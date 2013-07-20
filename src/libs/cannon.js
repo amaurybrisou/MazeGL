@@ -4620,10 +4620,12 @@ CANNON.World.prototype.addContactMaterial = function(cmat) {
 };
 
 CANNON.World.prototype._now = function(){
-    if(window.performance.webkitNow){
-        return window.performance.webkitNow();
-    } else {
+    if(typeof window == "undefined"){
         return Date.now();
+    } else {
+        if(window.performance.webkitNow){
+            return performance.webkitNow();
+        } 
     }
 };
 
