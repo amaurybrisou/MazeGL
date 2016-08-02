@@ -24,13 +24,13 @@ var Network = {
                 });
 
                 socket.on('cl_create_avatar', function (data) {
-                    console.log("Creating Player "+data.userid);
+                    console.log("Creating Player ",data);
                     world.addLocalPlayer(data.userid, data.position);
                     console.log("Player Created");
                 });
 
                 socket.on('cl_client_connect', function (data) {
-                    console.log("Adding Remote Player");
+                    console.log("Adding Remote Player", data);
                     world.addOtherPlayer(data);
                     console.log("New Remote Player Added");
 
@@ -48,9 +48,9 @@ var Network = {
                         for(var client in clients){
                             console.log("Adding Remote Client : "+
                                 clients[client].userid+"  at "+
-                                clients[client].x+","+
-                                clients[client].y+","+
-                                clients[client].z);
+                                clients[client].position.x+","+
+                                clients[client].position.y+","+
+                                clients[client].position.z);
                             world.addOtherPlayer(clients[client]);
                         }
                         console.log("Already Present Player(s) Added");

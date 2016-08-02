@@ -2,7 +2,7 @@ if(typeof global != 'undefined'){
     var Materials = require('./Materials.js');
     var FileDescriptor = require('./FileDescriptor.js');
     var FirstAvatar = require('./Attributes.js');
-	var THREE = require('three');
+    var THREE = require('three');
 }
 
 var Configuration = (function(server){
@@ -33,7 +33,7 @@ var Configuration = (function(server){
     this.AVATAR_COLOR             = new THREE.Color("rgb(33,255,33)");
 
     //WORLD ASPECT
-    this.WORLDSIZE            = 4096;
+    this.WORLDSIZE            = 1000;
     this.LIGHT_SPEED          = 100000;
     this.DAY_NIGHT_SPEED      = this.LIGHT_SPEED;
     this.ORIGIN_SIZE          = 0.2;
@@ -41,11 +41,11 @@ var Configuration = (function(server){
     
     this.WORLD_TEXTURE_URL    = "textures/tapis1.png";
     this.SKY_TEXTURE          = "textures/immeuble-verre.png";
-    this.MAZE_CUBE_TEXTURE    = "textures/vitre-cassee-nb.png";
+    this.MAZE_CUBE_TEXTURE    = "textures/brique.png";
     this.AVATAR_TEXTURE       = "textures/gravier2.png";
 
     
-    this.REP_HOR_MAZE_CUBE       = 2;
+    this.REP_HOR_MAZE_CUBE       = 30;
     this.REP_VERT_MAZE_CUBE      = 1;
 
     this.REP_HOR_FLOOR         = this.WORLDSIZE / 10;
@@ -62,7 +62,7 @@ var Configuration = (function(server){
     //fog
     this.FOG_DENSITY              = 0.00002;
     this.FOG                      = new THREE.FogExp2(
-    	this.FOG_COLOR, this.FOG_DENSITY);
+        this.FOG_COLOR, this.FOG_DENSITY);
 
     //MATERIALS
     //stones mat
@@ -112,7 +112,7 @@ var Configuration = (function(server){
     this.MAIN_LIGHT_SHADOWBIAS        = 2;
     this.AMBIENT_LIGHT                = 0xeeeeee;
     
-    this.BLOCK_SIZE = this.WORLDSIZE / 10;
+    this.BLOCK_SIZE = this.WORLDSIZE / 15;
     
     this.AVATAR_MODEL_PATH               = null; // "Models/daemon2.obj";
     this.AVATAR_SCALE                    = 5;
@@ -123,10 +123,15 @@ var Configuration = (function(server){
     this.AVATAR_NO_FLY                   = true;
     this.AVATAR_TRANS_VIEW_INCREMENT     = 40;
     this.AVATAR_ROT_VIEW_INCREMENT       = 0.09;
+    // this.AVATAR_POSITION = { 
+    //     x : (this.WORLDSIZE / 2  - (this.BLOCK_SIZE )),
+    //     y : 10,
+    //     z : (this.WORLDSIZE / 2 - (this.BLOCK_SIZE))
+    // };
     this.AVATAR_POSITION = { 
-        x : (this.WORLDSIZE / 2  - (this.BLOCK_SIZE )),
+        x : 0,
         y : 10,
-        z : (this.WORLDSIZE / 2 - (this.BLOCK_SIZE))
+        z : 0
     };
     this.SPEED_FACTOR = 20000;
 
@@ -155,8 +160,8 @@ var Configuration = (function(server){
         //NETWORK   SERVER CLOUD9
         // this.SERVER_ADDR =  '94.23.199.5';
         this.SERVER_PORT =  9999;
-        //this.SERVER_ADDR =  '127.0.0.1';
-        this.SERVER_ADDR = '78.249.168.136';
+        this.SERVER_ADDR =  '127.0.0.1';
+        //this.SERVER_ADDR = '78.249.168.136';
         
 
 
@@ -196,5 +201,5 @@ var Configuration = (function(server){
 });
 
 if(typeof global != 'undefined'){
-	module.exports = global.Configuration = Configuration(true);
+    module.exports = global.Configuration = Configuration(true);
 }

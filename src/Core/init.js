@@ -1,5 +1,5 @@
 window.onload = function () {
-    init = function(){
+    var init = function(){
 
     	server = false;
     	conf = Configuration(server);

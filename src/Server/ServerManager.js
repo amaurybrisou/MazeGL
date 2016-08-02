@@ -23,13 +23,17 @@ mmo.log = function() {
 
 var Clients = [];
 
+mmo.updateClient = function(user){
+    Clients[user.userid].position = user.position;
+    return { 'userid' : user.userid, 'client' : Clients[user.userid] };
+};
 
 mmo.AddClient = function(world_id){
     var userid = UUID();
     var client = new Client(true);
     Clients[userid] = { 'userid' : userid,
-                        'position': this.worlds[world_id].AVATAR_POSITION }; 
-    return { 'userid' : userid, 'client' : client };
+                        'position': this.worlds[world_id].worldcore.position || {x:0,y:10,z:0} }; 
+    return Clients[userid];
 };
 
 mmo.getClients = function(userid){

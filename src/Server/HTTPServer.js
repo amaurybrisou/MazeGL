@@ -13,7 +13,7 @@ var HTTPServer = (function () {
         var httpServer = http.createServer(app);
         
         app.get( '/', function( req, res ){
-                res.sendfile( 'index.html', {'root': __dirname+'/../'} );
+                res.sendFile( 'index.html', {'root': __dirname+'/../'} );
             });
 
         app.get( '/*' , function( req, res, next ) {
@@ -25,7 +25,7 @@ var HTTPServer = (function () {
             if(verbose) console.log('\t :: Express :: file requested : ' + file);
 
                 //Send the requesting client the file.
-            res.sendfile( file, {'root': __dirname+'/../'} );
+            res.sendFile( file, {'root': __dirname+'/../'} );
 
         });
 

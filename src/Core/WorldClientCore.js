@@ -111,7 +111,10 @@ var WorldClientCore = {
 
         var that = this;
         avatar_obj.animate = function (d) {
-            that.avatar_controls.update(d);
+            that.avatar_controls.update(d, function(err, pos, next){
+                if(err) throw err;
+                that.FileDescriptor.move(pos);
+            });            
         };
 
         //avatar_obj.rayCaster();

@@ -139,6 +139,7 @@ world_core.prototype.update_world_state = function(){
 
 
 world_core.prototype.updatePlayers = function(new_coords){
+    console.log(this.Clients, new_coords);
     var cli = this.Clients[new_coords.userid];
     //new position otherwise position
     var position = new_coords.position || cli.avatar_obj.position;
@@ -179,6 +180,7 @@ world_core.prototype.addOtherPlayer = (function(){
     var avatar_obj;
     // build avatar
     return function(data){
+        console.log(data);
         if(this.server){
             avatar_obj = new THREE.Object3D();
             
@@ -324,56 +326,57 @@ world_core.prototype.MountainBuilder = function(Xo, Zo, spread, decrease_factor)
 world_core.prototype.maze = function(maze){
     conf(['MAZE_CUBE_TEXTURE',
           'WORLDSIZE',
+          'WALL_FACES_MAT',
+          'STONES_SIZE_RATIO',
+          'BEGIN_END_FACES_MAT',
           'REP_VERT_MAZE_CUBE',
           'REP_HOR_MAZE_CUBE'], this);
     var maze = maze;
-    var len = maze[0].length;
-    var default_height = 30,
-        height,
+    var len = maze.length;
+    var height = this.STONES_SIZE_RATIO,
         wall,
-        mat,
-        origin = true,
+        origin = false,
         world_texture = THREE.ImageUtils.loadTexture( this.MAZE_CUBE_TEXTURE ),
-        width = depth = default_height = this.block_size = this.WORLDSIZE / ( len - 1),
+        mat,
+        width = depth = this.block_size = this.WORLDSIZE / ( len - 1),
         mergedGeo = new window.THREE.Geometry();
 
+    
     world_texture.wrapS = world_texture.wrapT = THREE.RepeatWrapping;
     world_texture.repeat.set(this.REP_HOR_MAZE_CUBE, this.REP_VERT_MAZE_CUBE);//hor repeat , vert
 
-    var cubeShape = new CANNON.Box(new CANNON.Vec3());
-    for(var floor = 0; floor < maze.length; floor++){
-        height = (floor + 1) * default_height;
-        for(var i = 0; i < len; i++){
-            for(j = 0; j < maze[floor][i].length; j++){
-                // if((i <= 1 && j <= 1) ||
-                //      (i >= len - 1 && j >= len - 1 )){
-                //     // mat = this.BEGIN_END_FACES_MAT;
-                //     // origin = true;
-                //     continue;
-                // } else {
-                    //origin = false;
-                    //mat = this.WALL_FACES_MAT; map: world_texture
-                mat = new THREE.MeshBasicMaterial( { color: 0xf09900, wireframe: true } );
-                // }
-                if(maze[floor][i][j]){
-                    wall = WorldObjects.cube(width, default_height, depth, mat);
-                    wall.origin = origin;
-                    wall.position.set( -this.WORLDSIZE / 2 +  i * width,
-                                         height/2,
-                                         -this.WORLDSIZE / 2 + j * depth);
-                    physics.wall(
-                        width / 2,
-                        default_height / 2 ,
-                        depth / 2,
-                        -this.WORLDSIZE / 2 +  i * width,
-                        floor * default_height,
-                        -this.WORLDSIZE / 2 + j * depth
-                    );
-                    if(!wall.origin){
-                        window.THREE.GeometryUtils.merge(mergedGeo, wall);
-                    } else {
-                        this.add(wall);
-                    }
+
+    var cubeShape = new CANNON.Box(new CANNON.Vec3(width/2, height, depth/2));
+
+    
+    for(var i = 0; i < len; i++){
+        for(j = 0; j < maze[i].length; j++){
+            
+            if(maze[i][j]){
+                
+                mat = new THREE.MeshBasicMaterial( { map: world_texture } /**/);
+
+                wall = WorldObjects.cube(width, height, depth, mat);
+
+                wall.origin = origin;
+                
+                wall.position.set( -this.WORLDSIZE / 2 +  i * width,
+                                     height / 2 + 1,
+                                     -this.WORLDSIZE / 2 + j * depth);
+                
+                physics.wall(
+                    width / 2,
+                    height,
+                    depth / 2,
+                    -this.WORLDSIZE / 2 +  i * width,
+                    0,
+                    -this.WORLDSIZE / 2 + j * depth
+                );
+
+                if(!wall.origin){
+                    window.THREE.GeometryUtils.merge(mergedGeo, wall);
+                } else {
+                    this.add(wall);
                 }
             }
         }
@@ -393,13 +396,13 @@ if( 'undefined' != typeof global ) {
 }
 
 
-world_core.prototype.getAvatar = function(){
+world_core.prototype.getAvatar = function(position){
     conf(['AVATAR_POSITION',
           'AVATAR_TYPE',
           'AVATAR_MAT'], this);
-    var x = this.AVATAR_POSITION.x,
-        y = this.AVATAR_POSITION.y,
-        z = this.AVATAR_POSITION.z;
+    var x = position.x || this.AVATAR_POSITION.x,
+        y = position.y || this.AVATAR_POSITION.y,
+        z = position.z || this.AVATAR_POSITION.z;
 
 
     var avatar_obj =  new this.AVATAR_TYPE(

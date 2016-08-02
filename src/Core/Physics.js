@@ -255,9 +255,17 @@ var Physics = function(){
         setTimeout(that.update,delay);
     });
 
+    this.worker.addListener('addBox', function(x, y, z, _x, _y, _z){
+        world.addBox(x, y, z, _x, _y, _z);
+    });
+
     this.worker.addListener('jump', function(){
         world.avatar_controls.jump();
-    })
+    });
+
+    this.worker.addListener('print', function(e){
+        console.log(e);
+    });
 };
 
 

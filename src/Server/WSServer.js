@@ -20,12 +20,12 @@ var WSServer = (function(){
         }());
 
     	io.on('connection', function(socket){
-	    		//get Already Connected Clients
+	    	//get Already Connected Clients
 			var c = mmo.getClients(userid);
+			console.log(c);
+			var client = mmo.AddClient(world_id);
+			var userid = client.userid;
 
-			var client_infos = mmo.AddClient(world_id);
-			var userid = client_infos.userid;
-			var client = client_infos.client;
 
 		    //tell the player they connected, giving them their id
 			socket.set('client',
@@ -44,7 +44,7 @@ var WSServer = (function(){
 		        }
 		    );
 		    
-		    
+		    console.log(c);
 		    //Tell the new client to create all players already online
 		    socket.emit('cl_init_players', c);
 	  
@@ -54,10 +54,11 @@ var WSServer = (function(){
 			var ret_stack = [];
 			socket.on('cl_move', function(u_struct) {
 	            socket.get('client', function(error, cli){
-        			var ret_data = cli.client.update(u_struct);
-            		socket.emit('cl_move_ack',ret_data);
+	            	//set new position
+	            	cli.position = u_struct;
+            		mmo.updateClient(cli);
             		socket.broadcast.emit('cl_update_player_positions',
-        				{ 'userid': userid, 'position': cli.client.position });
+        				{ 'userid': userid, 'position': u_struct });
             	});	
                 
 			});//socket.on message

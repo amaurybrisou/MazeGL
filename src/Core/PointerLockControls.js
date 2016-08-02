@@ -212,7 +212,7 @@
 
     // Moves the camera to the Cannon.js object position and adds velocity to the object if the run key is down
     var inputVelocity = new THREE.Vector3();
-    this.update = function ( delta ) {
+    this.update = function ( delta, next ) {
         if ( scope.enabled === false ) return;
 
         delta *= 0.1;
@@ -242,7 +242,7 @@
         velocity.z += inputVelocity.z;
 
         yawObject.position.copy(avarar_obj.position);
-
+        next(null, avarar_obj.position);
     };
 
 };

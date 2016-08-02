@@ -7,31 +7,22 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/amaurybrisou/WebGL_Server.git"
-    },
-    "main": "init.js",
-    "scripts": {
-      "test": "mocha test/*.js"
-      },
-      "dependencies": {
-       "three" : "",
-       "socket.io": "",
-       "socket.io-client": "",
-       "express": "",
-       "node-uuid": "",
-       "cannon": ""
-       },
-
-       "devDependencies": {
-         "mocha": "",
-         "three" : "",
-         "socket.io": "",
-         "socket.io-client": "",
-         "express": "",
-         "node-uuid": "",
-         "cannon": ""
-         },
-         "optionalDependencies": {},
-         "engines": {
-          "node": "*"
-        }
-      }
+  },
+  "main": "init.js",
+  "scripts": {
+    "test": "mocha test/*.js"
+  },
+  "dependencies": {
+    "cannon": "^0.6.2",
+    "express": "^4.14.0",
+    "node-uuid": "^1.4.7",
+    "socket.io": "0.9",
+    "socket.io-client": "^1.4.8",
+    "three": "^0.79.0",
+    "websocket": "^1.0.23"
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
